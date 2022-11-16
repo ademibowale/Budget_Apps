@@ -1,0 +1,19 @@
+current directory: C:/Users/walex/Desktop/Budget_Apps/vendor/cache/ruby/3.1.0/gems/bootsnap-1.13.0/ext/bootsnap
+C:/Ruby31-x64/bin/ruby.exe -I C:/Ruby31-x64/lib/ruby/site_ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: C:/Users/walex/Desktop/Budget_Apps/vendor/cache/ruby/3.1.0/gems/bootsnap-1.13.0/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20221115-4240-hehxaj sitelibdir\=./.gem.20221115-4240-hehxaj clean
+bash.exe: warning: could not find /tmp, please create!
+
+current directory: C:/Users/walex/Desktop/Budget_Apps/vendor/cache/ruby/3.1.0/gems/bootsnap-1.13.0/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20221115-4240-hehxaj sitelibdir\=./.gem.20221115-4240-hehxaj
+generating bootsnap-x64-mingw-ucrt.def
+bash.exe: warning: could not find /tmp, please create!
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.so
+
+current directory: C:/Users/walex/Desktop/Budget_Apps/vendor/cache/ruby/3.1.0/gems/bootsnap-1.13.0/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20221115-4240-hehxaj sitelibdir\=./.gem.20221115-4240-hehxaj install
+bash.exe: warning: could not find /tmp, please create!
+/usr/bin/install -c -m 0755 bootsnap.so ./.gem.20221115-4240-hehxaj/bootsnap
