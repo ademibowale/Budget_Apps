@@ -6,8 +6,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :expenses
-  has_many :groups
+  has_many :expenses, dependent: :destroy, foreign_key: 'user_id'
+  has_many :groups, dependent: :destroy, foreign_key: 'user_id'
 
   validates :name, presence: true, length: { maximum: 25 }
   validates :email, presence: true, uniqueness: true
