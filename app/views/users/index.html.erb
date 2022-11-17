@@ -1,14 +1,10 @@
-<p style="color: green"><%= notice %></p>
+<div class="d-flex flex-column justify-content-center min-vh-100 border align-items-center">
+  <h1>BUDGET APP</h1>
 
-<h1>Users</h1>
-
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
+  <div class="text-center border-secondary">
+    <%= link_to "Log in", new_user_session_path, class: "btn btn-primary w-100 fs-5 log-btn" %>
+    <p>Are you a new user?
+    <%= link_to "Sign up", new_user_registration_path%>
     </p>
-  <% end %>
+  </div>
 </div>
-
-<%= link_to "New user", new_user_path %>
