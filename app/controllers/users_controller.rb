@@ -3,11 +3,11 @@ class UsersController < ApplicationController
 
   # GET /users or /users.json
   def index
-    @users = User.all
+    @user = current_user
   end
 
   # GET /users/1 or /users/1.json
-  def show
+  def show;
   end
 
   # GET /users/new
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1/edit
-  def edit
+  def edit;
   end
 
   # POST /users or /users.json
@@ -60,7 +60,7 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = current_user
     end
 
     # Only allow a list of trusted parameters through.

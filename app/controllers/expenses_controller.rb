@@ -2,27 +2,31 @@ class ExpensesController < ApplicationController
   before_action :set_expense, only: %i[ show edit update destroy ]
 
   # GET /expenses or /expenses.json
-  def index
-    @expenses = Expense.all
-  end
+  def index;
+      end
 
   # GET /expenses/1 or /expenses/1.json
-  def show
+  def show;
   end
 
   # GET /expenses/new
   def new
     @expense = Expense.new
+    @expense.user_id = current_user.id 
+    @group = Group.find(params[:group_id]) 
   end
 
   # GET /expenses/1/edit
-  def edit
+  def edit;
   end
 
   # POST /expenses or /expenses.json
   def create
     @expense = Expense.new(expense_params)
-
+    @expense.user_id = current_user.id
+    @group = Group.find(params[:group_id])
+    @expense.group_id = @group.id
+    
     respond_to do |format|
       if @expense.save
         format.html { redirect_to expense_url(@expense), notice: "Expense was successfully created." }
