@@ -2,7 +2,15 @@
 
 Rails.application.routes.draw do
   devise_for :users
-  root to: 'users#index'
+  device_scope :user do
+    get '/users/sign_out' => 'devise/sessions#destroy'
+    authenticated :user do
+      root 'groups#index', as: :authenticated_root
+    end
+    unauthenticated do
+      root 'users#index', as: :unauthenticated_root
+    end
+  end
 
   resources :users, only: [:index] do
     resources :groups, only: %i[index new create show destroy] do
