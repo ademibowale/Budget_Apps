@@ -2,7 +2,6 @@
 
 class Group < ApplicationRecord
   belongs_to :user
-
   has_many :expenses, dependent: :destroy
   has_one_attached :icon
 
@@ -11,5 +10,9 @@ class Group < ApplicationRecord
 
   def recent_transactions
     expenses.order('created_at Desc')
+  end
+
+  def total_expenses
+    expenses.sum(:amount)
   end
 end
