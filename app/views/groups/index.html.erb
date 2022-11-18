@@ -1,14 +1,34 @@
-<p style="color: green"><%= notice %></p>
+<div class="container">
+  <div class="total">
+    <h4> Overall Budget: </h4>
+    <h4> <%= number_t0_currency(@expenses.sum(&:amount)) %> </h4>
+  </div>
 
-<h1>Groups</h1>
-
-<div id="groups">
-  <% @groups.each do |group| %>
-    <%= render group %>
-    <p>
-      <%= link_to "Show this group", group %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New group", new_group_path %>
+  <% if @groups.count > 0 %>
+    <% @groups.each do |group| %>
+    <div class="card mb-4 px-3 p-3 shadow mb-5 bg-body rounded">
+      <%= link_to user_group_expenses_path(current_user, group.id) %>
+        <div class="d-flex">
+          <img src="<%= group.icon %>", alt="group_icon">
+          <div class="card-title ms-5 d-flex justify-content-between w-100">
+          <div>
+            <h5 class="card-title border border-white rounded-3"> <%= group.name %> </h5>
+            <span> <%= group.created_at.strftime("%B, %e at %H:%M") %> </span>
+          </div>
+          <div class="d-flex flex-column justify-content-between align-items-between gap-10">
+            <span class="each-group-amount">Total Budget: $<%= group.expenses.sum(&:amount) %></span>
+            <%= button_to "Delete Group", user_group_path(current_user, group), method: :delete, class: 'btn btn-secondary p-2' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<% else %>
+  <span class="d-flex justify-content-center align-items shadow p-3 mb-5 bg-body rounded">You have no categories click Add Category to create one</span>
+<% end %>
+<div class="add-group-btn">
+  <div class="group-btn shadow p-3 mb-5 rounded">
+    <%= link_to "Add Category", new_user_group_path(current_user), class: "btn btn-primary" %>
+  </div>
+</div> 
