@@ -1,5 +1,4 @@
 class ExpensesController < ApplicationController
-
   # GET /expenses or /expenses.json
   def index
     @group = current_user.groups.find(params[:group_id])
@@ -17,14 +16,14 @@ class ExpensesController < ApplicationController
   # POST /expenses or /expenses.json
   def create
     @group = Group.find(params[:group_id])
-    @expense = @group.expenses.create(name: expense_params[:name], amount: expense_params[:amount], 
-      user_id: current_user.id, group_id: @group.id)
+    @expense = @group.expenses.create(name: expense_params[:name], amount: expense_params[:amount],
+                                      user_id: current_user.id, group_id: @group.id)
 
     respond_to do |format|
       if @expense.save
         format.html do
-          redirect_to user_group_expenses_path(current_user, params[:group_id]), 
-          notice: 'Transaction was successfully created.'
+          redirect_to user_group_expenses_path(current_user, params[:group_id]),
+                      notice: 'Transaction was successfully created.'
         end
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -41,7 +40,7 @@ class ExpensesController < ApplicationController
     respond_to do |format|
       format.html do
         redirect_to user_group_expenses_path(current_user, @group.id),
-        notice: 'Budget was successfully destroyed.'
+                    notice: 'Budget was successfully destroyed.'
       end
       format.json { head :no_content }
     end
