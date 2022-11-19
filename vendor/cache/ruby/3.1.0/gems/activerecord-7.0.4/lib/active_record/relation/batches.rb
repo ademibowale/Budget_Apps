@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/relation/batches/batch_enumerator"
 
 module ActiveRecord
@@ -217,7 +215,7 @@ module ActiveRecord
 
       batch_limit = of
       if limit_value
-        remaining   = limit_value
+        remaining = limit_value
         batch_limit = remaining if remaining < batch_limit
       end
 
@@ -265,32 +263,32 @@ module ActiveRecord
     end
 
     private
-      def apply_limits(relation, start, finish, order)
-        relation = apply_start_limit(relation, start, order) if start
-        relation = apply_finish_limit(relation, finish, order) if finish
-        relation
-      end
+    def apply_limits(relation, start, finish, order)
+      relation = apply_start_limit(relation, start, order) if start
+      relation = apply_finish_limit(relation, finish, order) if finish
+      relation
+    end
 
-      def apply_start_limit(relation, start, order)
-        relation.where(predicate_builder[primary_key, start, order == :desc ? :lteq : :gteq])
-      end
+    def apply_start_limit(relation, start, order)
+      relation.where(predicate_builder[primary_key, start, order == :desc ? :lteq : :gteq])
+    end
 
-      def apply_finish_limit(relation, finish, order)
-        relation.where(predicate_builder[primary_key, finish, order == :desc ? :gteq : :lteq])
-      end
+    def apply_finish_limit(relation, finish, order)
+      relation.where(predicate_builder[primary_key, finish, order == :desc ? :gteq : :lteq])
+    end
 
-      def batch_order(order)
-        table[primary_key].public_send(order)
-      end
+    def batch_order(order)
+      table[primary_key].public_send(order)
+    end
 
-      def act_on_ignored_order(error_on_ignore)
-        raise_error = (error_on_ignore.nil? ? ActiveRecord.error_on_ignored_order : error_on_ignore)
+    def act_on_ignored_order(error_on_ignore)
+      raise_error = (error_on_ignore.nil? ? ActiveRecord.error_on_ignored_order : error_on_ignore)
 
-        if raise_error
-          raise ArgumentError.new(ORDER_IGNORE_MESSAGE)
-        elsif logger
-          logger.warn(ORDER_IGNORE_MESSAGE)
-        end
+      if raise_error
+        raise ArgumentError.new(ORDER_IGNORE_MESSAGE)
+      elsif logger
+        logger.warn(ORDER_IGNORE_MESSAGE)
       end
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attribute_accessors"
 require "active_support/core_ext/class/attribute"
 require "active_support/subscriber"
@@ -64,18 +62,18 @@ module ActiveSupport
   # (via <tt>action_dispatch.callback</tt> notification) in a Rails environment.
   class LogSubscriber < Subscriber
     # Embed in a String to clear all previous ANSI sequences.
-    CLEAR   = "\e[0m"
-    BOLD    = "\e[1m"
+    CLEAR = "\e[0m"
+    BOLD = "\e[1m"
 
     # Colors
-    BLACK   = "\e[30m"
-    RED     = "\e[31m"
-    GREEN   = "\e[32m"
-    YELLOW  = "\e[33m"
-    BLUE    = "\e[34m"
+    BLACK = "\e[30m"
+    RED = "\e[31m"
+    GREEN = "\e[32m"
+    YELLOW = "\e[33m"
+    BLUE = "\e[34m"
     MAGENTA = "\e[35m"
-    CYAN    = "\e[36m"
-    WHITE   = "\e[37m"
+    CYAN = "\e[36m"
+    WHITE = "\e[37m"
 
     mattr_accessor :colorize_logging, default: true
 
@@ -98,9 +96,9 @@ module ActiveSupport
       end
 
       private
-        def fetch_public_methods(subscriber, inherit_all)
-          subscriber.public_methods(inherit_all) - LogSubscriber.public_instance_methods(true)
-        end
+      def fetch_public_methods(subscriber, inherit_all)
+        subscriber.public_methods(inherit_all) - LogSubscriber.public_instance_methods(true)
+      end
     end
 
     def logger
@@ -139,7 +137,7 @@ module ActiveSupport
     def color(text, color, bold = false) # :doc:
       return text unless colorize_logging
       color = self.class.const_get(color.upcase) if color.is_a?(Symbol)
-      bold  = bold ? BOLD : ""
+      bold = bold ? BOLD : ""
       "#{bold}#{color}#{text}#{CLEAR}"
     end
 

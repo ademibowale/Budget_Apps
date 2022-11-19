@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   # The \Rails framework provides a large number of helpers for working with assets, dates, forms,
   # numbers and model objects, to name a few. These helpers are available to all templates
@@ -118,10 +116,10 @@ module ActionController
       end
 
       private
-        # Extract helper names from files in <tt>app/helpers/**/*_helper.rb</tt>
-        def all_application_helpers
-          all_helpers_from_path(helpers_path)
-        end
+      # Extract helper names from files in <tt>app/helpers/**/*_helper.rb</tt>
+      def all_application_helpers
+        all_helpers_from_path(helpers_path)
+      end
     end
 
     # Provides a proxy to access helper methods from outside the view.

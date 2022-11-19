@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "erubi"
 
 module ActionView
@@ -14,9 +12,9 @@ module ActionView
             # Dup properties so that we don't modify argument
             properties = Hash[properties]
 
-            properties[:bufvar]     ||= "@output_buffer"
-            properties[:preamble]   ||= ""
-            properties[:postamble]  ||= "#{properties[:bufvar]}.to_s"
+            properties[:bufvar] ||= "@output_buffer"
+            properties[:preamble] ||= ""
+            properties[:postamble] ||= "#{properties[:bufvar]}.to_s"
 
             properties[:escapefunc] = ""
 

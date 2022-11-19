@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # node
 require "arel/nodes/node"
 require "arel/nodes/node_expression"

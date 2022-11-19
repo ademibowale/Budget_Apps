@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "abstract_controller/collector"
 
 module ActionController # :nodoc:
@@ -319,9 +317,9 @@ module ActionController # :nodoc:
         end
 
         private
-          def variant_key
-            @variant.find { |variant| @variants.key?(variant) } || :any
-          end
+        def variant_key
+          @variant.find { |variant| @variants.key?(variant) } || :any
+        end
       end
     end
   end

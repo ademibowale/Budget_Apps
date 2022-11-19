@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "securerandom"
 
 module ActiveRecord
@@ -34,9 +32,9 @@ module ActiveRecord
       end
 
       private
-        def key_length
-          @key_length ||= ActiveRecord::Encryption.cipher.key_length
-        end
+      def key_length
+        @key_length ||= ActiveRecord::Encryption.cipher.key_length
+      end
     end
   end
 end

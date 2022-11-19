@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_dispatch"
 require "active_support/messages/rotation_configuration"
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/html_safe_translation"
 
 module AbstractController

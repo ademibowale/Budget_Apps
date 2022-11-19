@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionMailbox
   # Ingests inbound emails from Postmark. Requires a +RawEmail+ parameter containing a full RFC 822 message.
   #

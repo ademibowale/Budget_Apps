@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module SQLite3
@@ -109,43 +107,43 @@ module ActiveRecord
         end
 
         private
-          def reset_read_uncommitted
-            read_uncommitted = ActiveSupport::IsolatedExecutionState[:active_record_read_uncommitted]
-            return unless read_uncommitted
+        def reset_read_uncommitted
+          read_uncommitted = ActiveSupport::IsolatedExecutionState[:active_record_read_uncommitted]
+          return unless read_uncommitted
 
-            @connection.read_uncommitted = read_uncommitted
-          end
+          @connection.read_uncommitted = read_uncommitted
+        end
 
-          def execute_batch(statements, name = nil)
-            statements = statements.map { |sql| transform_query(sql) }
-            sql = combine_multi_statements(statements)
+        def execute_batch(statements, name = nil)
+          statements = statements.map { |sql| transform_query(sql) }
+          sql = combine_multi_statements(statements)
 
-            check_if_write_query(sql)
+          check_if_write_query(sql)
 
-            materialize_transactions
-            mark_transaction_written_if_write(sql)
+          materialize_transactions
+          mark_transaction_written_if_write(sql)
 
-            log(sql, name) do
-              ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-                @connection.execute_batch2(sql)
-              end
+          log(sql, name) do
+            ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+              @connection.execute_batch2(sql)
             end
           end
+        end
 
-          def last_inserted_id(result)
-            @connection.last_insert_row_id
-          end
+        def last_inserted_id(result)
+          @connection.last_insert_row_id
+        end
 
-          def build_fixture_statements(fixture_set)
-            fixture_set.flat_map do |table_name, fixtures|
-              next if fixtures.empty?
-              fixtures.map { |fixture| build_fixture_sql([fixture], table_name) }
-            end.compact
-          end
+        def build_fixture_statements(fixture_set)
+          fixture_set.flat_map do |table_name, fixtures|
+            next if fixtures.empty?
+            fixtures.map { |fixture| build_fixture_sql([fixture], table_name) }
+          end.compact
+        end
 
-          def build_truncate_statement(table_name)
-            "DELETE FROM #{quote_table_name(table_name)}"
-          end
+        def build_truncate_statement(table_name)
+          "DELETE FROM #{quote_table_name(table_name)}"
+        end
       end
     end
   end

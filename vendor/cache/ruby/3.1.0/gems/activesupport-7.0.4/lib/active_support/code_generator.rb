@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   class CodeGenerator # :nodoc:
     class MethodSet

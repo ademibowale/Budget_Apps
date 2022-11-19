@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Attached::Changes::PurgeMany # :nodoc:
     attr_reader :name, :record, :attachments
@@ -19,9 +17,9 @@ module ActiveStorage
     end
 
     private
-      def reset
-        record.attachment_changes.delete(name)
-        record.public_send("#{name}_attachments").reset
-      end
+    def reset
+      record.attachment_changes.delete(name)
+      record.public_send("#{name}_attachments").reset
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 gem "azure-storage-blob", ">= 2.0"
 
 require "active_support/core_ext/numeric/bytes"
@@ -126,67 +124,66 @@ module ActiveStorage
     end
 
     private
-      def private_url(key, expires_in:, filename:, disposition:, content_type:, **)
-        signer.signed_uri(
-          uri_for(key), false,
-          service: "b",
-          permissions: "r",
-          expiry: format_expiry(expires_in),
-          content_disposition: content_disposition_with(type: disposition, filename: filename),
-          content_type: content_type
-        ).to_s
+    def private_url(key, expires_in:, filename:, disposition:, content_type:, **)
+      signer.signed_uri(
+        uri_for(key), false,
+        service: "b",
+        permissions: "r",
+        expiry: format_expiry(expires_in),
+        content_disposition: content_disposition_with(type: disposition, filename: filename),
+        content_type: content_type
+      ).to_s
+    end
+
+    def public_url(key, **)
+      uri_for(key).to_s
+    end
+
+    def uri_for(key)
+      client.generate_uri("#{container}/#{key}")
+    end
+
+    def blob_for(key)
+      client.get_blob_properties(container, key)
+    rescue Azure::Core::Http::HTTPError
+      false
+    end
+
+    def format_expiry(expires_in)
+      expires_in ? Time.now.utc.advance(seconds: expires_in).iso8601 : nil
+    end
+
+    # Reads the object for the given key in chunks, yielding each to the block.
+    def stream(key)
+      blob = blob_for(key)
+
+      chunk_size = 5.megabytes
+      offset = 0
+
+      raise ActiveStorage::FileNotFoundError unless blob.present?
+
+      while offset < blob.properties[:content_length]
+        _, chunk = client.get_blob(container, key, start_range: offset, end_range: offset + chunk_size - 1)
+        yield chunk.force_encoding(Encoding::BINARY)
+        offset += chunk_size
       end
+    end
 
-      def public_url(key, **)
-        uri_for(key).to_s
+    def handle_errors
+      yield
+    rescue Azure::Core::Http::HTTPError => e
+      case e.type
+      when "BlobNotFound"
+        raise ActiveStorage::FileNotFoundError
+      when "Md5Mismatch"
+        raise ActiveStorage::IntegrityError
+      else
+        raise
       end
+    end
 
-
-      def uri_for(key)
-        client.generate_uri("#{container}/#{key}")
-      end
-
-      def blob_for(key)
-        client.get_blob_properties(container, key)
-      rescue Azure::Core::Http::HTTPError
-        false
-      end
-
-      def format_expiry(expires_in)
-        expires_in ? Time.now.utc.advance(seconds: expires_in).iso8601 : nil
-      end
-
-      # Reads the object for the given key in chunks, yielding each to the block.
-      def stream(key)
-        blob = blob_for(key)
-
-        chunk_size = 5.megabytes
-        offset = 0
-
-        raise ActiveStorage::FileNotFoundError unless blob.present?
-
-        while offset < blob.properties[:content_length]
-          _, chunk = client.get_blob(container, key, start_range: offset, end_range: offset + chunk_size - 1)
-          yield chunk.force_encoding(Encoding::BINARY)
-          offset += chunk_size
-        end
-      end
-
-      def handle_errors
-        yield
-      rescue Azure::Core::Http::HTTPError => e
-        case e.type
-        when "BlobNotFound"
-          raise ActiveStorage::FileNotFoundError
-        when "Md5Mismatch"
-          raise ActiveStorage::IntegrityError
-        else
-          raise
-        end
-      end
-
-      def custom_metadata_headers(metadata)
-        metadata.transform_keys { |key| "x-ms-meta-#{key}" }
-      end
+    def custom_metadata_headers(metadata)
+      metadata.transform_keys { |key| "x-ms-meta-#{key}" }
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module CompareWithRange
     # Extends the default Range#=== to support range comparisons.

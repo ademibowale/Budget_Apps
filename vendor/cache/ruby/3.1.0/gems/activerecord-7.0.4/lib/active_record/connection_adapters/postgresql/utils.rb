@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -37,18 +35,18 @@ module ActiveRecord
         end
 
         protected
-          def parts
-            @parts ||= [@schema, @identifier].compact
-          end
+        def parts
+          @parts ||= [@schema, @identifier].compact
+        end
 
         private
-          def unquote(part)
-            if part && part.start_with?('"')
-              part[1..-2]
-            else
-              part
-            end
+        def unquote(part)
+          if part && part.start_with?('"')
+            part[1..-2]
+          else
+            part
           end
+        end
       end
 
       module Utils # :nodoc:

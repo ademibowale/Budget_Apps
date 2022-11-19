@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selector/xpath_extensions'
 require 'capybara/selector/selector'
 require 'capybara/selector/definition'

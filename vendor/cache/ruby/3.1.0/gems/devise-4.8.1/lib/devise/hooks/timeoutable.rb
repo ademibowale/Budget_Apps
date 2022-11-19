@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Each time a record is set we check whether its session has already timed out
 # or not, based on last request time. If so, the record is logged out and
 # redirected to the sign in page. Also, each time the request comes and the
@@ -7,7 +5,7 @@
 # verify timeout in the following request.
 Warden::Manager.after_set_user do |record, warden, options|
   scope = options[:scope]
-  env   = warden.request.env
+  env = warden.request.env
 
   if record && record.respond_to?(:timedout?) && warden.authenticated?(scope) &&
      options[:store] != false && !env['devise.skip_timeoutable']

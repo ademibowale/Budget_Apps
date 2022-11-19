@@ -22,24 +22,24 @@ module ChildProcess
     # } STARTUPINFO, *LPSTARTUPINFO;
 
     class StartupInfo < FFI::Struct
-      layout :cb,               :ulong,
-             :lpReserved,       :pointer,
-             :lpDesktop,        :pointer,
-             :lpTitle,          :pointer,
-             :dwX,              :ulong,
-             :dwY,              :ulong,
-             :dwXSize,          :ulong,
-             :dwYSize,          :ulong,
-             :dwXCountChars,    :ulong,
-             :dwYCountChars,    :ulong,
-             :dwFillAttribute,  :ulong,
-             :dwFlags,          :ulong,
-             :wShowWindow,      :ushort,
-             :cbReserved2,      :ushort,
-             :lpReserved2,      :pointer,
-             :hStdInput,        :pointer, # void ptr
-             :hStdOutput,       :pointer, # void ptr
-             :hStdError,        :pointer # void ptr
+      layout :cb, :ulong,
+             :lpReserved, :pointer,
+             :lpDesktop, :pointer,
+             :lpTitle, :pointer,
+             :dwX, :ulong,
+             :dwY, :ulong,
+             :dwXSize, :ulong,
+             :dwYSize, :ulong,
+             :dwXCountChars, :ulong,
+             :dwYCountChars, :ulong,
+             :dwFillAttribute, :ulong,
+             :dwFlags, :ulong,
+             :wShowWindow, :ushort,
+             :cbReserved2, :ushort,
+             :lpReserved2, :pointer,
+             :hStdInput, :pointer, # void ptr
+             :hStdOutput, :pointer, # void ptr
+             :hStdError, :pointer # void ptr
     end
 
     #
@@ -52,10 +52,10 @@ module ChildProcess
     #
 
     class ProcessInfo < FFI::Struct
-      layout :hProcess,    :pointer, # void ptr
-             :hThread,     :pointer, # void ptr
+      layout :hProcess, :pointer, # void ptr
+             :hThread, :pointer, # void ptr
              :dwProcessId, :ulong,
-             :dwThreadId,  :ulong
+             :dwThreadId, :ulong
     end
 
     #
@@ -67,16 +67,16 @@ module ChildProcess
     #
 
     class SecurityAttributes < FFI::Struct
-      layout :nLength,              :ulong,
+      layout :nLength, :ulong,
              :lpSecurityDescriptor, :pointer, # void ptr
-             :bInheritHandle,       :int
+             :bInheritHandle, :int
 
       def initialize(opts = {})
         super()
 
-        self[:nLength]              = self.class.size
+        self[:nLength] = self.class.size
         self[:lpSecurityDescriptor] = nil
-        self[:bInheritHandle]       = opts[:inherit] ? 1 : 0
+        self[:bInheritHandle] = opts[:inherit] ? 1 : 0
       end
     end
 
@@ -95,14 +95,14 @@ module ChildProcess
     #
     class JobObjectBasicLimitInformation < FFI::Struct
       layout :PerProcessUserTimeLimit, :int64,
-             :PerJobUserTimeLimit,     :int64,
-             :LimitFlags,              :ulong,
-             :MinimumWorkingSetSize,   :size_t,
-             :MaximumWorkingSetSize,   :size_t,
-             :ActiveProcessLimit,      :ulong,
-             :Affinity,                :pointer,
-             :PriorityClass,           :ulong,
-             :SchedulingClass,         :ulong
+             :PerJobUserTimeLimit, :int64,
+             :LimitFlags, :ulong,
+             :MinimumWorkingSetSize, :size_t,
+             :MaximumWorkingSetSize, :size_t,
+             :ActiveProcessLimit, :ulong,
+             :Affinity, :pointer,
+             :PriorityClass, :ulong,
+             :SchedulingClass, :ulong
     end
 
     #
@@ -117,12 +117,12 @@ module ChildProcess
     #
 
     class IoCounters < FFI::Struct
-      layout :ReadOperationCount,  :ulong_long,
+      layout :ReadOperationCount, :ulong_long,
              :WriteOperationCount, :ulong_long,
              :OtherOperationCount, :ulong_long,
-             :ReadTransferCount,   :ulong_long,
-             :WriteTransferCount,  :ulong_long,
-             :OtherTransferCount,  :ulong_long
+             :ReadTransferCount, :ulong_long,
+             :WriteTransferCount, :ulong_long,
+             :OtherTransferCount, :ulong_long
     end
     #
     # typedef struct _JOBOBJECT_EXTENDED_LIMIT_INFORMATION {
@@ -137,13 +137,12 @@ module ChildProcess
 
     class JobObjectExtendedLimitInformation < FFI::Struct
       layout :BasicLimitInformation, JobObjectBasicLimitInformation,
-             :IoInfo,                IoCounters,
-             :ProcessMemoryLimit,    :size_t,
-             :JobMemoryLimit,        :size_t,
+             :IoInfo, IoCounters,
+             :ProcessMemoryLimit, :size_t,
+             :JobMemoryLimit, :size_t,
              :PeakProcessMemoryUsed, :size_t,
-             :PeakJobMemoryUsed,     :size_t
+             :PeakJobMemoryUsed, :size_t
     end
-
 
   end # Windows
 end # ChildProcess

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "monitor"
 
 module ActionCable
@@ -16,7 +14,9 @@ module ActionCable
 
       attr_reader :config
 
-      def self.logger; config.logger; end
+      def self.logger
+        config.logger
+      end
       delegate :logger, to: :config
 
       attr_reader :mutex

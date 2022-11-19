@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 return if ENV['RUBY_DEBUG_ENABLE'] == '0'
 return if defined?(::DEBUGGER__)
 
@@ -21,7 +19,7 @@ module Kernel
       require_relative 'session'
       up_level += 1
     rescue LoadError
-      $LOADED_FEATURES.delete_if{|e|
+      $LOADED_FEATURES.delete_if { |e|
         e.start_with?(__dir__) || e.end_with?('debug/debug.so')
       }
       require 'debug/session'

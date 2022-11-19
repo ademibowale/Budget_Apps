@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/parameter_filter"
 
 module ActionDispatch
@@ -34,13 +32,13 @@ module ActionDispatch
     module FilterParameters
       ENV_MATCH = [/RAW_POST_DATA/, "rack.request.form_vars"] # :nodoc:
       NULL_PARAM_FILTER = ActiveSupport::ParameterFilter.new # :nodoc:
-      NULL_ENV_FILTER   = ActiveSupport::ParameterFilter.new ENV_MATCH # :nodoc:
+      NULL_ENV_FILTER = ActiveSupport::ParameterFilter.new ENV_MATCH # :nodoc:
 
       def initialize
         super
         @filtered_parameters = nil
-        @filtered_env        = nil
-        @filtered_path       = nil
+        @filtered_env = nil
+        @filtered_path = nil
       end
 
       # Returns a hash of parameters with all sensitive data replaced.
@@ -78,7 +76,7 @@ module ActionDispatch
         ActiveSupport::ParameterFilter.new(filters)
       end
 
-      KV_RE   = "[^&;=]+"
+      KV_RE = "[^&;=]+"
       PAIR_RE = %r{(#{KV_RE})=(#{KV_RE})}
       def filtered_query_string # :doc:
         query_string.gsub(PAIR_RE) do |_|

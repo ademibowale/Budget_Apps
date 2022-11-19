@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Sanitization
     extend ActiveSupport::Concern
@@ -24,7 +22,7 @@ module ActiveRecord
 
         case condition
         when Array; sanitize_sql_array(condition)
-        else        condition
+        else condition
         end
       end
       alias :sanitize_sql :sanitize_sql_for_conditions
@@ -46,8 +44,8 @@ module ActiveRecord
       def sanitize_sql_for_assignment(assignments, default_table_name = table_name)
         case assignments
         when Array; sanitize_sql_array(assignments)
-        when Hash;  sanitize_sql_hash_for_assignment(assignments, default_table_name)
-        else        assignments
+        when Hash; sanitize_sql_hash_for_assignment(assignments, default_table_name)
+        else assignments
         end
       end
 
@@ -155,54 +153,54 @@ module ActiveRecord
       end
 
       private
-        def replace_bind_variables(statement, values)
-          raise_if_bind_arity_mismatch(statement, statement.count("?"), values.size)
-          bound = values.dup
-          c = connection
-          statement.gsub(/\?/) do
-            replace_bind_variable(bound.shift, c)
-          end
+      def replace_bind_variables(statement, values)
+        raise_if_bind_arity_mismatch(statement, statement.count("?"), values.size)
+        bound = values.dup
+        c = connection
+        statement.gsub(/\?/) do
+          replace_bind_variable(bound.shift, c)
         end
+      end
 
-        def replace_bind_variable(value, c = connection)
-          if ActiveRecord::Relation === value
-            value.to_sql
+      def replace_bind_variable(value, c = connection)
+        if ActiveRecord::Relation === value
+          value.to_sql
+        else
+          quote_bound_value(value, c)
+        end
+      end
+
+      def replace_named_bind_variables(statement, bind_vars)
+        statement.gsub(/(:?):([a-zA-Z]\w*)/) do |match|
+          if $1 == ":" # skip postgresql casts
+            match # return the whole match
+          elsif bind_vars.include?(match = $2.to_sym)
+            replace_bind_variable(bind_vars[match])
           else
-            quote_bound_value(value, c)
+            raise PreparedStatementInvalid, "missing value for :#{match} in #{statement}"
           end
         end
+      end
 
-        def replace_named_bind_variables(statement, bind_vars)
-          statement.gsub(/(:?):([a-zA-Z]\w*)/) do |match|
-            if $1 == ":" # skip postgresql casts
-              match # return the whole match
-            elsif bind_vars.include?(match = $2.to_sym)
-              replace_bind_variable(bind_vars[match])
-            else
-              raise PreparedStatementInvalid, "missing value for :#{match} in #{statement}"
-            end
-          end
-        end
-
-        def quote_bound_value(value, c = connection)
-          if value.respond_to?(:map) && !value.acts_like?(:string)
-            values = value.map { |v| v.respond_to?(:id_for_database) ? v.id_for_database : v }
-            if values.empty?
-              c.quote_bound_value(nil)
-            else
-              values.map! { |v| c.quote_bound_value(v) }.join(",")
-            end
+      def quote_bound_value(value, c = connection)
+        if value.respond_to?(:map) && !value.acts_like?(:string)
+          values = value.map { |v| v.respond_to?(:id_for_database) ? v.id_for_database : v }
+          if values.empty?
+            c.quote_bound_value(nil)
           else
-            value = value.id_for_database if value.respond_to?(:id_for_database)
-            c.quote_bound_value(value)
+            values.map! { |v| c.quote_bound_value(v) }.join(",")
           end
+        else
+          value = value.id_for_database if value.respond_to?(:id_for_database)
+          c.quote_bound_value(value)
         end
+      end
 
-        def raise_if_bind_arity_mismatch(statement, expected, provided)
-          unless expected == provided
-            raise PreparedStatementInvalid, "wrong number of bind variables (#{provided} for #{expected}) in: #{statement}"
-          end
+      def raise_if_bind_arity_mismatch(statement, expected, provided)
+        unless expected == provided
+          raise PreparedStatementInvalid, "wrong number of bind variables (#{provided} for #{expected}) in: #{statement}"
         end
+      end
     end
   end
 end

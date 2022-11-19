@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'devise/strategies/database_authenticatable'
 
 module Devise
@@ -174,7 +172,7 @@ module Devise
 
       # A reliable way to expose the salt regardless of the implementation.
       def authenticatable_salt
-        encrypted_password[0,29] if encrypted_password
+        encrypted_password[0, 29] if encrypted_password
       end
 
       if Devise.activerecord51?

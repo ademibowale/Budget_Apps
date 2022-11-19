@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionDispatch
   # This middleware guards from DNS rebinding attacks by explicitly permitting
   # the hosts a request can be sent to, and is passed the options set in
@@ -53,31 +51,31 @@ module ActionDispatch
       end
 
       private
-        def sanitize_hosts(hosts)
-          Array(hosts).map do |host|
-            case host
-            when Regexp then sanitize_regexp(host)
-            when String then sanitize_string(host)
-            else host
-            end
+      def sanitize_hosts(hosts)
+        Array(hosts).map do |host|
+          case host
+          when Regexp then sanitize_regexp(host)
+          when String then sanitize_string(host)
+          else host
           end
         end
+      end
 
-        def sanitize_regexp(host)
-          /\A#{host}#{PORT_REGEX}?\z/
-        end
+      def sanitize_regexp(host)
+        /\A#{host}#{PORT_REGEX}?\z/
+      end
 
-        def sanitize_string(host)
-          if host.start_with?(".")
-            /\A([a-z0-9-]+\.)?#{Regexp.escape(host[1..-1])}#{PORT_REGEX}?\z/i
-          else
-            /\A#{Regexp.escape host}#{PORT_REGEX}?\z/i
-          end
+      def sanitize_string(host)
+        if host.start_with?(".")
+          /\A([a-z0-9-]+\.)?#{Regexp.escape(host[1..-1])}#{PORT_REGEX}?\z/i
+        else
+          /\A#{Regexp.escape host}#{PORT_REGEX}?\z/i
         end
+      end
 
-        def extract_hostname(host)
-          host.slice(VALID_IP_HOSTNAME, "host") || host
-        end
+      def extract_hostname(host)
+        host.slice(VALID_IP_HOSTNAME, "host") || host
+      end
     end
 
     class DefaultResponseApp # :nodoc:
@@ -92,31 +90,31 @@ module ActionDispatch
       end
 
       private
-        def response_body(request)
-          return "" unless request.get_header("action_dispatch.show_detailed_exceptions")
+      def response_body(request)
+        return "" unless request.get_header("action_dispatch.show_detailed_exceptions")
 
-          template = DebugView.new(host: request.host)
-          template.render(template: "rescues/blocked_host", layout: "rescues/layout")
-        end
+        template = DebugView.new(host: request.host)
+        template.render(template: "rescues/blocked_host", layout: "rescues/layout")
+      end
 
-        def response(format, body)
-          [RESPONSE_STATUS,
-           { "Content-Type" => "#{format}; charset=#{Response.default_charset}",
-             "Content-Length" => body.bytesize.to_s },
-           [body]]
-        end
+      def response(format, body)
+        [RESPONSE_STATUS,
+         { "Content-Type" => "#{format}; charset=#{Response.default_charset}",
+           "Content-Length" => body.bytesize.to_s },
+         [body]]
+      end
 
-        def log_error(request)
-          logger = available_logger(request)
+      def log_error(request)
+        logger = available_logger(request)
 
-          return unless logger
+        return unless logger
 
-          logger.error("[#{self.class.name}] Blocked host: #{request.host}")
-        end
+        logger.error("[#{self.class.name}] Blocked host: #{request.host}")
+      end
 
-        def available_logger(request)
-          request.logger || ActionView::Base.logger
-        end
+      def available_logger(request)
+        request.logger || ActionView::Base.logger
+      end
     end
 
     def initialize(app, hosts, exclude: nil, response_app: nil)
@@ -141,19 +139,19 @@ module ActionDispatch
     end
 
     private
-      def authorized?(request)
-        origin_host = request.get_header("HTTP_HOST")
-        forwarded_host = request.x_forwarded_host&.split(/,\s?/)&.last
+    def authorized?(request)
+      origin_host = request.get_header("HTTP_HOST")
+      forwarded_host = request.x_forwarded_host&.split(/,\s?/)&.last
 
-        @permissions.allows?(origin_host) && (forwarded_host.blank? || @permissions.allows?(forwarded_host))
-      end
+      @permissions.allows?(origin_host) && (forwarded_host.blank? || @permissions.allows?(forwarded_host))
+    end
 
-      def excluded?(request)
-        @exclude && @exclude.call(request)
-      end
+    def excluded?(request)
+      @exclude && @exclude.call(request)
+    end
 
-      def mark_as_authorized(request)
-        request.set_header("action_dispatch.authorized_host", request.host)
-      end
+    def mark_as_authorized(request)
+      request.set_header("action_dispatch.authorized_host", request.host)
+    end
   end
 end

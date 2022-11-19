@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Hash
   # Replaces the hash with only the given keys.
   # Returns a hash containing the removed key/value pairs.
@@ -10,7 +8,7 @@ class Hash
   def slice!(*keys)
     omit = slice(*self.keys - keys)
     hash = slice(*keys)
-    hash.default      = default
+    hash.default = default
     hash.default_proc = default_proc if default_proc
     replace(hash)
     omit

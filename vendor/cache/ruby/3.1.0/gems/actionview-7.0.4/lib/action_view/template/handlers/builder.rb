@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Template::Handlers
     class Builder
@@ -14,12 +12,12 @@ module ActionView
       end
 
       private
-        def require_engine # :doc:
-          @required ||= begin
-            require "builder"
-            true
-          end
+      def require_engine # :doc:
+        @required ||= begin
+          require "builder"
+          true
         end
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class Casted < Arel::Nodes::NodeExpression # :nodoc:
@@ -7,12 +5,14 @@ module Arel # :nodoc: all
       alias :value_before_type_cast :value
 
       def initialize(value, attribute)
-        @value     = value
+        @value = value
         @attribute = attribute
         super()
       end
 
-      def nil?; value.nil?; end
+      def nil?
+        value.nil?
+      end
 
       def value_for_database
         if attribute.able_to_type_cast?
@@ -38,7 +38,9 @@ module Arel # :nodoc: all
       alias :value_for_database :value
       alias :value_before_type_cast :value
 
-      def nil?; value.nil?; end
+      def nil?
+        value.nil?
+      end
 
       def infinite?
         value.respond_to?(:infinite?) && value.infinite?

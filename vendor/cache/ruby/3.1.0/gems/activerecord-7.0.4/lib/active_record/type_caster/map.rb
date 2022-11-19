@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module TypeCaster
     class Map # :nodoc:
@@ -17,7 +15,7 @@ module ActiveRecord
       end
 
       private
-        attr_reader :klass
+      attr_reader :klass
     end
   end
 end

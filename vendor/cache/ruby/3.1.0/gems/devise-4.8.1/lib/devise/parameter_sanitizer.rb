@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Devise
   # The +ParameterSanitizer+ deals with permitting specific parameters values
   # for each +Devise+ scope in the application.
@@ -42,10 +40,10 @@ module Devise
     }
 
     def initialize(resource_class, resource_name, params)
-      @auth_keys      = extract_auth_keys(resource_class)
-      @params         = params
-      @resource_name  = resource_name
-      @permitted      = {}
+      @auth_keys = extract_auth_keys(resource_class)
+      @params = params
+      @resource_name = resource_name
+      @permitted = {}
 
       DEFAULT_PERMITTED_ATTRIBUTES.each_pair do |action, keys|
         permit(action, keys: keys)

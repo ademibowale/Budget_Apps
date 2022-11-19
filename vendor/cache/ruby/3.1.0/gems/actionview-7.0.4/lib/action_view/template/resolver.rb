@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "pathname"
 require "active_support/core_ext/class"
 require "active_support/core_ext/module/attribute_accessors"
@@ -121,85 +119,85 @@ module ActionView
     end
 
     private
-      def _find_all(name, prefix, partial, details, key, locals)
-        requested_details = key || TemplateDetails::Requested.new(**details)
-        cache = key ? @unbound_templates : Concurrent::Map.new
+    def _find_all(name, prefix, partial, details, key, locals)
+      requested_details = key || TemplateDetails::Requested.new(**details)
+      cache = key ? @unbound_templates : Concurrent::Map.new
 
-        unbound_templates =
-          cache.compute_if_absent(TemplatePath.virtual(name, prefix, partial)) do
-            path = TemplatePath.build(name, prefix, partial)
-            unbound_templates_from_path(path)
-          end
+      unbound_templates =
+        cache.compute_if_absent(TemplatePath.virtual(name, prefix, partial)) do
+          path = TemplatePath.build(name, prefix, partial)
+          unbound_templates_from_path(path)
+        end
 
-        filter_and_sort_by_details(unbound_templates, requested_details).map do |unbound_template|
-          unbound_template.bind_locals(locals)
+      filter_and_sort_by_details(unbound_templates, requested_details).map do |unbound_template|
+        unbound_template.bind_locals(locals)
+      end
+    end
+
+    def source_for_template(template)
+      Template::Sources::File.new(template)
+    end
+
+    def build_unbound_template(template)
+      parsed = @path_parser.parse(template.from(@path.size + 1))
+      details = parsed.details
+      source = source_for_template(template)
+
+      UnboundTemplate.new(
+        source,
+        template,
+        details: details,
+        virtual_path: parsed.path.virtual,
+      )
+    end
+
+    def unbound_templates_from_path(path)
+      if path.name.include?(".")
+        return []
+      end
+
+      # Instead of checking for every possible path, as our other globs would
+      # do, scan the directory for files with the right prefix.
+      paths = template_glob("#{escape_entry(path.to_s)}*")
+
+      paths.map do |path|
+        build_unbound_template(path)
+      end.select do |template|
+        # Select for exact virtual path match, including case sensitivity
+        template.virtual_path == path.virtual
+      end
+    end
+
+    def filter_and_sort_by_details(templates, requested_details)
+      filtered_templates = templates.select do |template|
+        template.details.matches?(requested_details)
+      end
+
+      if filtered_templates.count > 1
+        filtered_templates.sort_by! do |template|
+          template.details.sort_key_for(requested_details)
         end
       end
 
-      def source_for_template(template)
-        Template::Sources::File.new(template)
+      filtered_templates
+    end
+
+    # Safe glob within @path
+    def template_glob(glob)
+      query = File.join(escape_entry(@path), glob)
+      path_with_slash = File.join(@path, "")
+
+      Dir.glob(query).filter_map do |filename|
+        filename = File.expand_path(filename)
+        next if File.directory?(filename)
+        next unless filename.start_with?(path_with_slash)
+
+        filename
       end
+    end
 
-      def build_unbound_template(template)
-        parsed = @path_parser.parse(template.from(@path.size + 1))
-        details = parsed.details
-        source = source_for_template(template)
-
-        UnboundTemplate.new(
-          source,
-          template,
-          details: details,
-          virtual_path: parsed.path.virtual,
-        )
-      end
-
-      def unbound_templates_from_path(path)
-        if path.name.include?(".")
-          return []
-        end
-
-        # Instead of checking for every possible path, as our other globs would
-        # do, scan the directory for files with the right prefix.
-        paths = template_glob("#{escape_entry(path.to_s)}*")
-
-        paths.map do |path|
-          build_unbound_template(path)
-        end.select do |template|
-          # Select for exact virtual path match, including case sensitivity
-          template.virtual_path == path.virtual
-        end
-      end
-
-      def filter_and_sort_by_details(templates, requested_details)
-        filtered_templates = templates.select do |template|
-          template.details.matches?(requested_details)
-        end
-
-        if filtered_templates.count > 1
-          filtered_templates.sort_by! do |template|
-            template.details.sort_key_for(requested_details)
-          end
-        end
-
-        filtered_templates
-      end
-
-      # Safe glob within @path
-      def template_glob(glob)
-        query = File.join(escape_entry(@path), glob)
-        path_with_slash = File.join(@path, "")
-
-        Dir.glob(query).filter_map do |filename|
-          filename = File.expand_path(filename)
-          next if File.directory?(filename)
-          next unless filename.start_with?(path_with_slash)
-
-          filename
-        end
-      end
-
-      def escape_entry(entry)
-        entry.gsub(/[*?{}\[\]]/, '\\\\\\&')
-      end
+    def escape_entry(entry)
+      entry.gsub(/[*?{}\[\]]/, '\\\\\\&')
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "yaml"
 
 require "active_support/duration"
@@ -573,49 +571,49 @@ module ActiveSupport
     end
 
     private
-      SECONDS_PER_DAY = 86400
+    SECONDS_PER_DAY = 86400
 
-      def incorporate_utc_offset(time, offset)
-        if time.kind_of?(Date)
-          time + Rational(offset, SECONDS_PER_DAY)
-        else
-          time + offset
-        end
+    def incorporate_utc_offset(time, offset)
+      if time.kind_of?(Date)
+        time + Rational(offset, SECONDS_PER_DAY)
+      else
+        time + offset
       end
+    end
 
-      def get_period_and_ensure_valid_local_time(period)
-        # we don't want a Time.local instance enforcing its own DST rules as well,
-        # so transfer time values to a utc constructor if necessary
-        @time = transfer_time_values_to_utc_constructor(@time) unless @time.utc?
-        begin
-          period || @time_zone.period_for_local(@time)
-        rescue ::TZInfo::PeriodNotFound
-          # time is in the "spring forward" hour gap, so we're moving the time forward one hour and trying again
-          @time += 1.hour
-          retry
-        end
+    def get_period_and_ensure_valid_local_time(period)
+      # we don't want a Time.local instance enforcing its own DST rules as well,
+      # so transfer time values to a utc constructor if necessary
+      @time = transfer_time_values_to_utc_constructor(@time) unless @time.utc?
+      begin
+        period || @time_zone.period_for_local(@time)
+      rescue ::TZInfo::PeriodNotFound
+        # time is in the "spring forward" hour gap, so we're moving the time forward one hour and trying again
+        @time += 1.hour
+        retry
       end
+    end
 
-      def transfer_time_values_to_utc_constructor(time)
-        # avoid creating another Time object if possible
-        return time if time.instance_of?(::Time) && time.utc?
-        ::Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + time.subsec)
-      end
+    def transfer_time_values_to_utc_constructor(time)
+      # avoid creating another Time object if possible
+      return time if time.instance_of?(::Time) && time.utc?
+      ::Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + time.subsec)
+    end
 
-      def duration_of_variable_length?(obj)
-        ActiveSupport::Duration === obj && obj.variable?
-      end
+    def duration_of_variable_length?(obj)
+      ActiveSupport::Duration === obj && obj.variable?
+    end
 
-      def wrap_with_time_zone(time)
-        if time.acts_like?(:time)
-          periods = time_zone.periods_for_local(time)
-          self.class.new(nil, time_zone, time, periods.include?(period) ? period : nil)
-        elsif time.is_a?(Range)
-          wrap_with_time_zone(time.begin)..wrap_with_time_zone(time.end)
-        else
-          time
-        end
+    def wrap_with_time_zone(time)
+      if time.acts_like?(:time)
+        periods = time_zone.periods_for_local(time)
+        self.class.new(nil, time_zone, time, periods.include?(period) ? period : nil)
+      elsif time.is_a?(Range)
+        wrap_with_time_zone(time.begin)..wrap_with_time_zone(time.end)
+      else
+        time
       end
+    end
   end
 end
 

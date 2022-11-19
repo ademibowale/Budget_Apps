@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "que"
 
 module ActiveJob
@@ -46,16 +44,16 @@ module ActiveJob
       end
 
       private
-        def require_job_options_kwarg?
-          @require_job_options_kwarg ||=
-            JobWrapper.method(:enqueue).parameters.any? { |ptype, pname| ptype == :key && pname == :job_options }
-        end
+      def require_job_options_kwarg?
+        @require_job_options_kwarg ||=
+          JobWrapper.method(:enqueue).parameters.any? { |ptype, pname| ptype == :key && pname == :job_options }
+      end
 
-        class JobWrapper < Que::Job # :nodoc:
-          def run(job_data)
-            Base.execute job_data
-          end
+      class JobWrapper < Que::Job # :nodoc:
+        def run(job_data)
+          Base.execute job_data
         end
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -15,7 +13,7 @@ module ActiveRecord
               when /^0x/i
                 value[2..-1].hex.to_s(2) # Hexadecimal notation
               else
-                value                    # Bit-string notation
+                value # Bit-string notation
               end
             else
               value.to_s
@@ -44,7 +42,7 @@ module ActiveRecord
             end
 
             private
-              attr_reader :value
+            attr_reader :value
           end
         end
       end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module DEBUGGER__
   class Tracer
     include SkipPathHelper
@@ -16,7 +14,7 @@ module DEBUGGER__
 
     attr_reader :type, :key
 
-    def initialize ui, pattern: nil, into: nil
+    def initialize(ui, pattern: nil, into: nil)
       if /\ADEBUGGER__::(([A-Z][a-z]+?)[A-Z][a-z]+)/ =~ self.class.name
         @name = $1
         @type = $2.downcase
@@ -42,8 +40,8 @@ module DEBUGGER__
       enable
     end
 
-    def header depth
-      "DEBUGGER (trace/#{@type}) \#th:#{Thread.current.instance_variable_get(:@__thread_client_id)} \#depth:#{'%-2d'%depth}"
+    def header(depth)
+      "DEBUGGER (trace/#{@type}) \#th:#{Thread.current.instance_variable_get(:@__thread_client_id)} \#depth:#{'%-2d' % depth}"
     end
 
     def enable
@@ -65,7 +63,7 @@ module DEBUGGER__
       s
     end
 
-    def skip? tp
+    def skip?(tp)
       ThreadClient.current.management? || skip_path?(tp.path) || skip_with_pattern?(tp)
     end
 
@@ -73,7 +71,7 @@ module DEBUGGER__
       @pattern && !tp.path.match?(@pattern)
     end
 
-    def out tp, msg = nil, depth = caller.size - 1
+    def out(tp, msg = nil, depth = caller.size - 1)
       location_str = colorize("#{FrameInfo.pretty_path(tp.path)}:#{tp.lineno}", [:GREEN])
       buff = "#{header(depth)}#{msg} at #{location_str}"
 
@@ -85,12 +83,12 @@ module DEBUGGER__
       end
     end
 
-    def puts msg
+    def puts(msg)
       @output.puts msg
       @output.flush
     end
 
-    def minfo tp
+    def minfo(tp)
       return "block{}" if tp.event == :b_call
 
       klass = tp.defined_class
@@ -105,7 +103,7 @@ module DEBUGGER__
 
   class LineTracer < Tracer
     def setup
-      @tracer = TracePoint.new(:line){|tp|
+      @tracer = TracePoint.new(:line) { |tp|
         next if skip?(tp)
         # pp tp.object_id, caller(0)
         out tp
@@ -115,7 +113,7 @@ module DEBUGGER__
 
   class CallTracer < Tracer
     def setup
-      @tracer = TracePoint.new(:a_call, :a_return){|tp|
+      @tracer = TracePoint.new(:a_call, :a_return) { |tp|
         next if skip?(tp)
 
         depth = caller.size
@@ -167,7 +165,7 @@ module DEBUGGER__
   end
 
   class ObjectTracer < Tracer
-    def initialize ui, obj_id, obj_inspect, **kw
+    def initialize(ui, obj_id, obj_inspect, **kw)
       @obj_id = obj_id
       @obj_inspect = obj_inspect
       super(ui, **kw)
@@ -183,7 +181,7 @@ module DEBUGGER__
     end
 
     def setup
-      @tracer = TracePoint.new(:a_call){|tp|
+      @tracer = TracePoint.new(:a_call) { |tp|
         next if skip?(tp)
 
         if M_OBJECT_ID.bind_call(tp.self) == @obj_id
@@ -205,7 +203,7 @@ module DEBUGGER__
           b = tp.binding
           method_info = colorize_blue(minfo(tp))
 
-          tp.parameters.each{|type, name|
+          tp.parameters.each { |type, name|
             next unless name
 
             colorized_name = colorize_cyan(name)
@@ -219,7 +217,7 @@ module DEBUGGER__
               next if name == :"*"
 
               ary = b.local_variable_get(name)
-              ary.each{|e|
+              ary.each { |e|
                 if e.object_id == @obj_id
                   out tp, " #{colorized_obj_inspect} is used as a parameter in #{colorized_name} of #{method_info}"
                 end
@@ -227,7 +225,7 @@ module DEBUGGER__
             when :keyrest
               next if name == :'**'
               h = b.local_variable_get(name)
-              h.each{|k, e|
+              h.each { |k, e|
                 if e.object_id == @obj_id
                   out tp, " #{colorized_obj_inspect} is used as a parameter in #{colorized_name} of #{method_info}"
                 end
@@ -239,4 +237,3 @@ module DEBUGGER__
     end
   end
 end
-

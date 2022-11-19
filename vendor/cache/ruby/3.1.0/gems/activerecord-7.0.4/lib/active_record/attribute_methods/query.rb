@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module AttributeMethods
     module Query
@@ -13,8 +11,8 @@ module ActiveRecord
         value = self.public_send(attr_name)
 
         case value
-        when true        then true
-        when false, nil  then false
+        when true then true
+        when false, nil then false
         else
           if !type_for_attribute(attr_name) { false }
             if Numeric === value || !value.match?(/[^0-9]/)

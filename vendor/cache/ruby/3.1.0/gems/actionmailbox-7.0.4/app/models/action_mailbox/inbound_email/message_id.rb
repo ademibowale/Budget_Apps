@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # The +Message-ID+ as specified by rfc822 is supposed to be a unique identifier for that individual email.
 # That makes it an ideal tracking token for debugging and forensics, just like +X-Request-Id+ does for
 # web request.
@@ -18,7 +16,7 @@ module ActionMailbox::InboundEmail::MessageId
       message_id = extract_message_id(source) || generate_missing_message_id(message_checksum)
 
       create! raw_email: create_and_upload_raw_email!(source),
-        message_id: message_id, message_checksum: message_checksum, **options
+              message_id: message_id, message_checksum: message_checksum, **options
     rescue ActiveRecord::RecordNotUnique
       nil
     end

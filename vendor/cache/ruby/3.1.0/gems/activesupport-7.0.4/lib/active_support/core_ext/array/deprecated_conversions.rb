@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Array
   NOT_SET = Object.new # :nodoc:
   def to_s(format = NOT_SET) # :nodoc:

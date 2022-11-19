@@ -12,7 +12,7 @@ module Concurrent
                                                  JavaNonConcurrentPriorityQueue
                                                else
                                                  RubyNonConcurrentPriorityQueue
-                                               end
+    end
     private_constant :NonConcurrentPriorityQueueImplementation
 
     # @!macro priority_queue

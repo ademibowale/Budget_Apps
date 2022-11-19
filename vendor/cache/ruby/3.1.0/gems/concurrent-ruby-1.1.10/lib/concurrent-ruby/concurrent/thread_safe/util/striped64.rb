@@ -104,8 +104,8 @@ module Concurrent
 
         extend Volatile
         attr_volatile :cells, # Table of cells. When non-null, size is a power of 2.
-          :base,  # Base value, used mainly when there is no contention, but also as a fallback during table initialization races. Updated via CAS.
-          :busy   # Spinlock (locked via CAS) used when resizing and/or creating Cells.
+          :base, # Base value, used mainly when there is no contention, but also as a fallback during table initialization races. Updated via CAS.
+          :busy # Spinlock (locked via CAS) used when resizing and/or creating Cells.
 
         alias_method :busy?, :busy
 
@@ -129,7 +129,7 @@ module Concurrent
         # [+x+]
         #   false if CAS failed before call
         def retry_update(x, hash_code, was_uncontended) # :yields: current_value
-          hash     = hash_code
+          hash = hash_code
           collided = false # True if last slot nonempty
           while true
             if current_cells = cells
@@ -145,7 +145,7 @@ module Concurrent
                 end
               elsif !was_uncontended # CAS already known to fail
                 was_uncontended = true # Continue after rehash
-              elsif cell.cas_computed {|current_value| yield current_value}
+              elsif cell.cas_computed { |current_value| yield current_value }
                 break
               elsif current_cells.size >= CPU_COUNT || cells != current_cells # At max size or stale
                 collided = false
@@ -157,7 +157,7 @@ module Concurrent
               end
               hash = XorShiftRandom.xorshift(hash)
 
-            elsif try_initialize_cells(x, hash) || cas_base_computed {|current_base| yield current_base}
+            elsif try_initialize_cells(x, hash) || cas_base_computed { |current_base| yield current_base }
               break
             end
           end
@@ -184,7 +184,7 @@ module Concurrent
         # Sets base and all +cells+ to the given value.
         def internal_reset(initial_value)
           current_cells = cells
-          self.base     = initial_value
+          self.base = initial_value
           if current_cells
             current_cells.each do |cell|
               cell.value = initial_value if cell
@@ -216,7 +216,7 @@ module Concurrent
           try_in_busy do
             if current_cells == cells # Recheck under lock
               new_cells = current_cells.next_in_size_table
-              current_cells.each_with_index {|x, i| new_cells.volatile_set(i, x)}
+              current_cells.each_with_index { |x, i| new_cells.volatile_set(i, x) }
               self.cells = new_cells
             end
           end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/option_merger"
 
 class Object

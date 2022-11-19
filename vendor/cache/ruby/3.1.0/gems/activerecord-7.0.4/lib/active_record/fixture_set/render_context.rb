@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # NOTE: This class has to be defined in compact style in
 # order for rendering context subclassing to work correctly.
 class ActiveRecord::FixtureSet::RenderContext # :nodoc:

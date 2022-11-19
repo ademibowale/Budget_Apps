@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers
     module Tags # :nodoc:
@@ -17,9 +15,9 @@ module ActionView
         end
 
         private
-          def hidden_field_for_multiple_file(options)
-            tag("input", "name" => options["name"], "type" => "hidden", "value" => "", "autocomplete" => "off")
-          end
+        def hidden_field_for_multiple_file(options)
+          tag("input", "name" => options["name"], "type" => "hidden", "value" => "", "autocomplete" => "off")
+        end
       end
     end
   end

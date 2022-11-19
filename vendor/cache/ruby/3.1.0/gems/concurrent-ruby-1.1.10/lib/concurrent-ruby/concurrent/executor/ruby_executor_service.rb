@@ -10,7 +10,7 @@ module Concurrent
 
     def initialize(*args, &block)
       super
-      @StopEvent    = Event.new
+      @StopEvent = Event.new
       @StoppedEvent = Event.new
     end
 

@@ -34,9 +34,9 @@ module ChildProcess
           raise ArgumentError, "handle is null: #{pointer.inspect}"
         end
 
-        @pid     = pid
+        @pid = pid
         @pointer = pointer
-        @closed  = false
+        @closed = false
       end
 
       def exit_code
@@ -63,9 +63,9 @@ module ChildProcess
           ok = Lib.terminate_process(@pointer, @pid)
           Lib.check_error ok
         else
-          thread_id     = FFI::MemoryPointer.new(:ulong)
+          thread_id = FFI::MemoryPointer.new(:ulong)
           module_handle = Lib.get_module_handle("kernel32")
-          proc_address  = Lib.get_proc_address(module_handle, "ExitProcess")
+          proc_address = Lib.get_proc_address(module_handle, "ExitProcess")
 
           thread = Lib.create_remote_thread(@pointer, 0, 0, proc_address, 0, 0, thread_id)
           check_error thread

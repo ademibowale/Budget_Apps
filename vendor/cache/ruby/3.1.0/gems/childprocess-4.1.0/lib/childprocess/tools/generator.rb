@@ -3,8 +3,8 @@ require 'fileutils'
 module ChildProcess
   module Tools
     class Generator
-      EXE_NAME         = "childprocess-sizeof-generator"
-      TMP_PROGRAM      = "childprocess-sizeof-generator.c"
+      EXE_NAME = "childprocess-sizeof-generator"
+      TMP_PROGRAM = "childprocess-sizeof-generator.c"
       DEFAULT_INCLUDES = %w[stdio.h stddef.h]
 
       def self.generate
@@ -12,24 +12,24 @@ module ChildProcess
       end
 
       def initialize
-        @cc        = ENV['CC'] || 'gcc'
-        @out       = File.expand_path("../../unix/platform/#{ChildProcess.platform_name}.rb", __FILE__)
-        @sizeof    = {}
+        @cc = ENV['CC'] || 'gcc'
+        @out = File.expand_path("../../unix/platform/#{ChildProcess.platform_name}.rb", __FILE__)
+        @sizeof = {}
         @constants = {}
       end
 
       def generate
-        fetch_size 'posix_spawn_file_actions_t', :include => "spawn.h"
-        fetch_size 'posix_spawnattr_t', :include => "spawn.h"
-        fetch_size 'sigset_t', :include => "signal.h"
+        fetch_size 'posix_spawn_file_actions_t', include: "spawn.h"
+        fetch_size 'posix_spawnattr_t', include: "spawn.h"
+        fetch_size 'sigset_t', include: "signal.h"
 
-        fetch_constant 'POSIX_SPAWN_RESETIDS',   :include  => 'spawn.h'
-        fetch_constant 'POSIX_SPAWN_SETPGROUP',  :include  => 'spawn.h'
-        fetch_constant 'POSIX_SPAWN_SETSIGDEF',  :include  => 'spawn.h'
-        fetch_constant 'POSIX_SPAWN_SETSIGMASK', :include  => 'spawn.h'
+        fetch_constant 'POSIX_SPAWN_RESETIDS', include: 'spawn.h'
+        fetch_constant 'POSIX_SPAWN_SETPGROUP', include: 'spawn.h'
+        fetch_constant 'POSIX_SPAWN_SETSIGDEF', include: 'spawn.h'
+        fetch_constant 'POSIX_SPAWN_SETSIGMASK', include: 'spawn.h'
 
         if ChildProcess.linux?
-          fetch_constant 'POSIX_SPAWN_USEVFORK', :include => 'spawn.h', :define => {'_GNU_SOURCE' => nil}
+          fetch_constant 'POSIX_SPAWN_USEVFORK', include: 'spawn.h', define: { '_GNU_SOURCE' => nil }
         end
 
         write
@@ -75,12 +75,11 @@ int main() {
         EOF
 
         output = execute(src, opts)
-        value  = Integer(output)
+        value = Integer(output)
         @constants[name] = value
 
         puts value
       end
-
 
       def execute(src, opts)
         program = Array(opts[:define]).map do |key, value|
@@ -123,7 +122,7 @@ int main() {
           raise "no data collected, nothing to do"
         end
 
-        out =  ['module ChildProcess::Unix::Platform']
+        out = ['module ChildProcess::Unix::Platform']
         out << '  SIZEOF = {'
 
         max = @sizeof.keys.map { |e| e.length }.max

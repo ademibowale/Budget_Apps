@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selenium/extensions/html5_drag'
 require 'capybara/selenium/extensions/file_input_click_emulation'
 
@@ -75,10 +73,10 @@ class Capybara::Selenium::ChromeNode < Capybara::Selenium::Node
 
   def send_keys(*args)
     args.chunk { |inp| inp.is_a?(String) && inp.match?(/\p{Emoji Presentation}/) }
-        .each do |contains_emoji, inputs|
+      .each do |contains_emoji, inputs|
       if contains_emoji
         inputs.join.grapheme_clusters.chunk { |gc| gc.match?(/\p{Emoji Presentation}/) }
-              .each do |emoji, clusters|
+          .each do |emoji, clusters|
           if emoji
             driver.send(:execute_cdp, 'Input.insertText', text: clusters.join)
           else

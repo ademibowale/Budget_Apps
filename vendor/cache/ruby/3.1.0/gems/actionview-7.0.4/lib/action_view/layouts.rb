@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_view/rendering"
 require "active_support/core_ext/module/redefine_method"
 
@@ -224,25 +222,25 @@ module ActionView
       # that if no layout conditions are used, this method is not used
       module LayoutConditions # :nodoc:
         private
-          # Determines whether the current action has a layout definition by
-          # checking the action name against the :only and :except conditions
-          # set by the <tt>layout</tt> method.
-          #
-          # ==== Returns
-          # * <tt>Boolean</tt> - True if the action has a layout definition, false otherwise.
-          def _conditional_layout?
-            return unless super
+        # Determines whether the current action has a layout definition by
+        # checking the action name against the :only and :except conditions
+        # set by the <tt>layout</tt> method.
+        #
+        # ==== Returns
+        # * <tt>Boolean</tt> - True if the action has a layout definition, false otherwise.
+        def _conditional_layout?
+          return unless super
 
-            conditions = _layout_conditions
+          conditions = _layout_conditions
 
-            if only = conditions[:only]
-              only.include?(action_name)
-            elsif except = conditions[:except]
-              !except.include?(action_name)
-            else
-              true
-            end
+          if only = conditions[:only]
+            only.include?(action_name)
+          elsif except = conditions[:except]
+            !except.include?(action_name)
+          else
+            true
           end
+        end
       end
 
       # Specify the layout to use for this class.
@@ -337,14 +335,14 @@ module ActionView
       end
 
       private
-        # If no layout is supplied, look for a template named the return
-        # value of this method.
-        #
-        # ==== Returns
-        # * <tt>String</tt> - A template name
-        def _implied_layout_name
-          controller_path
-        end
+      # If no layout is supplied, look for a template named the return
+      # value of this method.
+      #
+      # ==== Returns
+      # * <tt>String</tt> - A template name
+      def _implied_layout_name
+        controller_path
+      end
     end
 
     def _normalize_options(options) # :nodoc:
@@ -387,10 +385,10 @@ module ActionView
     # * <tt>name</tt> - The name of the template
     def _layout_for_option(name)
       case name
-      when String     then _normalize_layout(name)
-      when Proc       then name
-      when true       then Proc.new { |lookup_context, formats| _default_layout(lookup_context, formats, true)  }
-      when :default   then Proc.new { |lookup_context, formats| _default_layout(lookup_context, formats, false) }
+      when String then _normalize_layout(name)
+      when Proc then name
+      when true then Proc.new { |lookup_context, formats| _default_layout(lookup_context, formats, true) }
+      when :default then Proc.new { |lookup_context, formats| _default_layout(lookup_context, formats, false) }
       when false, nil then nil
       else
         raise ArgumentError,

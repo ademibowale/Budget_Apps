@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class AsynchronousQueriesTracker # :nodoc:
     module NullSession # :nodoc:

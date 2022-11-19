@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # This is a wrapper for a hash of encryption properties. It is used by
@@ -70,7 +68,7 @@ module ActiveRecord
       end
 
       private
-        attr_reader :data
+      attr_reader :data
     end
   end
 end

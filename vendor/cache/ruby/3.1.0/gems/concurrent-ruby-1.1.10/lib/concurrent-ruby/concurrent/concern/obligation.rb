@@ -153,7 +153,7 @@ module Concurrent
           @state = :fulfilled
         else
           @reason = reason
-          @state  = :rejected
+          @state = :rejected
         end
       end
 

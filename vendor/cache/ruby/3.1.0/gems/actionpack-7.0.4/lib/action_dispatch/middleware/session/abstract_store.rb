@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rack/utils"
 require "rack/request"
 require "rack/session/abstract/id"
@@ -82,9 +80,9 @@ module ActionDispatch
       include SessionObject
 
       private
-        def set_cookie(request, response, cookie)
-          request.cookie_jar[key] = cookie
-        end
+      def set_cookie(request, response, cookie)
+        request.cookie_jar[key] = cookie
+      end
     end
 
     class AbstractSecureStore < Rack::Session::Abstract::PersistedSecure
@@ -97,9 +95,9 @@ module ActionDispatch
       end
 
       private
-        def set_cookie(request, response, cookie)
-          request.cookie_jar[key] = cookie
-        end
+      def set_cookie(request, response, cookie)
+        request.cookie_jar[key] = cookie
+      end
     end
   end
 end

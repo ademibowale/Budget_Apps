@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #--
 # Copyright (C) Bob Aman
 #
@@ -16,7 +14,6 @@
 #    limitations under the License.
 #++
 
-
 require "idn"
 
 module Addressable
@@ -25,9 +22,9 @@ module Addressable
       IDN::Punycode.encode(value.to_s)
     end
 
-     def self.punycode_decode(value)
-       IDN::Punycode.decode(value.to_s)
-     end
+    def self.punycode_decode(value)
+      IDN::Punycode.decode(value.to_s)
+    end
 
     def self.unicode_normalize_kc(value)
       IDN::Stringprep.nfkc_normalize(value.to_s)

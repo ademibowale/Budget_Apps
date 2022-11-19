@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Service::Registry # :nodoc:
     def initialize(configurations)
@@ -23,10 +21,10 @@ module ActiveStorage
     end
 
     private
-      attr_reader :configurations, :services
+    attr_reader :configurations, :services
 
-      def configurator
-        @configurator ||= ActiveStorage::Service::Configurator.new(configurations)
-      end
+    def configurator
+      @configurator ||= ActiveStorage::Service::Configurator.new(configurations)
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   # Returns the currently loaded version of Action View as a <tt>Gem::Version</tt>.
   def self.gem_version
@@ -9,8 +7,8 @@ module ActionView
   module VERSION
     MAJOR = 7
     MINOR = 0
-    TINY  = 4
-    PRE   = nil
+    TINY = 4
+    PRE = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
   end

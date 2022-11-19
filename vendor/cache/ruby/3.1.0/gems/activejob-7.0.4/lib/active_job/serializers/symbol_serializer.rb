@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveJob
   module Serializers
     class SymbolSerializer < ObjectSerializer # :nodoc:
@@ -12,9 +10,9 @@ module ActiveJob
       end
 
       private
-        def klass
-          Symbol
-        end
+      def klass
+        Symbol
+      end
     end
   end
 end

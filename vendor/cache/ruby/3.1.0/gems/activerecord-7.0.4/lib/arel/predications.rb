@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Predications
     def not_eq(other)
@@ -227,32 +225,32 @@ module Arel # :nodoc: all
     end
 
     private
-      def grouping_any(method_id, others, *extras)
-        nodes = others.map { |expr| send(method_id, expr, *extras) }
-        Nodes::Grouping.new nodes.inject { |memo, node|
-          Nodes::Or.new(memo, node)
-        }
-      end
+    def grouping_any(method_id, others, *extras)
+      nodes = others.map { |expr| send(method_id, expr, *extras) }
+      Nodes::Grouping.new nodes.inject { |memo, node|
+        Nodes::Or.new(memo, node)
+      }
+    end
 
-      def grouping_all(method_id, others, *extras)
-        nodes = others.map { |expr| send(method_id, expr, *extras) }
-        Nodes::Grouping.new Nodes::And.new(nodes)
-      end
+    def grouping_all(method_id, others, *extras)
+      nodes = others.map { |expr| send(method_id, expr, *extras) }
+      Nodes::Grouping.new Nodes::And.new(nodes)
+    end
 
-      def quoted_node(other)
-        Nodes.build_quoted(other, self)
-      end
+    def quoted_node(other)
+      Nodes.build_quoted(other, self)
+    end
 
-      def infinity?(value)
-        value.respond_to?(:infinite?) && value.infinite?
-      end
+    def infinity?(value)
+      value.respond_to?(:infinite?) && value.infinite?
+    end
 
-      def unboundable?(value)
-        value.respond_to?(:unboundable?) && value.unboundable?
-      end
+    def unboundable?(value)
+      value.respond_to?(:unboundable?) && value.unboundable?
+    end
 
-      def open_ended?(value)
-        value.nil? || infinity?(value) || unboundable?(value)
-      end
+    def open_ended?(value)
+      value.nil? || infinity?(value) || unboundable?(value)
+    end
   end
 end

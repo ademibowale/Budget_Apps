@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #--
 # Copyright (C) Bob Aman
 #
@@ -15,7 +13,6 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 #++
-
 
 begin
   require "addressable/idna/native"

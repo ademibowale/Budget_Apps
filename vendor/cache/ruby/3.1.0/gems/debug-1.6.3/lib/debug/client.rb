@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'socket'
 require 'io/console/size'
 
@@ -14,7 +12,7 @@ module DEBUGGER__
 
   class Client
     class << self
-      def util name
+      def util(name)
         case name
         when 'gen-sockpath'
           puts DEBUGGER__.create_unix_domain_socket_name
@@ -98,7 +96,7 @@ module DEBUGGER__
       end
     end
 
-    def initialize argv
+    def initialize(argv)
       @multi_process = false
       @pid = nil
       @console = Console.new
@@ -139,7 +137,7 @@ module DEBUGGER__
       end
     end
 
-    def connect_unix name = nil
+    def connect_unix(name = nil)
       if name
         if File.exist? name
           @s = Socket.unix(name)
@@ -158,7 +156,7 @@ module DEBUGGER__
           @s = Socket.unix(files.first)
         else
           $stderr.puts "Please select a debug session:"
-          files.each{|f|
+          files.each { |f|
             $stderr.puts "  #{File.basename(f)}"
           }
           exit
@@ -166,11 +164,11 @@ module DEBUGGER__
       end
     end
 
-    def connect_tcp host, port
+    def connect_tcp(host, port)
       @s = Socket.tcp(host, port)
     end
 
-    def send msg
+    def send(msg)
       p send: msg if $VERBOSE
       @s.puts msg
     end
@@ -178,12 +176,12 @@ module DEBUGGER__
     def connect
       pre_commands = (CONFIG[:commands] || '').split(';;')
 
-      trap(:SIGINT){
+      trap(:SIGINT) {
         send "pause"
       }
 
       begin
-        trap(:SIGWINCH){
+        trap(:SIGWINCH) {
           @width = IO.console_size[1]
         }
       rescue ArgumentError

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'devise/hooks/activatable'
 require 'devise/hooks/csrf_cleaner'
 require 'devise/rails/deprecated_constant_accessor'
@@ -122,7 +120,7 @@ module Devise
       # Redefine inspect using serializable_hash, to ensure we don't accidentally
       # leak passwords into exceptions.
       def inspect
-        inspection = serializable_hash.collect do |k,v|
+        inspection = serializable_hash.collect do |k, v|
           "#{k}: #{respond_to?(:attribute_for_inspect) ? attribute_for_inspect(k) : v.inspect}"
         end
         "#<#{self.class} #{inspection.join(", ")}>"
@@ -289,8 +287,8 @@ module Devise
         def find_or_initialize_with_errors(required_attributes, attributes, error = :invalid) #:nodoc:
           attributes.try(:permit!)
           attributes = attributes.to_h.with_indifferent_access
-                                 .slice(*required_attributes)
-                                 .delete_if { |key, value| value.blank? }
+            .slice(*required_attributes)
+            .delete_if { |key, value| value.blank? }
 
           if attributes.size == required_attributes.size
             record = find_first_by_auth_conditions(attributes) and return record

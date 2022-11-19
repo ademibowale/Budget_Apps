@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_model/attribute"
 
 module ActiveRecord
@@ -36,9 +34,9 @@ module ActiveRecord
       end
 
       private
-        def infinity?(value)
-          value.respond_to?(:infinite?) && value.infinite?
-        end
+      def infinity?(value)
+        value.respond_to?(:infinite?) && value.infinite?
+      end
     end
   end
 end

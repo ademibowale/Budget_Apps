@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Devise::OmniauthCallbacksController < DeviseController
   prepend_before_action { request.env["devise.skip_timeout"] = true }
 
@@ -20,8 +18,8 @@ class Devise::OmniauthCallbacksController < DeviseController
 
   def failure_message
     exception = request.respond_to?(:get_header) ? request.get_header("omniauth.error") : request.env["omniauth.error"]
-    error   = exception.error_reason if exception.respond_to?(:error_reason)
-    error ||= exception.error        if exception.respond_to?(:error)
+    error = exception.error_reason if exception.respond_to?(:error_reason)
+    error ||= exception.error if exception.respond_to?(:error)
     error ||= (request.respond_to?(:get_header) ? request.get_header("omniauth.error.type") : request.env["omniauth.error.type"]).to_s
     error.to_s.humanize if error
   end

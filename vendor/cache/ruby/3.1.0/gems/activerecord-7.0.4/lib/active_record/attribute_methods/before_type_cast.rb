@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module AttributeMethods
     # = Active Record Attribute Methods Before Type Cast
@@ -72,18 +70,18 @@ module ActiveRecord
       end
 
       private
-        # Dispatch target for <tt>*_before_type_cast</tt> attribute methods.
-        def attribute_before_type_cast(attr_name)
-          @attributes[attr_name].value_before_type_cast
-        end
+      # Dispatch target for <tt>*_before_type_cast</tt> attribute methods.
+      def attribute_before_type_cast(attr_name)
+        @attributes[attr_name].value_before_type_cast
+      end
 
-        def attribute_for_database(attr_name)
-          @attributes[attr_name].value_for_database
-        end
+      def attribute_for_database(attr_name)
+        @attributes[attr_name].value_for_database
+      end
 
-        def attribute_came_from_user?(attr_name)
-          @attributes[attr_name].came_from_user?
-        end
+      def attribute_came_from_user?(attr_name)
+        @attributes[attr_name].came_from_user?
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 gem "aws-sdk-s3", "~> 1.48"
 
 require "aws-sdk-s3"
@@ -80,8 +78,8 @@ module ActiveStorage
     def url_for_direct_upload(key, expires_in:, content_type:, content_length:, checksum:, custom_metadata: {})
       instrument :url, key: key do |payload|
         generated_url = object_for(key).presigned_url :put, expires_in: expires_in.to_i,
-          content_type: content_type, content_length: content_length, content_md5: checksum,
-          metadata: custom_metadata, whitelist_headers: ["content-length"], **upload_options
+                                                            content_type: content_type, content_length: content_length, content_md5: checksum,
+                                                            metadata: custom_metadata, whitelist_headers: ["content-length"], **upload_options
 
         payload[:url] = generated_url
 
@@ -114,56 +112,54 @@ module ActiveStorage
     end
 
     private
-      def private_url(key, expires_in:, filename:, disposition:, content_type:, **client_opts)
-        object_for(key).presigned_url :get, expires_in: expires_in.to_i,
-          response_content_disposition: content_disposition_with(type: disposition, filename: filename),
-          response_content_type: content_type, **client_opts
+    def private_url(key, expires_in:, filename:, disposition:, content_type:, **client_opts)
+      object_for(key).presigned_url :get, expires_in: expires_in.to_i,
+                                          response_content_disposition: content_disposition_with(type: disposition, filename: filename),
+                                          response_content_type: content_type, **client_opts
+    end
+
+    def public_url(key, **client_opts)
+      object_for(key).public_url(**client_opts)
+    end
+
+    MAXIMUM_UPLOAD_PARTS_COUNT = 10000
+    MINIMUM_UPLOAD_PART_SIZE = 5.megabytes
+
+    def upload_with_single_part(key, io, checksum: nil, content_type: nil, content_disposition: nil, custom_metadata: {})
+      object_for(key).put(body: io, content_md5: checksum, content_type: content_type, content_disposition: content_disposition, metadata: custom_metadata, **upload_options)
+    rescue Aws::S3::Errors::BadDigest
+      raise ActiveStorage::IntegrityError
+    end
+
+    def upload_with_multipart(key, io, content_type: nil, content_disposition: nil, custom_metadata: {})
+      part_size = [ io.size.fdiv(MAXIMUM_UPLOAD_PARTS_COUNT).ceil, MINIMUM_UPLOAD_PART_SIZE ].max
+
+      object_for(key).upload_stream(content_type: content_type, content_disposition: content_disposition, part_size: part_size, metadata: custom_metadata, **upload_options) do |out|
+        IO.copy_stream(io, out)
       end
+    end
 
-      def public_url(key, **client_opts)
-        object_for(key).public_url(**client_opts)
+    def object_for(key)
+      bucket.object(key)
+    end
+
+    # Reads the object for the given key in chunks, yielding each to the block.
+    def stream(key)
+      object = object_for(key)
+
+      chunk_size = 5.megabytes
+      offset = 0
+
+      raise ActiveStorage::FileNotFoundError unless object.exists?
+
+      while offset < object.content_length
+        yield object.get(range: "bytes=#{offset}-#{offset + chunk_size - 1}").body.string.force_encoding(Encoding::BINARY)
+        offset += chunk_size
       end
+    end
 
-
-      MAXIMUM_UPLOAD_PARTS_COUNT = 10000
-      MINIMUM_UPLOAD_PART_SIZE   = 5.megabytes
-
-      def upload_with_single_part(key, io, checksum: nil, content_type: nil, content_disposition: nil, custom_metadata: {})
-        object_for(key).put(body: io, content_md5: checksum, content_type: content_type, content_disposition: content_disposition, metadata: custom_metadata, **upload_options)
-      rescue Aws::S3::Errors::BadDigest
-        raise ActiveStorage::IntegrityError
-      end
-
-      def upload_with_multipart(key, io, content_type: nil, content_disposition: nil, custom_metadata: {})
-        part_size = [ io.size.fdiv(MAXIMUM_UPLOAD_PARTS_COUNT).ceil, MINIMUM_UPLOAD_PART_SIZE ].max
-
-        object_for(key).upload_stream(content_type: content_type, content_disposition: content_disposition, part_size: part_size, metadata: custom_metadata, **upload_options) do |out|
-          IO.copy_stream(io, out)
-        end
-      end
-
-
-      def object_for(key)
-        bucket.object(key)
-      end
-
-      # Reads the object for the given key in chunks, yielding each to the block.
-      def stream(key)
-        object = object_for(key)
-
-        chunk_size = 5.megabytes
-        offset = 0
-
-        raise ActiveStorage::FileNotFoundError unless object.exists?
-
-        while offset < object.content_length
-          yield object.get(range: "bytes=#{offset}-#{offset + chunk_size - 1}").body.string.force_encoding(Encoding::BINARY)
-          offset += chunk_size
-        end
-      end
-
-      def custom_metadata_headers(metadata)
-        metadata.transform_keys { |key| "x-amz-meta-#{key}" }
-      end
+    def custom_metadata_headers(metadata)
+      metadata.transform_keys { |key| "x-amz-meta-#{key}" }
+    end
   end
 end

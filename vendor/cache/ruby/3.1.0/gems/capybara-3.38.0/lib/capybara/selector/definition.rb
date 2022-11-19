@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selector/filter_set'
 require 'capybara/selector/css'
 require 'capybara/selector/regexp_disassembler'

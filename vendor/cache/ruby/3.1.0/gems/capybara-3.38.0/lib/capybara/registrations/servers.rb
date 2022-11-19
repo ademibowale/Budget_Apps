@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara.register_server :default do |app, port, _host|
   Capybara.run_default_server(app, port)
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/test_case"
 require "rails-dom-testing"
 
@@ -22,11 +20,11 @@ module ActionMailer
       end
 
       private
-        def clear_test_deliveries
-          if ActionMailer::Base.delivery_method == :test
-            ActionMailer::Base.deliveries.clear
-          end
+      def clear_test_deliveries
+        if ActionMailer::Base.delivery_method == :test
+          ActionMailer::Base.deliveries.clear
         end
+      end
     end
 
     module Behavior
@@ -75,45 +73,45 @@ module ActionMailer
       end
 
       private
-        def initialize_test_deliveries
-          set_delivery_method :test
-          @old_perform_deliveries = ActionMailer::Base.perform_deliveries
-          ActionMailer::Base.perform_deliveries = true
-          ActionMailer::Base.deliveries.clear
-        end
+      def initialize_test_deliveries
+        set_delivery_method :test
+        @old_perform_deliveries = ActionMailer::Base.perform_deliveries
+        ActionMailer::Base.perform_deliveries = true
+        ActionMailer::Base.deliveries.clear
+      end
 
-        def restore_test_deliveries
-          restore_delivery_method
-          ActionMailer::Base.perform_deliveries = @old_perform_deliveries
-        end
+      def restore_test_deliveries
+        restore_delivery_method
+        ActionMailer::Base.perform_deliveries = @old_perform_deliveries
+      end
 
-        def set_delivery_method(method)
-          @old_delivery_method = ActionMailer::Base.delivery_method
-          ActionMailer::Base.delivery_method = method
-        end
+      def set_delivery_method(method)
+        @old_delivery_method = ActionMailer::Base.delivery_method
+        ActionMailer::Base.delivery_method = method
+      end
 
-        def restore_delivery_method
-          ActionMailer::Base.deliveries.clear
-          ActionMailer::Base.delivery_method = @old_delivery_method
-        end
+      def restore_delivery_method
+        ActionMailer::Base.deliveries.clear
+        ActionMailer::Base.delivery_method = @old_delivery_method
+      end
 
-        def set_expected_mail
-          @expected = Mail.new
-          @expected.content_type ["text", "plain", { "charset" => charset }]
-          @expected.mime_version = "1.0"
-        end
+      def set_expected_mail
+        @expected = Mail.new
+        @expected.content_type ["text", "plain", { "charset" => charset }]
+        @expected.mime_version = "1.0"
+      end
 
-        def charset
-          "UTF-8"
-        end
+      def charset
+        "UTF-8"
+      end
 
-        def encode(subject)
-          Mail::Encodings.q_value_encode(subject, charset)
-        end
+      def encode(subject)
+        Mail::Encodings.q_value_encode(subject, charset)
+      end
 
-        def read_fixture(action)
-          IO.readlines(File.join(Rails.root, "test", "fixtures", self.class.mailer_class.name.underscore, action))
-        end
+      def read_fixture(action)
+        File.readlines(File.join(Rails.root, "test", "fixtures", self.class.mailer_class.name.underscore, action))
+      end
     end
 
     include Behavior

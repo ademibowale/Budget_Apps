@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveJob
   module Serializers
     class ModuleSerializer < ObjectSerializer # :nodoc:
@@ -13,9 +11,9 @@ module ActiveJob
       end
 
       private
-        def klass
-          Module
-        end
+      def klass
+        Module
+      end
     end
   end
 end

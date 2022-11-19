@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionDispatch
   module Http
     # Provides access to the request's HTTP headers from the environment.
@@ -113,20 +111,22 @@ module ActionDispatch
         end
       end
 
-      def env; @req.env.dup; end
+      def env
+        @req.env.dup
+      end
 
       private
-        # Converts an HTTP header name to an environment variable name if it is
-        # not contained within the headers hash.
-        def env_name(key)
-          key = key.to_s
-          if HTTP_HEADER.match?(key)
-            key = key.upcase
-            key.tr!("-", "_")
-            key.prepend("HTTP_") unless CGI_VARIABLES.include?(key)
-          end
-          key
+      # Converts an HTTP header name to an environment variable name if it is
+      # not contained within the headers hash.
+      def env_name(key)
+        key = key.to_s
+        if HTTP_HEADER.match?(key)
+          key = key.upcase
+          key.tr!("-", "_")
+          key.prepend("HTTP_") unless CGI_VARIABLES.include?(key)
         end
+        key
+      end
     end
   end
 end

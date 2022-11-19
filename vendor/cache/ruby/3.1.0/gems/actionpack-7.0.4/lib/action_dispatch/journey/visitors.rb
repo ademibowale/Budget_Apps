@@ -1,14 +1,14 @@
-# frozen_string_literal: true
-
 module ActionDispatch
   # :stopdoc:
   module Journey
     class Format
-      ESCAPE_PATH    = ->(value) { Router::Utils.escape_path(value) }
+      ESCAPE_PATH = ->(value) { Router::Utils.escape_path(value) }
       ESCAPE_SEGMENT = ->(value) { Router::Utils.escape_segment(value) }
 
       Parameter = Struct.new(:name, :escaper) do
-        def escape(value); escaper.call value; end
+        def escape(value)
+          escaper.call value
+        end
       end
 
       def self.required_path(symbol)
@@ -20,8 +20,8 @@ module ActionDispatch
       end
 
       def initialize(parts)
-        @parts      = parts
-        @children   = []
+        @parts = parts
+        @children = []
         @parameters = []
 
         parts.each_with_index do |object, i|
@@ -59,37 +59,53 @@ module ActionDispatch
         end
 
         private
-          def visit(node)
-            send(DISPATCH_CACHE[node.type], node)
+        def visit(node)
+          send(DISPATCH_CACHE[node.type], node)
+        end
+
+        def binary(node)
+          visit(node.left)
+          visit(node.right)
+        end
+        def visit_CAT(n)
+          binary(n)
           end
 
-          def binary(node)
-            visit(node.left)
-            visit(node.right)
+        def nary(node)
+          node.children.each { |c| visit(c) }
+        end
+        def visit_OR(n)
+          nary(n)
           end
-          def visit_CAT(n); binary(n); end
 
-          def nary(node)
-            node.children.each { |c| visit(c) }
+        def unary(node)
+          visit(node.left)
+        end
+        def visit_GROUP(n)
+          unary(n)
           end
-          def visit_OR(n); nary(n); end
-
-          def unary(node)
-            visit(node.left)
+        def visit_STAR(n)
+          unary(n)
           end
-          def visit_GROUP(n); unary(n); end
-          def visit_STAR(n); unary(n); end
 
-          def terminal(node); end
-          def visit_LITERAL(n); terminal(n); end
-          def visit_SYMBOL(n);  terminal(n); end
-          def visit_SLASH(n);   terminal(n); end
-          def visit_DOT(n);     terminal(n); end
-
-          private_instance_methods(false).each do |pim|
-            next unless pim =~ /^visit_(.*)$/
-            DISPATCH_CACHE[$1.to_sym] = pim
+        def terminal(node); end
+        def visit_LITERAL(n)
+          terminal(n)
           end
+        def visit_SYMBOL(n)
+          terminal(n)
+          end
+        def visit_SLASH(n)
+          terminal(n)
+          end
+        def visit_DOT(n)
+          terminal(n)
+          end
+
+        private_instance_methods(false).each do |pim|
+          next unless pim =~ /^visit_(.*)$/
+          DISPATCH_CACHE[$1.to_sym] = pim
+        end
       end
 
       class FunctionalVisitor # :nodoc:
@@ -106,24 +122,42 @@ module ActionDispatch
         def binary(node, seed)
           visit(node.right, visit(node.left, seed))
         end
-        def visit_CAT(n, seed); binary(n, seed); end
+        def visit_CAT(n, seed)
+          binary(n, seed)
+        end
 
         def nary(node, seed)
           node.children.inject(seed) { |s, c| visit(c, s) }
         end
-        def visit_OR(n, seed); nary(n, seed); end
+        def visit_OR(n, seed)
+          nary(n, seed)
+        end
 
         def unary(node, seed)
           visit(node.left, seed)
         end
-        def visit_GROUP(n, seed); unary(n, seed); end
-        def visit_STAR(n, seed); unary(n, seed); end
+        def visit_GROUP(n, seed)
+          unary(n, seed)
+        end
+        def visit_STAR(n, seed)
+          unary(n, seed)
+        end
 
-        def terminal(node, seed);   seed; end
-        def visit_LITERAL(n, seed); terminal(n, seed); end
-        def visit_SYMBOL(n, seed);  terminal(n, seed); end
-        def visit_SLASH(n, seed);   terminal(n, seed); end
-        def visit_DOT(n, seed);     terminal(n, seed); end
+        def terminal(node, seed)
+          seed
+        end
+        def visit_LITERAL(n, seed)
+          terminal(n, seed)
+        end
+        def visit_SYMBOL(n, seed)
+          terminal(n, seed)
+        end
+        def visit_SLASH(n, seed)
+          terminal(n, seed)
+        end
+        def visit_DOT(n, seed)
+          terminal(n, seed)
+        end
 
         instance_methods(false).each do |pim|
           next unless pim =~ /^visit_(.*)$/
@@ -132,14 +166,20 @@ module ActionDispatch
       end
 
       class FormatBuilder < Visitor # :nodoc:
-        def accept(node); Journey::Format.new(super); end
-        def terminal(node); [node.left]; end
+        def accept(node)
+          Journey::Format.new(super)
+        end
+        def terminal(node)
+          [node.left]
+        end
 
         def binary(node)
           visit(node.left) + visit(node.right)
         end
 
-        def visit_GROUP(n); [Journey::Format.new(unary(n))]; end
+        def visit_GROUP(n)
+          [Journey::Format.new(unary(n))]
+        end
 
         def visit_STAR(n)
           [Journey::Format.required_path(n.left.to_sym)]
@@ -167,28 +207,28 @@ module ActionDispatch
 
       class String < FunctionalVisitor # :nodoc:
         private
-          def binary(node, seed)
-            visit(node.right, visit(node.left, seed))
-          end
+        def binary(node, seed)
+          visit(node.right, visit(node.left, seed))
+        end
 
-          def nary(node, seed)
-            last_child = node.children.last
-            node.children.inject(seed) { |s, c|
-              string = visit(c, s)
-              string << "|" unless last_child == c
-              string
-            }
-          end
+        def nary(node, seed)
+          last_child = node.children.last
+          node.children.inject(seed) { |s, c|
+            string = visit(c, s)
+            string << "|" unless last_child == c
+            string
+          }
+        end
 
-          def terminal(node, seed)
-            seed + node.left
-          end
+        def terminal(node, seed)
+          seed + node.left
+        end
 
-          def visit_GROUP(node, seed)
-            visit(node.left, seed.dup << "(") << ")"
-          end
+        def visit_GROUP(node, seed)
+          visit(node.left, seed.dup << "(") << ")"
+        end
 
-          INSTANCE = new
+        INSTANCE = new
       end
 
       class Dot < FunctionalVisitor # :nodoc:
@@ -212,52 +252,52 @@ module ActionDispatch
         end
 
         private
-          def binary(node, seed)
-            seed.last.concat node.children.map { |c|
-              "#{node.object_id} -> #{c.object_id};"
-            }
-            super
-          end
+        def binary(node, seed)
+          seed.last.concat node.children.map { |c|
+            "#{node.object_id} -> #{c.object_id};"
+          }
+          super
+        end
 
-          def nary(node, seed)
-            seed.last.concat node.children.map { |c|
-              "#{node.object_id} -> #{c.object_id};"
-            }
-            super
-          end
+        def nary(node, seed)
+          seed.last.concat node.children.map { |c|
+            "#{node.object_id} -> #{c.object_id};"
+          }
+          super
+        end
 
-          def unary(node, seed)
-            seed.last << "#{node.object_id} -> #{node.left.object_id};"
-            super
-          end
+        def unary(node, seed)
+          seed.last << "#{node.object_id} -> #{node.left.object_id};"
+          super
+        end
 
-          def visit_GROUP(node, seed)
-            seed.first << "#{node.object_id} [label=\"()\"];"
-            super
-          end
+        def visit_GROUP(node, seed)
+          seed.first << "#{node.object_id} [label=\"()\"];"
+          super
+        end
 
-          def visit_CAT(node, seed)
-            seed.first << "#{node.object_id} [label=\"○\"];"
-            super
-          end
+        def visit_CAT(node, seed)
+          seed.first << "#{node.object_id} [label=\"○\"];"
+          super
+        end
 
-          def visit_STAR(node, seed)
-            seed.first << "#{node.object_id} [label=\"*\"];"
-            super
-          end
+        def visit_STAR(node, seed)
+          seed.first << "#{node.object_id} [label=\"*\"];"
+          super
+        end
 
-          def visit_OR(node, seed)
-            seed.first << "#{node.object_id} [label=\"|\"];"
-            super
-          end
+        def visit_OR(node, seed)
+          seed.first << "#{node.object_id} [label=\"|\"];"
+          super
+        end
 
-          def terminal(node, seed)
-            value = node.left
+        def terminal(node, seed)
+          value = node.left
 
-            seed.first << "#{node.object_id} [label=\"#{value}\"];"
-            seed
-          end
-          INSTANCE = new
+          seed.first << "#{node.object_id} [label=\"#{value}\"];"
+          seed
+        end
+        INSTANCE = new
       end
     end
   end

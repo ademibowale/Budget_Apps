@@ -38,10 +38,10 @@ module ChildProcess
         return true if @exit_code
         assert_started
 
-        code   = @handle.exit_code
+        code = @handle.exit_code
         exited = code != PROCESS_STILL_ACTIVE
 
-        log(:exited? => exited, :code => code)
+        log(exited?: exited, code: code)
 
         if exited
           @exit_code = code
@@ -56,15 +56,15 @@ module ChildProcess
 
       def launch_process
         builder = ProcessBuilder.new(@args)
-        builder.leader      = leader?
-        builder.detach      = detach?
-        builder.duplex      = duplex?
+        builder.leader = leader?
+        builder.detach = detach?
+        builder.duplex = duplex?
         builder.environment = @environment unless @environment.empty?
-        builder.cwd         = @cwd
+        builder.cwd = @cwd
 
         if @io
-          builder.stdout      = @io.stdout
-          builder.stderr      = @io.stderr
+          builder.stdout = @io.stdout
+          builder.stderr = @io.stderr
         end
 
         @pid = builder.start
@@ -90,7 +90,6 @@ module ChildProcess
       def close_job_if_necessary
         @job.close if leader?
       end
-
 
       class Job
         def initialize(detach, leader)

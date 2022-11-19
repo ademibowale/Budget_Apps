@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   # Handles implicit rendering for a controller action that does not
   # explicitly respond with +render+, +respond_to+, +redirect+, or +head+.
@@ -56,8 +54,8 @@ module ActionController
     end
 
     private
-      def interactive_browser_request?
-        request.get? && request.format == Mime[:html] && !request.xhr?
-      end
+    def interactive_browser_request?
+      request.get? && request.format == Mime[:html] && !request.xhr?
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module ExecutionContext # :nodoc:
     @after_change_callbacks = []
@@ -45,9 +43,9 @@ module ActiveSupport
       end
 
       private
-        def store
-          IsolatedExecutionState[:active_support_execution_context] ||= {}
-        end
+      def store
+        IsolatedExecutionState[:active_support_execution_context] ||= {}
+      end
     end
   end
 end

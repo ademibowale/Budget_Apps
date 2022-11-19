@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionMailbox
   # Ingests inbound emails relayed from an SMTP server.
   #
@@ -56,10 +54,10 @@ module ActionMailbox
     end
 
     private
-      def require_valid_rfc822_message
-        unless request.media_type == "message/rfc822"
-          head :unsupported_media_type
-        end
+    def require_valid_rfc822_message
+      unless request.media_type == "message/rfc822"
+        head :unsupported_media_type
       end
+    end
   end
 end

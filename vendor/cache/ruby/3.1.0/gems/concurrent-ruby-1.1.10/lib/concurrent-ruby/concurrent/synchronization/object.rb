@@ -15,7 +15,7 @@ module Concurrent
                            else
                              warn 'Possibly unsupported Ruby implementation'
                              MriObject
-                           end
+    end
     private_constant :ObjectImplementation
 
     # Abstract object providing final, volatile, ans CAS extensions to build other concurrent abstractions.

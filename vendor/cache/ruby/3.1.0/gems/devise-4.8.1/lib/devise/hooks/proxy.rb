@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Devise
   module Hooks
     # A small warden proxy so we can remember, forget and

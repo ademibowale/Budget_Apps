@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "delayed_job"
 require "active_support/core_ext/string/inflections"
 
@@ -48,9 +46,9 @@ module ActiveJob
         end
 
         private
-          def log_arguments?
-            job_data["job_class"].constantize.log_arguments?
-          end
+        def log_arguments?
+          job_data["job_class"].constantize.log_arguments?
+        end
       end
     end
   end

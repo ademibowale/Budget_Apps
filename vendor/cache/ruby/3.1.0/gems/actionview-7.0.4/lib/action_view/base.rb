@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attr_internal"
 require "active_support/core_ext/module/attribute_accessors"
 require "active_support/ordered_options"
@@ -185,7 +183,7 @@ module ActionView # :nodoc:
           # We can't implement these as self.class because subclasses will
           # share the same template cache as superclasses, so "changed?" won't work
           # correctly.
-          define_method(:compiled_method_container)           { subclass }
+          define_method(:compiled_method_container) { subclass }
           define_singleton_method(:compiled_method_container) { subclass }
 
           def inspect
@@ -255,7 +253,7 @@ module ActionView # :nodoc:
     end
 
     def in_rendering_context(options)
-      old_view_renderer  = @view_renderer
+      old_view_renderer = @view_renderer
       old_lookup_context = @lookup_context
 
       if !lookup_context.html_fallback_for_js && options[:formats]

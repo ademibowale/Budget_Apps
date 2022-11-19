@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "zlib"
 require "stringio"
 
@@ -18,7 +16,9 @@ module ActiveSupport
         super
         set_encoding "BINARY"
       end
-      def close; rewind; end
+      def close
+        rewind
+      end
     end
 
     # Decompresses a gzipped string.

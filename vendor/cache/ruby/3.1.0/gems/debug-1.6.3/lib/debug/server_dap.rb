@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'json'
 require 'irb/completion'
 require 'tmpdir'
@@ -9,7 +7,7 @@ module DEBUGGER__
   module UI_DAP
     SHOW_PROTOCOL = ENV['DEBUG_DAP_SHOW_PROTOCOL'] == '1' || ENV['RUBY_DEBUG_DAP_SHOW_PROTOCOL'] == '1'
 
-    def self.setup debug_port
+    def self.setup(debug_port)
       if File.directory? '.vscode'
         dir = Dir.pwd
       else
@@ -46,7 +44,7 @@ module DEBUGGER__
       ssh_cmdline = "code --remote ssh-remote+[SSH hostname] #{dir}/"
 
       STDERR.puts "Launching: #{cmdline}"
-      env = ENV.delete_if{|k, h| /RUBY/ =~ k}.to_h
+      env = ENV.delete_if { |k, h| /RUBY/ =~ k }.to_h
       env['RUBY_DEBUG_AUTOATTACH'] = key
 
       unless system(env, *cmds)
@@ -64,7 +62,7 @@ module DEBUGGER__
       end
     end
 
-    def show_protocol dir, msg
+    def show_protocol(dir, msg)
       if SHOW_PROTOCOL
         $stderr.puts "\##{Process.pid}:[#{dir}] #{msg}"
       end
@@ -75,7 +73,7 @@ module DEBUGGER__
     # nil: no localfs
     @local_fs_map = nil
 
-    def self.remote_to_local_path path
+    def self.remote_to_local_path(path)
       case @local_fs_map
       when nil
         nil
@@ -84,7 +82,7 @@ module DEBUGGER__
       else # Array
         @local_fs_map.each do |(remote_path_prefix, local_path_prefix)|
           if path.start_with? remote_path_prefix
-            return path.sub(remote_path_prefix){ local_path_prefix }
+            return path.sub(remote_path_prefix) { local_path_prefix }
           end
         end
 
@@ -92,7 +90,7 @@ module DEBUGGER__
       end
     end
 
-    def self.local_to_remote_path path
+    def self.local_to_remote_path(path)
       case @local_fs_map
       when nil
         nil
@@ -101,7 +99,7 @@ module DEBUGGER__
       else # Array
         @local_fs_map.each do |(remote_path_prefix, local_path_prefix)|
           if path.start_with? local_path_prefix
-            return path.sub(local_path_prefix){ remote_path_prefix }
+            return path.sub(local_path_prefix) { remote_path_prefix }
           end
         end
 
@@ -109,12 +107,12 @@ module DEBUGGER__
       end
     end
 
-    def self.local_fs_map_set map
+    def self.local_fs_map_set(map)
       return if @local_fs_map # already setup
 
       case map
       when String
-        @local_fs_map = map.split(',').map{|e| e.split(':').map{|path| path.delete_suffix('/') + '/'}}
+        @local_fs_map = map.split(',').map { |e| e.split(':').map { |path| path.delete_suffix('/') + '/' } }
       when true
         @local_fs_map = map
       when nil
@@ -122,7 +120,7 @@ module DEBUGGER__
       end
     end
 
-    def dap_setup bytes
+    def dap_setup(bytes)
       CONFIG.set_config no_color: true
       @seq = 0
 
@@ -135,7 +133,7 @@ module DEBUGGER__
       end
 
       show_protocol :>, bytes
-      req = JSON.load(bytes)
+      req = JSON.parse(bytes)
 
       # capability
       send_response(req,
@@ -164,43 +162,43 @@ module DEBUGGER__
              supportsEvaluateForHovers: true,
              supportsCompletionsRequest: true,
 
-             ## Will be supported
-             # supportsExceptionOptions: true,
-             # supportsHitConditionalBreakpoints:
-             # supportsSetVariable: true,
-             # supportSuspendDebuggee:
-             # supportsLogPoints:
-             # supportsLoadedSourcesRequest:
-             # supportsDataBreakpoints:
-             # supportsBreakpointLocationsRequest:
+        ## Will be supported
+        # supportsExceptionOptions: true,
+        # supportsHitConditionalBreakpoints:
+        # supportsSetVariable: true,
+        # supportSuspendDebuggee:
+        # supportsLogPoints:
+        # supportsLoadedSourcesRequest:
+        # supportsDataBreakpoints:
+        # supportsBreakpointLocationsRequest:
 
-             ## Possible?
-             # supportsRestartFrame:
-             # completionTriggerCharacters:
-             # supportsModulesRequest:
-             # additionalModuleColumns:
-             # supportedChecksumAlgorithms:
-             # supportsRestartRequest:
-             # supportsValueFormattingOptions:
-             # supportsExceptionInfoRequest:
-             # supportsDelayedStackTraceLoading:
-             # supportsTerminateThreadsRequest:
-             # supportsSetExpression:
-             # supportsClipboardContext:
+        ## Possible?
+        # supportsRestartFrame:
+        # completionTriggerCharacters:
+        # supportsModulesRequest:
+        # additionalModuleColumns:
+        # supportedChecksumAlgorithms:
+        # supportsRestartRequest:
+        # supportsValueFormattingOptions:
+        # supportsExceptionInfoRequest:
+        # supportsDelayedStackTraceLoading:
+        # supportsTerminateThreadsRequest:
+        # supportsSetExpression:
+        # supportsClipboardContext:
 
-             ## Never
-             # supportsGotoTargetsRequest:
-             # supportsStepInTargetsRequest:
-             # supportsReadMemoryRequest:
-             # supportsDisassembleRequest:
-             # supportsCancelRequest:
-             # supportsSteppingGranularity:
-             # supportsInstructionBreakpoints:
+        ## Never
+        # supportsGotoTargetsRequest:
+        # supportsStepInTargetsRequest:
+        # supportsReadMemoryRequest:
+        # supportsDisassembleRequest:
+        # supportsCancelRequest:
+        # supportsSteppingGranularity:
+        # supportsInstructionBreakpoints:
       )
       send_event 'initialized'
     end
 
-    def send **kw
+    def send(**kw)
       if sock = @sock
         kw[:seq] = @seq += 1
         str = JSON.dump(kw)
@@ -209,7 +207,7 @@ module DEBUGGER__
       end
     end
 
-    def send_response req, success: true, message: nil, **kw
+    def send_response(req, success: true, message: nil, **kw)
       if kw.empty?
         send type: 'response',
              command: req['command'],
@@ -226,7 +224,7 @@ module DEBUGGER__
       end
     end
 
-    def send_event name, **kw
+    def send_event(name, **kw)
       if kw.empty?
         send type: 'event', event: name
       else
@@ -250,7 +248,7 @@ module DEBUGGER__
 
           l = @sock.read(s = $1.to_i)
           show_protocol :>, l
-          JSON.load(l)
+          JSON.parse(l)
         when nil
           nil
         else
@@ -300,7 +298,7 @@ module DEBUGGER__
             SESSION.clear_line_breakpoints path
 
             bps = []
-            args['breakpoints'].each{|bp|
+            args['breakpoints'].each { |bp|
               line = bp['line']
               if cond = bp['condition']
                 bps << SESSION.add_line_breakpoint(path, line, cond: cond)
@@ -308,7 +306,7 @@ module DEBUGGER__
                 bps << SESSION.add_line_breakpoint(path, line)
               end
             }
-            send_response req, breakpoints: (bps.map do |bp| {verified: true,} end)
+            send_response req, breakpoints: (bps.map do |bp| { verified: true, } end)
           else
             send_response req, success: false, message: "#{req_path} is not available"
           end
@@ -331,17 +329,17 @@ module DEBUGGER__
                 verified: !bp.nil?,
                 message: bp.inspect,
               }
-            }
+          }
 
             SESSION.clear_catch_breakpoints 'Exception', 'RuntimeError'
 
-            filters = args.fetch('filters').map {|filter_id|
+            filters = args.fetch('filters').map { |filter_id|
               process_filter.call(filter_id)
             }
 
-            filters += args.fetch('filterOptions', {}).map{|bp_info|
-            process_filter.call(bp_info['filterId'], bp_info['condition'])
-          }
+            filters += args.fetch('filterOptions', {}).map { |bp_info|
+              process_filter.call(bp_info['filterId'], bp_info['condition'])
+            }
 
           send_response req, breakpoints: filters
 
@@ -413,7 +411,7 @@ module DEBUGGER__
 
         ## query
         when 'threads'
-          send_response req, threads: SESSION.managed_thread_clients.map{|tc|
+          send_response req, threads: SESSION.managed_thread_clients.map { |tc|
             { id: tc.id,
               name: tc.name,
             }
@@ -437,16 +435,16 @@ module DEBUGGER__
 
     ## called by the SESSION thread
 
-    def respond req, res
+    def respond(req, res)
       send_response(req, **res)
     end
 
-    def puts result
+    def puts(result)
       # STDERR.puts "puts: #{result}"
       # send_event 'output', category: 'stderr', output: "PUTS!!: " + result.to_s
     end
 
-    def event type, *args
+    def event(type, *args)
       case type
       when :load
         file_path, reloaded = *args
@@ -488,19 +486,19 @@ module DEBUGGER__
   end
 
   class Session
-    def find_waiting_tc id
-      @th_clients.each{|th, tc|
+    def find_waiting_tc(id)
+      @th_clients.each { |th, tc|
         return tc if tc.id == id && tc.waiting?
       }
-      return nil
+      nil
     end
 
-    def fail_response req, **kw
+    def fail_response(req, **kw)
       @ui.respond req, success: false, **kw
-      return :retry
+      :retry
     end
 
-    def process_protocol_request req
+    def process_protocol_request(req)
       case req['command']
       when 'stepBack'
         if @tc.recorder&.can_step_back?
@@ -547,7 +545,7 @@ module DEBUGGER__
             @ui.respond req, {
               variables: vars,
             }
-            return :retry
+            :retry
 
           when :scope
             frame_id = ref[1]
@@ -595,7 +593,7 @@ module DEBUGGER__
         else
           fail_response req, message: 'not found...'
         end
-        return :retry
+        :retry
 
       when 'completions'
         frame_id = req.dig('arguments', 'frameId')
@@ -604,7 +602,7 @@ module DEBUGGER__
         if tc = find_waiting_tc(tid)
           text = req.dig('arguments', 'text')
           line = req.dig('arguments', 'line')
-          if col  = req.dig('arguments', 'column')
+          if col = req.dig('arguments', 'column')
             text = text.split(/\n/)[line.to_i - 1][0...(col.to_i - 1)]
           end
           request_tc [:dap, :completions, req, fid, text]
@@ -616,13 +614,13 @@ module DEBUGGER__
       end
     end
 
-    def dap_event args
+    def dap_event(args)
       # puts({dap_event: args}.inspect)
       type, req, result = args
 
       case type
       when :backtrace
-        result[:stackFrames].each{|fi|
+        result[:stackFrames].each { |fi|
           frame_depth = fi[:id]
           fi[:id] = id = @frame_map.size + 1
           @frame_map[id] = [req.dig('arguments', 'threadId'), frame_depth]
@@ -668,7 +666,7 @@ module DEBUGGER__
       end
     end
 
-    def register_var v, tid
+    def register_var(v, tid)
       if (tl_vid = v[:variablesReference]) > 0
         vid = @var_map.size + 1
         @var_map[vid] = [:variable, tid, tl_vid]
@@ -676,21 +674,21 @@ module DEBUGGER__
       end
     end
 
-    def register_vars vars, tid
+    def register_vars(vars, tid)
       raise tid.inspect unless tid.kind_of?(Integer)
-      vars.each{|v|
+      vars.each { |v|
         register_var v, tid
       }
     end
   end
 
   class ThreadClient
-    def value_inspect obj
+    def value_inspect(obj)
       # TODO: max length should be configuarable?
       DEBUGGER__.safe_inspect obj, short: true, max_length: 4 * 1024
     end
 
-    def process_dap args
+    def process_dap(args)
       # pp tc: self, args: args
       type = args.shift
       req = args.shift
@@ -774,7 +772,7 @@ module DEBUGGER__
           when 'indexed'
             start = req.dig('arguments', 'start') || 0
             count = req.dig('arguments', 'count') || obj.size
-            vars = (start ... (start + count)).map{|i|
+            vars = (start ... (start + count)).map { |i|
               variable(i.to_s, obj[i])
             }
           else
@@ -782,11 +780,11 @@ module DEBUGGER__
 
             case obj
             when Hash
-              vars = obj.map{|k, v|
+              vars = obj.map { |k, v|
                 variable(value_inspect(k), v,)
               }
             when Struct
-              vars = obj.members.map{|m|
+              vars = obj.members.map { |m|
                 variable(m, obj[m])
               }
             when String
@@ -795,7 +793,7 @@ module DEBUGGER__
                 variable('#encoding', obj.encoding)
               ]
             when Class, Module
-              vars = obj.instance_variables.map{|iv|
+              vars = obj.instance_variables.map { |iv|
                 variable(iv, obj.instance_variable_get(iv))
               }
               vars.unshift variable('%ancestors', obj.ancestors[1..])
@@ -806,7 +804,7 @@ module DEBUGGER__
               ]
             end
 
-            vars += M_INSTANCE_VARIABLES.bind_call(obj).map{|iv|
+            vars += M_INSTANCE_VARIABLES.bind_call(obj).map { |iv|
               variable(iv, M_INSTANCE_VARIABLE_GET.bind_call(obj, iv))
             }
             vars.unshift variable('#class', M_CLASS.bind_call(obj))
@@ -841,7 +839,7 @@ module DEBUGGER__
                 message = "Error: Not defined instance variable: #{expr.inspect}"
               end
             when /\A\$\S/
-              global_variables.each{|gvar|
+              global_variables.each { |gvar|
                 if gvar.to_s == expr
                   result = eval(gvar.to_s)
                   break false
@@ -882,7 +880,7 @@ module DEBUGGER__
           words = IRB::InputCompletor::retrieve_completion_data(word, bind: b).compact
         end
 
-        event! :dap_result, :completions, req, targets: (words || []).map{|phrase|
+        event! :dap_result, :completions, req, targets: (words || []).map { |phrase|
           detail = nil
 
           if /\b([_a-zA-Z]\w*[!\?]?)\z/ =~ phrase
@@ -893,7 +891,7 @@ module DEBUGGER__
 
           begin
             v = b.local_variable_get(w)
-            detail ="(variable: #{value_inspect(v)})"
+            detail = "(variable: #{value_inspect(v)})"
           rescue NameError
           end
 
@@ -909,10 +907,10 @@ module DEBUGGER__
       end
     end
 
-    def search_const b, expr
+    def search_const(b, expr)
       cs = expr.delete_prefix('::').split('::')
-      [Object, *b.eval('::Module.nesting')].reverse_each{|mod|
-        if cs.all?{|c|
+      [Object, *b.eval('::Module.nesting')].reverse_each { |mod|
+        if cs.all? { |c|
              if mod.const_defined?(c)
                mod = mod.const_get(c)
              else
@@ -926,7 +924,7 @@ module DEBUGGER__
       false
     end
 
-    def evaluate_result r
+    def evaluate_result(r)
       v = variable nil, r
       v.delete :name
       v.delete :value
@@ -934,7 +932,7 @@ module DEBUGGER__
       v
     end
 
-    def variable_ name, obj, indexedVariables: 0, namedVariables: 0
+    def variable_(name, obj, indexedVariables: 0, namedVariables: 0)
       if indexedVariables > 0 || namedVariables > 0
         vid = @var_map.size + 1
         @var_map[vid] = obj
@@ -953,7 +951,7 @@ module DEBUGGER__
       }
     end
 
-    def variable name, obj
+    def variable(name, obj)
       case obj
       when Array
         variable_ name, obj, indexedVariables: obj.size

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_view/helpers/tags/collection_helpers"
 
 module ActionView
@@ -22,13 +20,13 @@ module ActionView
         end
 
         private
-          def render_component(builder)
-            builder.check_box + builder.label
-          end
+        def render_component(builder)
+          builder.check_box + builder.label
+        end
 
-          def hidden_field_name
-            "#{super}[]"
-          end
+        def hidden_field_name
+          "#{super}[]"
+        end
       end
     end
   end

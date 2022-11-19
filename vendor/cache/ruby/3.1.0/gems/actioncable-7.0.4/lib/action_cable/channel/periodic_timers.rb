@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionCable
   module Channel
     module PeriodicTimers
@@ -8,7 +6,7 @@ module ActionCable
       included do
         class_attribute :periodic_timers, instance_reader: false, default: []
 
-        after_subscribe   :start_periodic_timers
+        after_subscribe :start_periodic_timers
         after_unsubscribe :stop_periodic_timers
       end
 
@@ -53,26 +51,26 @@ module ActionCable
       end
 
       private
-        def active_periodic_timers
-          @active_periodic_timers ||= []
-        end
+      def active_periodic_timers
+        @active_periodic_timers ||= []
+      end
 
-        def start_periodic_timers
-          self.class.periodic_timers.each do |callback, options|
-            active_periodic_timers << start_periodic_timer(callback, every: options.fetch(:every))
-          end
+      def start_periodic_timers
+        self.class.periodic_timers.each do |callback, options|
+          active_periodic_timers << start_periodic_timer(callback, every: options.fetch(:every))
         end
+      end
 
-        def start_periodic_timer(callback, every:)
-          connection.server.event_loop.timer every do
-            connection.worker_pool.async_exec self, connection: connection, &callback
-          end
+      def start_periodic_timer(callback, every:)
+        connection.server.event_loop.timer every do
+          connection.worker_pool.async_exec self, connection: connection, &callback
         end
+      end
 
-        def stop_periodic_timers
-          active_periodic_timers.each { |timer| timer.shutdown }
-          active_periodic_timers.clear
-        end
+      def stop_periodic_timers
+        active_periodic_timers.each { |timer| timer.shutdown }
+        active_periodic_timers.clear
+      end
     end
   end
 end

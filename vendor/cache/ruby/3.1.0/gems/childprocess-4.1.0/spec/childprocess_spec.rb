@@ -3,7 +3,6 @@
 require File.expand_path('../spec_helper', __FILE__)
 require 'rubygems/mock_gem_ui'
 
-
 describe ChildProcess do
 
   here = File.dirname(__FILE__)
@@ -16,7 +15,6 @@ describe ChildProcess do
 
     expect(mock_ui.error).to_not match(/warn/i)
   end
-
 
   it "returns self when started" do
     process = sleeping_ruby
@@ -32,7 +30,7 @@ describe ChildProcess do
   #
   # We could work around this by doing the PATH search ourselves, but not sure
   # it's worth it.
-  it "raises ChildProcess::LaunchError if the process can't be started", :posix_spawn_on_linux => false do
+  it "raises ChildProcess::LaunchError if the process can't be started", posix_spawn_on_linux: false do
     expect { invalid_process.start }.to raise_error(ChildProcess::LaunchError)
   end
 
@@ -177,7 +175,6 @@ describe ChildProcess do
     end
   end
 
-
   it "passes arguments to the child" do
     args = ["foo", "bar"]
 
@@ -201,7 +198,6 @@ describe ChildProcess do
       # Let the parent process die
       p_process.start
       p_process.wait
-
 
       # Gather parent and child PIDs
       pids = rewind_and_read(gp_file).split("\n")
@@ -277,7 +273,7 @@ describe ChildProcess do
     }
   end
 
-  it 'kills the full process tree', :process_builder => false do
+  it 'kills the full process tree', process_builder: false do
     Tempfile.open('kill-process-tree') do |file|
       process = write_pid_in_sleepy_grand_child(file.path)
       process.leader = true
@@ -327,7 +323,6 @@ describe ChildProcess do
       ChildProcess.instance_variable_set(:@os, nil)
     end
 
-
     # TODO: add tests for other OSs
     context 'on a BSD system' do
 
@@ -362,7 +357,6 @@ describe ChildProcess do
     end
   end
 
-
   describe 'logger' do
 
     before(:each) do
@@ -373,11 +367,9 @@ describe ChildProcess do
       ChildProcess.logger = nil
     end
 
-
     context 'with the default logger' do
 
       let(:logger) { nil }
-
 
       it 'logs at INFO level by default' do
         expect(ChildProcess.logger.level).to eq(Logger::INFO)

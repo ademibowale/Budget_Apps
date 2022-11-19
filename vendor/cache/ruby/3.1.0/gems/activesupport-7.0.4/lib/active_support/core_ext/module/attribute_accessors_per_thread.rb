@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Attribute Accessors per Thread
 #
 # Extends the module object with class/module and instance accessors for

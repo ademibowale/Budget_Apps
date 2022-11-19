@@ -162,8 +162,8 @@ module Concurrent
       set_deref_options(opts)
       @executor = opts[:executor]
 
-      @task               = block
-      @state              = :pending
+      @task = block
+      @state = :pending
       @evaluation_started = false
     end
 
@@ -176,14 +176,14 @@ module Concurrent
       execute = task = nil
       synchronize do
         execute = @evaluation_started = true unless @evaluation_started
-        task    = @task
+        task = @task
       end
 
       if execute
         executor = Options.executor_from_options(executor: @executor)
         executor.post do
           begin
-            result  = task.call
+            result = task.call
             success = true
           rescue => ex
             reason = ex

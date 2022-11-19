@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selenium/nodes/chrome_node'
 require 'capybara/selenium/patches/logs'
 

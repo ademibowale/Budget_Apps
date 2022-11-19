@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module TestUnit
   module Generators
     class InstallGenerator < ::Rails::Generators::Base

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module DeprecatedRangeWithFormat # :nodoc:
     NOT_SET = Object.new # :nodoc:

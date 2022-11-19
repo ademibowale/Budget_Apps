@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/array/extract"
 
 module ActiveRecord
@@ -36,13 +34,13 @@ module ActiveRecord
       end
 
       private
-        attr_reader :predicate_builder
+      attr_reader :predicate_builder
 
-        module NullPredicate # :nodoc:
-          def self.or(other)
-            other
-          end
+      module NullPredicate # :nodoc:
+        def self.or(other)
+          other
         end
+      end
     end
   end
 end

@@ -25,7 +25,7 @@ module Concurrent
                           warn 'Concurrent::Map: unsupported Ruby engine, using a fully synchronized Concurrent::Map implementation'
                           require 'concurrent/collection/map/synchronized_map_backend'
                           SynchronizedMapBackend
-                        end
+    end
   end
 
   # `Concurrent::Map` is a hash-like object and should have much better performance
@@ -210,7 +210,7 @@ module Concurrent
     # @return [Object, nil] the previous value when key was present or nil when there was no key
     def put_if_absent(key, value)
       computed = false
-      result   = compute_if_absent(key) do
+      result = compute_if_absent(key) do
         computed = true
         value
       end

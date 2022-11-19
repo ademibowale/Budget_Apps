@@ -69,7 +69,7 @@ module Concurrent
 
     def ns_initialize
       @being_executed = false
-      @stash          = []
+      @stash = []
     end
 
     def call_job(job)

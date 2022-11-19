@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   # Wrapping an array in an +ArrayInquirer+ gives a friendlier way to check
   # its string-like contents:
@@ -33,16 +31,16 @@ module ActiveSupport
     end
 
     private
-      def respond_to_missing?(name, include_private = false)
-        name.end_with?("?") || super
-      end
+    def respond_to_missing?(name, include_private = false)
+      name.end_with?("?") || super
+    end
 
-      def method_missing(name, *args)
-        if name.end_with?("?")
-          any?(name[0..-2])
-        else
-          super
-        end
+    def method_missing(name, *args)
+      if name.end_with?("?")
+        any?(name[0..-2])
+      else
+        super
       end
+    end
   end
 end

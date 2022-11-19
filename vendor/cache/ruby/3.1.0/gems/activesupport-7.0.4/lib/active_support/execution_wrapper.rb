@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/error_reporter"
 require "active_support/callbacks"
 require "concurrent/hash"
@@ -144,8 +142,8 @@ module ActiveSupport
     end
 
     private
-      def hook_state
-        @_hook_state ||= {}
-      end
+    def hook_state
+      @_hook_state ||= {}
+    end
   end
 end

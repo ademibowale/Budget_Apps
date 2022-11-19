@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'socket'
 require 'etc'
 require_relative 'config'
@@ -39,7 +37,7 @@ module DEBUGGER__
       end
     end
 
-    def activate session, on_fork: false
+    def activate(session, on_fork: false)
       @session = session
       @reader_thread = Thread.new do
         # An error on this thread should break the system.
@@ -51,7 +49,7 @@ module DEBUGGER__
           greeting_done = false
           @need_pause_at_first = true
 
-          @accept_m.synchronize{
+          @accept_m.synchronize {
             @sock = server
             greeting
             greeting_done = true
@@ -59,7 +57,7 @@ module DEBUGGER__
             @accept_cv.signal
 
             # flush unsent messages
-            @unsent_messages.each{|m|
+            @unsent_messages.each { |m|
               @sock.puts m
             } if @repl
             @unsent_messages.clear
@@ -100,14 +98,14 @@ module DEBUGGER__
       @q_ans = nil
     end
 
-    def check_cookie c
+    def check_cookie(c)
       cookie = CONFIG[:cookie]
       if cookie && cookie != c
         raise GreetingError, "Cookie mismatch (#{$2.inspect} was sent)"
       end
     end
 
-    def parse_option params
+    def parse_option(params)
       case params.strip
       when /width:\s+(\d+)/
         @width = $1.to_i
@@ -183,7 +181,7 @@ module DEBUGGER__
             DEBUGGER__.info "UI_Server can not read"
             break :can_not_read
           end
-          @sock.gets&.chomp.tap{|line|
+          @sock.gets&.chomp.tap { |line|
             DEBUGGER__.info "UI_Server received: #{line}"
           }
         end
@@ -226,7 +224,7 @@ module DEBUGGER__
       @width
     end
 
-    def sigurg_overridden? prev_handler
+    def sigurg_overridden?(prev_handler)
       case prev_handler
       when "SYSTEM_DEFAULT", "DEFAULT"
         false
@@ -275,10 +273,10 @@ module DEBUGGER__
 
     class NoRemoteError < Exception; end
 
-    def sock skip: false
-      if s = @sock         # already connection
+    def sock(skip: false)
+      if s = @sock # already connection
         # ok
-      elsif skip == true   # skip process
+      elsif skip == true # skip process
         no_sock = true
         r = @accept_m.synchronize do
           if @sock
@@ -288,9 +286,9 @@ module DEBUGGER__
           end
         end
         return r if no_sock
-      else                 # wait for connection
+      else # wait for connection
         until s = @sock
-          @accept_m.synchronize{
+          @accept_m.synchronize {
             unless @sock
               DEBUGGER__.warn "wait for debugger connection..."
               @accept_cv.wait(@accept_m)
@@ -304,14 +302,14 @@ module DEBUGGER__
       # ignore
     end
 
-    def ask prompt
+    def ask(prompt)
       sock do |s|
         s.puts "ask #{Process.pid} #{prompt}"
         @q_ans.pop
       end
     end
 
-    def puts str = nil
+    def puts(str = nil)
       case str
       when Array
         enum = str.each
@@ -333,7 +331,7 @@ module DEBUGGER__
       end
     end
 
-    def readline prompt
+    def readline(prompt)
       input = (sock(skip: CONFIG[:skip_bp]) do |s|
         next unless s
 
@@ -344,7 +342,7 @@ module DEBUGGER__
           s.puts line
         end
         sleep 0.01 until @q_msg
-        @q_msg.pop.tap{|msg|
+        @q_msg.pop.tap { |msg|
           DEBUGGER__.info "readline: #{msg.inspect}"
         }
       end || 'continue')
@@ -361,7 +359,7 @@ module DEBUGGER__
       Process.kill(TRAP_SIGNAL, Process.pid)
     end
 
-    def quit n
+    def quit(n)
       # ignore n
       sock do |s|
         s.puts "quit"
@@ -372,14 +370,14 @@ module DEBUGGER__
       # do nothing
     end
 
-    def vscode_setup debug_port
+    def vscode_setup(debug_port)
       require_relative 'server_dap'
       UI_DAP.setup debug_port
     end
   end
 
   class UI_TcpServer < UI_ServerBase
-    def initialize host: nil, port: nil
+    def initialize(host: nil, port: nil)
       @local_addr = nil
       @host = host || CONFIG[:host]
       @port_save_file = nil
@@ -471,7 +469,7 @@ module DEBUGGER__
   end
 
   class UI_UnixDomainServer < UI_ServerBase
-    def initialize sock_dir: nil, sock_path: nil
+    def initialize(sock_dir: nil, sock_path: nil)
       @sock_path = sock_path
       @sock_dir = sock_dir || DEBUGGER__.unix_domain_socket_dir
       @sock_for_fork = nil

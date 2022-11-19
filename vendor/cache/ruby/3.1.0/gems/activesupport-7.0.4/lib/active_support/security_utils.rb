@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module SecurityUtils
     # Constant time string comparison, for fixed length strings.

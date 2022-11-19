@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_controller/metal"
 
 module Devise
@@ -66,7 +64,7 @@ module Devise
         if request.respond_to?(:set_header)
           request.set_header(var, value)
         else
-          request.env[var]  = value
+          request.env[var] = value
         end
       end
 
@@ -133,7 +131,7 @@ module Devise
     end
 
     def scope_url
-      opts  = {}
+      opts = {}
 
       # Initialize script_name with nil to prevent infinite loops in
       # authenticated mounted engines in rails 4.2 and 5.0
@@ -206,7 +204,7 @@ module Devise
 
     def recall_app(app)
       controller, action = app.split("#")
-      controller_name  = ActiveSupport::Inflector.camelize(controller)
+      controller_name = ActiveSupport::Inflector.camelize(controller)
       controller_klass = ActiveSupport::Inflector.constantize("#{controller_name}Controller")
       controller_klass.action(action)
     end

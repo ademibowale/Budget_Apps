@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # A key is a container for a given +secret+

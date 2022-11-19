@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attr_internal"
 
 module ActionView
@@ -18,7 +16,7 @@ module ActionView
       def assign_controller(controller)
         if @_controller = controller
           @_request = controller.request if controller.respond_to?(:request)
-          @_config  = controller.config.inheritable_copy if controller.respond_to?(:config)
+          @_config = controller.config.inheritable_copy if controller.respond_to?(:config)
           @_default_form_builder = controller.default_form_builder if controller.respond_to?(:default_form_builder)
         end
       end

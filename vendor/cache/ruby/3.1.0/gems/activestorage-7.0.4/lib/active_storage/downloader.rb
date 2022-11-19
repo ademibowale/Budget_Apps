@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Downloader # :nodoc:
     attr_reader :service
@@ -17,27 +15,27 @@ module ActiveStorage
     end
 
     private
-      def open_tempfile(name, tmpdir = nil)
-        file = Tempfile.open(name, tmpdir)
+    def open_tempfile(name, tmpdir = nil)
+      file = Tempfile.open(name, tmpdir)
 
-        begin
-          yield file
-        ensure
-          file.close!
-        end
+      begin
+        yield file
+      ensure
+        file.close!
       end
+    end
 
-      def download(key, file)
-        file.binmode
-        service.download(key) { |chunk| file.write(chunk) }
-        file.flush
-        file.rewind
-      end
+    def download(key, file)
+      file.binmode
+      service.download(key) { |chunk| file.write(chunk) }
+      file.flush
+      file.rewind
+    end
 
-      def verify_integrity_of(file, checksum:)
-        unless OpenSSL::Digest::MD5.file(file).base64digest == checksum
-          raise ActiveStorage::IntegrityError
-        end
+    def verify_integrity_of(file, checksum:)
+      unless OpenSSL::Digest::MD5.file(file).base64digest == checksum
+        raise ActiveStorage::IntegrityError
       end
+    end
   end
 end

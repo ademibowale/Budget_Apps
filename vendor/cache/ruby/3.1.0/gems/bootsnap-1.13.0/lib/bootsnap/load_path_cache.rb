@@ -1,17 +1,15 @@
-# frozen_string_literal: true
-
 module Bootsnap
   module LoadPathCache
     FALLBACK_SCAN = BasicObject.new
 
     DOT_RB = ".rb"
     DOT_SO = ".so"
-    SLASH  = "/"
+    SLASH = "/"
 
     DL_EXTENSIONS = ::RbConfig::CONFIG
       .values_at("DLEXT", "DLEXT2")
       .reject { |ext| !ext || ext.empty? }
-      .map    { |ext| ".#{ext}" }
+      .map { |ext| ".#{ext}" }
       .freeze
     DLEXT = DL_EXTENSIONS[0]
     # This is nil on linux and darwin, but I think it's '.o' on some other

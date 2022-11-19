@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 #--
 # Portions copyright 2011 by Bart ten Brinke (info@retrosync.com).
 # All rights reserved.

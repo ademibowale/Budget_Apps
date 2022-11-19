@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Bootsnap
   module LoadPathCache
     # LoadedFeaturesIndex partially mirrors an internal structure in ruby that

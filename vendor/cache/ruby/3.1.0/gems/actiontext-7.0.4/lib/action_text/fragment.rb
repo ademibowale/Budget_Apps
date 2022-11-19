@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionText
   class Fragment
     class << self

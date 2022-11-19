@@ -58,7 +58,7 @@ module Concurrent
                                    JavaCountDownLatch
                                  else
                                    MutexCountDownLatch
-                                 end
+  end
   private_constant :CountDownLatchImplementation
 
   # @!macro count_down_latch

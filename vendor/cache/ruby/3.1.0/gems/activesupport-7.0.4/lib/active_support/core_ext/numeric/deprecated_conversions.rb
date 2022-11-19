@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module DeprecatedNumericWithFormat # :nodoc:
     def to_s(format = nil, options = nil)

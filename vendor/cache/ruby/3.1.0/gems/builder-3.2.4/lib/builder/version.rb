@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 module Builder
   VERSION_NUMBERS = [
     VERSION_MAJOR = 3,

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module MySQL
@@ -85,14 +83,14 @@ module ActiveRecord
         end
 
         private
-          def aliased_types(name, fallback)
-            fallback
-          end
+        def aliased_types(name, fallback)
+          fallback
+        end
 
-          def integer_like_primary_key_type(type, options)
-            options[:auto_increment] = true
-            type
-          end
+        def integer_like_primary_key_type(type, options)
+          options[:auto_increment] = true
+          type
+        end
       end
 
       class Table < ActiveRecord::ConnectionAdapters::Table

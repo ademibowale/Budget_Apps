@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "fiber"
 
 module ActiveSupport
@@ -58,15 +56,15 @@ module ActiveSupport
       end
 
       private
-        def current_thread
-          Thread.current.active_support_execution_state ||= {}
-        end
+      def current_thread
+        Thread.current.active_support_execution_state ||= {}
+      end
 
-        def current_fiber
-          Fiber.current.active_support_execution_state ||= {}
-        end
+      def current_fiber
+        Fiber.current.active_support_execution_state ||= {}
+      end
 
-        alias_method :current, :current_thread
+      alias_method :current, :current_thread
     end
   end
 end

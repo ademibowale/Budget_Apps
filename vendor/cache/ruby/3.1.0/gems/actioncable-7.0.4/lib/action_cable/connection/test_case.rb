@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support"
 require "active_support/test_case"
 require "active_support/core_ext/hash/indifferent_access"
@@ -205,27 +203,27 @@ module ActionCable
         end
 
         private
-          def build_test_request(path, params: nil, headers: {}, session: {}, env: {})
-            wrapped_headers = ActionDispatch::Http::Headers.from_hash(headers)
+        def build_test_request(path, params: nil, headers: {}, session: {}, env: {})
+          wrapped_headers = ActionDispatch::Http::Headers.from_hash(headers)
 
-            uri = URI.parse(path)
+          uri = URI.parse(path)
 
-            query_string = params.nil? ? uri.query : params.to_query
+          query_string = params.nil? ? uri.query : params.to_query
 
-            request_env = {
-              "QUERY_STRING" => query_string,
-              "PATH_INFO" => uri.path
-            }.merge(env)
+          request_env = {
+            "QUERY_STRING" => query_string,
+            "PATH_INFO" => uri.path
+          }.merge(env)
 
-            if wrapped_headers.present?
-              ActionDispatch::Http::Headers.from_hash(request_env).merge!(wrapped_headers)
-            end
-
-            TestRequest.create(request_env).tap do |request|
-              request.session = session.with_indifferent_access
-              request.cookie_jar = cookies
-            end
+          if wrapped_headers.present?
+            ActionDispatch::Http::Headers.from_hash(request_env).merge!(wrapped_headers)
           end
+
+          TestRequest.create(request_env).tap do |request|
+            request.session = session.with_indifferent_access
+            request.cookie_jar = cookies
+          end
+        end
       end
 
       include Behavior

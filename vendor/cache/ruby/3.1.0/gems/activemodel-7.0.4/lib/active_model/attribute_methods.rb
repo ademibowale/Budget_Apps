@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "concurrent/map"
 
 module ActiveModel
@@ -358,86 +356,86 @@ module ActiveModel
       end
 
       private
-        def generated_attribute_methods
-          @generated_attribute_methods ||= Module.new.tap { |mod| include mod }
+      def generated_attribute_methods
+        @generated_attribute_methods ||= Module.new.tap { |mod| include mod }
+      end
+
+      def instance_method_already_implemented?(method_name)
+        generated_attribute_methods.method_defined?(method_name)
+      end
+
+      # The methods +method_missing+ and +respond_to?+ of this module are
+      # invoked often in a typical rails, both of which invoke the method
+      # +matched_attribute_method+. The latter method iterates through an
+      # array doing regular expression matches, which results in a lot of
+      # object creations. Most of the time it returns a +nil+ match. As the
+      # match result is always the same given a +method_name+, this cache is
+      # used to alleviate the GC, which ultimately also speeds up the app
+      # significantly (in our case our test suite finishes 10% faster with
+      # this cache).
+      def attribute_method_matchers_cache
+        @attribute_method_matchers_cache ||= Concurrent::Map.new(initial_capacity: 4)
+      end
+
+      def attribute_method_matchers_matching(method_name)
+        attribute_method_matchers_cache.compute_if_absent(method_name) do
+          attribute_method_matchers.filter_map { |matcher| matcher.match(method_name) }
+        end
+      end
+
+      # Define a method `name` in `mod` that dispatches to `send`
+      # using the given `extra` args. This falls back on `send`
+      # if the called name cannot be compiled.
+      def define_proxy_call(code_generator, name, target, parameters, *call_args, namespace:)
+        mangled_name = name
+        unless NAME_COMPILABLE_REGEXP.match?(name)
+          mangled_name = "__temp__#{name.unpack1("h*")}"
         end
 
-        def instance_method_already_implemented?(method_name)
-          generated_attribute_methods.method_defined?(method_name)
+        code_generator.define_cached_method(name, as: mangled_name, namespace: :"#{namespace}_#{target}") do |batch|
+          call_args.map!(&:inspect)
+          call_args << parameters if parameters
+
+          body = if CALL_COMPILABLE_REGEXP.match?(target)
+            "self.#{target}(#{call_args.join(", ")})"
+          else
+            call_args.unshift(":'#{target}'")
+            "send(#{call_args.join(", ")})"
+          end
+
+          modifier = parameters == FORWARD_PARAMETERS ? "ruby2_keywords " : ""
+
+          batch <<
+            "#{modifier}def #{mangled_name}(#{parameters || ''})" <<
+            body <<
+            "end"
+        end
+      end
+
+      class AttributeMethodMatcher # :nodoc:
+        attr_reader :prefix, :suffix, :target, :parameters
+
+        AttributeMethodMatch = Struct.new(:target, :attr_name)
+
+        def initialize(prefix: "", suffix: "", parameters: nil)
+          @prefix = prefix
+          @suffix = suffix
+          @parameters = parameters.nil? ? FORWARD_PARAMETERS : parameters
+          @regex = /^(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})$/
+          @target = "#{@prefix}attribute#{@suffix}"
+          @method_name = "#{prefix}%s#{suffix}"
         end
 
-        # The methods +method_missing+ and +respond_to?+ of this module are
-        # invoked often in a typical rails, both of which invoke the method
-        # +matched_attribute_method+. The latter method iterates through an
-        # array doing regular expression matches, which results in a lot of
-        # object creations. Most of the time it returns a +nil+ match. As the
-        # match result is always the same given a +method_name+, this cache is
-        # used to alleviate the GC, which ultimately also speeds up the app
-        # significantly (in our case our test suite finishes 10% faster with
-        # this cache).
-        def attribute_method_matchers_cache
-          @attribute_method_matchers_cache ||= Concurrent::Map.new(initial_capacity: 4)
-        end
-
-        def attribute_method_matchers_matching(method_name)
-          attribute_method_matchers_cache.compute_if_absent(method_name) do
-            attribute_method_matchers.filter_map { |matcher| matcher.match(method_name) }
+        def match(method_name)
+          if @regex =~ method_name
+            AttributeMethodMatch.new(target, $1)
           end
         end
 
-        # Define a method `name` in `mod` that dispatches to `send`
-        # using the given `extra` args. This falls back on `send`
-        # if the called name cannot be compiled.
-        def define_proxy_call(code_generator, name, target, parameters, *call_args, namespace:)
-          mangled_name = name
-          unless NAME_COMPILABLE_REGEXP.match?(name)
-            mangled_name = "__temp__#{name.unpack1("h*")}"
-          end
-
-          code_generator.define_cached_method(name, as: mangled_name, namespace: :"#{namespace}_#{target}") do |batch|
-            call_args.map!(&:inspect)
-            call_args << parameters if parameters
-
-            body = if CALL_COMPILABLE_REGEXP.match?(target)
-              "self.#{target}(#{call_args.join(", ")})"
-            else
-              call_args.unshift(":'#{target}'")
-              "send(#{call_args.join(", ")})"
-            end
-
-            modifier = parameters == FORWARD_PARAMETERS ? "ruby2_keywords " : ""
-
-            batch <<
-              "#{modifier}def #{mangled_name}(#{parameters || ''})" <<
-              body <<
-              "end"
-          end
+        def method_name(attr_name)
+          @method_name % attr_name
         end
-
-        class AttributeMethodMatcher # :nodoc:
-          attr_reader :prefix, :suffix, :target, :parameters
-
-          AttributeMethodMatch = Struct.new(:target, :attr_name)
-
-          def initialize(prefix: "", suffix: "", parameters: nil)
-            @prefix = prefix
-            @suffix = suffix
-            @parameters = parameters.nil? ? FORWARD_PARAMETERS : parameters
-            @regex = /^(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})$/
-            @target = "#{@prefix}attribute#{@suffix}"
-            @method_name = "#{prefix}%s#{suffix}"
-          end
-
-          def match(method_name)
-            if @regex =~ method_name
-              AttributeMethodMatch.new(target, $1)
-            end
-          end
-
-          def method_name(attr_name)
-            @method_name % attr_name
-          end
-        end
+      end
     end
 
     # Allows access to the object attributes, which are held in the hash
@@ -486,55 +484,55 @@ module ActiveModel
     end
 
     private
-      def attribute_method?(attr_name)
-        respond_to_without_attributes?(:attributes) && attributes.include?(attr_name)
-      end
+    def attribute_method?(attr_name)
+      respond_to_without_attributes?(:attributes) && attributes.include?(attr_name)
+    end
 
-      # Returns a struct representing the matching attribute method.
-      # The struct's attributes are prefix, base and suffix.
-      def matched_attribute_method(method_name)
-        matches = self.class.send(:attribute_method_matchers_matching, method_name)
-        matches.detect { |match| attribute_method?(match.attr_name) }
-      end
+    # Returns a struct representing the matching attribute method.
+    # The struct's attributes are prefix, base and suffix.
+    def matched_attribute_method(method_name)
+      matches = self.class.send(:attribute_method_matchers_matching, method_name)
+      matches.detect { |match| attribute_method?(match.attr_name) }
+    end
 
-      def missing_attribute(attr_name, stack)
-        raise ActiveModel::MissingAttributeError, "missing attribute: #{attr_name}", stack
-      end
+    def missing_attribute(attr_name, stack)
+      raise ActiveModel::MissingAttributeError, "missing attribute: #{attr_name}", stack
+    end
 
-      def _read_attribute(attr)
-        __send__(attr)
-      end
+    def _read_attribute(attr)
+      __send__(attr)
+    end
 
-      module AttrNames # :nodoc:
-        DEF_SAFE_NAME = /\A[a-zA-Z_]\w*\z/
+    module AttrNames # :nodoc:
+      DEF_SAFE_NAME = /\A[a-zA-Z_]\w*\z/
 
-        # We want to generate the methods via module_eval rather than
-        # define_method, because define_method is slower on dispatch.
-        #
-        # But sometimes the database might return columns with
-        # characters that are not allowed in normal method names (like
-        # 'my_column(omg)'. So to work around this we first define with
-        # the __temp__ identifier, and then use alias method to rename
-        # it to what we want.
-        #
-        # We are also defining a constant to hold the frozen string of
-        # the attribute name. Using a constant means that we do not have
-        # to allocate an object on each call to the attribute method.
-        # Making it frozen means that it doesn't get duped when used to
-        # key the @attributes in read_attribute.
-        def self.define_attribute_accessor_method(owner, attr_name, writer: false)
-          method_name = "#{attr_name}#{'=' if writer}"
-          if attr_name.ascii_only? && DEF_SAFE_NAME.match?(attr_name)
-            yield method_name, "'#{attr_name}'"
-          else
-            safe_name = attr_name.unpack1("h*")
-            const_name = "ATTR_#{safe_name}"
-            const_set(const_name, attr_name) unless const_defined?(const_name)
-            temp_method_name = "__temp__#{safe_name}#{'=' if writer}"
-            attr_name_expr = "::ActiveModel::AttributeMethods::AttrNames::#{const_name}"
-            yield temp_method_name, attr_name_expr
-          end
+      # We want to generate the methods via module_eval rather than
+      # define_method, because define_method is slower on dispatch.
+      #
+      # But sometimes the database might return columns with
+      # characters that are not allowed in normal method names (like
+      # 'my_column(omg)'. So to work around this we first define with
+      # the __temp__ identifier, and then use alias method to rename
+      # it to what we want.
+      #
+      # We are also defining a constant to hold the frozen string of
+      # the attribute name. Using a constant means that we do not have
+      # to allocate an object on each call to the attribute method.
+      # Making it frozen means that it doesn't get duped when used to
+      # key the @attributes in read_attribute.
+      def self.define_attribute_accessor_method(owner, attr_name, writer: false)
+        method_name = "#{attr_name}#{'=' if writer}"
+        if attr_name.ascii_only? && DEF_SAFE_NAME.match?(attr_name)
+          yield method_name, "'#{attr_name}'"
+        else
+          safe_name = attr_name.unpack1("h*")
+          const_name = "ATTR_#{safe_name}"
+          const_set(const_name, attr_name) unless const_defined?(const_name)
+          temp_method_name = "__temp__#{safe_name}#{'=' if writer}"
+          attr_name_expr = "::ActiveModel::AttributeMethods::AttrNames::#{const_name}"
+          yield temp_method_name, attr_name_expr
         end
       end
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AbstractController
   module Caching
     extend ActiveSupport::Concern
@@ -19,9 +17,9 @@ module AbstractController
       end
 
       private
-        def cache_configured?
-          perform_caching && cache_store
-        end
+      def cache_configured?
+        perform_caching && cache_store
+      end
     end
 
     include ConfigMethods
@@ -54,13 +52,13 @@ module AbstractController
     end
 
     private
-      # Convenience accessor.
-      def cache(key, options = {}, &block) # :doc:
-        if cache_configured?
-          cache_store.fetch(ActiveSupport::Cache.expand_cache_key(key, :controller), options, &block)
-        else
-          yield
-        end
+    # Convenience accessor.
+    def cache(key, options = {}, &block) # :doc:
+      if cache_configured?
+        cache_store.fetch(ActiveSupport::Cache.expand_cache_key(key, :controller), options, &block)
+      else
+        yield
       end
+    end
   end
 end

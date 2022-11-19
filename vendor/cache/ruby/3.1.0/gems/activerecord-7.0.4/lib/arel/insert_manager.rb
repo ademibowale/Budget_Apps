@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   class InsertManager < Arel::TreeManager
     def initialize(table = nil)
@@ -11,8 +9,12 @@ module Arel # :nodoc: all
       self
     end
 
-    def columns; @ast.columns end
-    def values=(val); @ast.values = val; end
+    def columns
+      @ast.columns
+    end
+    def values=(val)
+      @ast.values = val
+    end
 
     def select(select)
       @ast.select = select

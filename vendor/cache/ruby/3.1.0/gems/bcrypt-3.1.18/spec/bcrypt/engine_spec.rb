@@ -14,7 +14,7 @@ end
 describe "The BCrypt engine" do
   specify "should calculate the optimal cost factor to fit in a specific time" do
     start_time = Time.now
-    BCrypt::Password.create("testing testing", :cost => BCrypt::Engine::MIN_COST + 1)
+    BCrypt::Password.create("testing testing", cost: BCrypt::Engine::MIN_COST + 1)
     min_time_ms = (Time.now - start_time) * 1000
     first = BCrypt::Engine.calibrate(min_time_ms)
     second = BCrypt::Engine.calibrate(min_time_ms * 4)
@@ -107,9 +107,9 @@ describe "Generating BCrypt hashes" do
       ["\xa3" "ab", "$2y$05$/OK.fbVrR/bpIqNJ5ianF.", "$2y$05$/OK.fbVrR/bpIqNJ5ianF.6IflQkJytoRVc1yuaNtHfiuq.FRlSIS"],
       ["\xd1\x91", "$2x$05$6bNw2HLQYeqHYyBfLMsv/O", "$2x$05$6bNw2HLQYeqHYyBfLMsv/OiwqTymGIGzFsA4hOTWebfehXHNprcAS"],
       ["\xd0\xc1\xd2\xcf\xcc\xd8", "$2x$05$6bNw2HLQYeqHYyBfLMsv/O", "$2x$05$6bNw2HLQYeqHYyBfLMsv/O9LIGgn8OMzuDoHfof8AQimSGfcSWxnS"],
-      ["\xaa"*72+"chars after 72 are ignored as usual", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.swQOIzjOiJ9GHEPuhEkvqrUyvWhEMx6"],
-      ["\xaa\x55"*36, "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.R9xrDjiycxMbQE2bp.vgqlYpW5wx2yy"],
-      ["\x55\xaa\xff"*24, "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.9tQZzcJfm3uj2NvJ/n5xkhpqLrMpWCe"],
+      ["\xaa" * 72 + "chars after 72 are ignored as usual", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.swQOIzjOiJ9GHEPuhEkvqrUyvWhEMx6"],
+      ["\xaa\x55" * 36, "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.R9xrDjiycxMbQE2bp.vgqlYpW5wx2yy"],
+      ["\x55\xaa\xff" * 24, "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.9tQZzcJfm3uj2NvJ/n5xkhpqLrMpWCe"],
       ["", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.7uG0VCzI2bS7j6ymqJi9CdcdxiRTWNy"],
 
       # test vectors from the Java implementation, found in https://github.com/spring-projects/spring-security/blob/master/crypto/src/test/java/org/springframework/security/crypto/bcrypt/BCryptTests.java
@@ -161,16 +161,16 @@ describe "Generating BCrypt hashes" do
 
   specify "should truncate long 1-byte character secrets to 72 bytes" do
     # 'b' as a base triggers the failure at 256 characters, but 'a' does not.
-    too_long_secret = 'b'*(BCrypt::Engine::MAX_SECRET_BYTESIZE + 1)
-    just_right_secret = 'b'*BCrypt::Engine::MAX_SECRET_BYTESIZE
+    too_long_secret = 'b' * (BCrypt::Engine::MAX_SECRET_BYTESIZE + 1)
+    just_right_secret = 'b' * BCrypt::Engine::MAX_SECRET_BYTESIZE
     expect(BCrypt::Engine.hash_secret(too_long_secret, @salt)).to eq(BCrypt::Engine.hash_secret(just_right_secret, @salt))
   end
 
   specify "should truncate long multi-byte character secrets to 72 bytes" do
     # 256 times causes bcrypt to return nil for libxcrypt > 4.4.18-4.
-    too_long_secret = '𐐷'*256
+    too_long_secret = '𐐷' * 256
     # 𐐷 takes 4 bytes in UTF-8. 18 times is 72 bytes
-    just_right_secret = '𐐷'*18
+    just_right_secret = '𐐷' * 18
     expect(BCrypt::Engine.hash_secret(too_long_secret, @salt)).to eq(BCrypt::Engine.hash_secret(just_right_secret, @salt))
   end
 end

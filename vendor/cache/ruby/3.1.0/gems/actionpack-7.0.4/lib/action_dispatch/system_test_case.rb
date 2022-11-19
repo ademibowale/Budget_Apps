@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 gem "capybara", ">= 3.26"
 
 require "capybara/dsl"
@@ -160,35 +158,35 @@ module ActionDispatch
     end
 
     private
-      def url_helpers
-        @url_helpers ||=
-          if ActionDispatch.test_app
-            Class.new do
-              include ActionDispatch.test_app.routes.url_helpers
-              include ActionDispatch.test_app.routes.mounted_helpers
+    def url_helpers
+      @url_helpers ||=
+        if ActionDispatch.test_app
+          Class.new do
+            include ActionDispatch.test_app.routes.url_helpers
+            include ActionDispatch.test_app.routes.mounted_helpers
 
-              def url_options
-                default_url_options.reverse_merge(host: app_host)
-              end
+            def url_options
+              default_url_options.reverse_merge(host: app_host)
+            end
 
-              def app_host
-                Capybara.app_host || Capybara.current_session.server_url || DEFAULT_HOST
-              end
-            end.new
-          end
-      end
-
-      def method_missing(name, *args, &block)
-        if url_helpers.respond_to?(name)
-          url_helpers.public_send(name, *args, &block)
-        else
-          super
+            def app_host
+              Capybara.app_host || Capybara.current_session.server_url || DEFAULT_HOST
+            end
+          end.new
         end
-      end
+    end
 
-      def respond_to_missing?(name, include_private = false)
-        url_helpers.respond_to?(name)
+    def method_missing(name, *args, &block)
+      if url_helpers.respond_to?(name)
+        url_helpers.public_send(name, *args, &block)
+      else
+        super
       end
+    end
+
+    def respond_to_missing?(name, include_private = false)
+      url_helpers.respond_to?(name)
+    end
   end
 end
 

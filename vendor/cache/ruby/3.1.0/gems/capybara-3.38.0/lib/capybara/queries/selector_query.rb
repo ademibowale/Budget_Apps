@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'matrix'
 
 module Capybara
@@ -58,8 +56,12 @@ module Capybara
         assert_valid_keys
       end
 
-      def name; selector.name; end
-      def label; selector.label || selector.name; end
+      def name
+        selector.name
+      end
+      def label
+        selector.label || selector.name
+      end
 
       def description(only_applied = false) # rubocop:disable Style/OptionalBooleanParameter
         desc = +''
@@ -83,12 +85,12 @@ module Capybara
         desc << ' that is not focused' if options[:focused] == false
 
         desc << case options[:style]
-        when String
-          " with style attribute #{options[:style].inspect}"
-        when Regexp
-          " with style attribute matching #{options[:style].inspect}"
-        when Hash
-          " with styles #{options[:style].inspect}"
+                when String
+                  " with style attribute #{options[:style].inspect}"
+                when Regexp
+                  " with style attribute matching #{options[:style].inspect}"
+                when Hash
+                  " with styles #{options[:style].inspect}"
         else ''
         end
 
@@ -567,14 +569,14 @@ module Capybara
         return (visible != :hidden) && (node.initial_cache[:visible] != false) && !node.obscured? if obscured == false
 
         vis = case visible
-        when :visible
-          node.initial_cache[:visible] || (node.initial_cache[:visible].nil? && node.visible?)
-        when :hidden
-          # TODO: check why the 'visbile' cache spelling mistake wasn't caught in a test
-          # (node.initial_cache[:visible] == false) || (node.initial_cache[:visbile].nil? && !node.visible?)
-          (node.initial_cache[:visible] == false) || (node.initial_cache[:visible].nil? && !node.visible?)
+              when :visible
+                node.initial_cache[:visible] || (node.initial_cache[:visible].nil? && node.visible?)
+              when :hidden
+                # TODO: check why the 'visbile' cache spelling mistake wasn't caught in a test
+                # (node.initial_cache[:visible] == false) || (node.initial_cache[:visbile].nil? && !node.visible?)
+                (node.initial_cache[:visible] == false) || (node.initial_cache[:visible].nil? && !node.visible?)
         else
-          true
+                true
         end
 
         vis && case obscured

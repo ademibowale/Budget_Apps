@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Capybara
   ##
   # The {Window} class represents a browser window.

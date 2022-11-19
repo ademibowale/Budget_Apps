@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "thread"
 require "monitor"
 
@@ -72,63 +70,63 @@ module ActiveRecord
         end
 
         private
-          def internal_poll(timeout)
-            no_wait_poll || (timeout && wait_poll(timeout))
-          end
+        def internal_poll(timeout)
+          no_wait_poll || (timeout && wait_poll(timeout))
+        end
 
-          def synchronize(&block)
-            @lock.synchronize(&block)
-          end
+        def synchronize(&block)
+          @lock.synchronize(&block)
+        end
 
-          # Test if the queue currently contains any elements.
-          def any?
-            !@queue.empty?
-          end
+        # Test if the queue currently contains any elements.
+        def any?
+          !@queue.empty?
+        end
 
-          # A thread can remove an element from the queue without
-          # waiting if and only if the number of currently available
-          # connections is strictly greater than the number of waiting
-          # threads.
-          def can_remove_no_wait?
-            @queue.size > @num_waiting
-          end
+        # A thread can remove an element from the queue without
+        # waiting if and only if the number of currently available
+        # connections is strictly greater than the number of waiting
+        # threads.
+        def can_remove_no_wait?
+          @queue.size > @num_waiting
+        end
 
-          # Removes and returns the head of the queue if possible, or +nil+.
-          def remove
-            @queue.pop
-          end
+        # Removes and returns the head of the queue if possible, or +nil+.
+        def remove
+          @queue.pop
+        end
 
-          # Remove and return the head of the queue if the number of
-          # available elements is strictly greater than the number of
-          # threads currently waiting.  Otherwise, return +nil+.
-          def no_wait_poll
-            remove if can_remove_no_wait?
-          end
+        # Remove and return the head of the queue if the number of
+        # available elements is strictly greater than the number of
+        # threads currently waiting.  Otherwise, return +nil+.
+        def no_wait_poll
+          remove if can_remove_no_wait?
+        end
 
-          # Waits on the queue up to +timeout+ seconds, then removes and
-          # returns the head of the queue.
-          def wait_poll(timeout)
-            @num_waiting += 1
+        # Waits on the queue up to +timeout+ seconds, then removes and
+        # returns the head of the queue.
+        def wait_poll(timeout)
+          @num_waiting += 1
 
-            t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            elapsed = 0
-            loop do
-              ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-                @cond.wait(timeout - elapsed)
-              end
-
-              return remove if any?
-
-              elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0
-              if elapsed >= timeout
-                msg = "could not obtain a connection from the pool within %0.3f seconds (waited %0.3f seconds); all pooled connections were in use" %
-                  [timeout, elapsed]
-                raise ConnectionTimeoutError, msg
-              end
+          t0 = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+          elapsed = 0
+          loop do
+            ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+              @cond.wait(timeout - elapsed)
             end
-          ensure
-            @num_waiting -= 1
+
+            return remove if any?
+
+            elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - t0
+            if elapsed >= timeout
+              msg = "could not obtain a connection from the pool within %0.3f seconds (waited %0.3f seconds); all pooled connections were in use" %
+                [timeout, elapsed]
+              raise ConnectionTimeoutError, msg
+            end
           end
+        ensure
+          @num_waiting -= 1
+        end
       end
 
       # Adds the ability to turn a basic fair FIFO queue into one
@@ -175,7 +173,7 @@ module ActiveRecord
 
         def with_a_bias_for(thread)
           previous_cond = nil
-          new_cond      = nil
+          new_cond = nil
           synchronize do
             previous_cond = @cond
             @cond = new_cond = BiasedConditionVariable.new(@lock, @cond, thread)
@@ -198,11 +196,11 @@ module ActiveRecord
         include BiasableQueue
 
         private
-          def internal_poll(timeout)
-            conn = super
-            conn.lease if conn
-            conn
-          end
+        def internal_poll(timeout)
+          conn = super
+          conn.lease if conn
+          conn
+        end
       end
     end
   end

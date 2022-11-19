@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "monitor"
 
 module ActiveSupport
@@ -141,63 +139,63 @@ module ActiveSupport
       end
 
       private
-        PER_ENTRY_OVERHEAD = 240
+      PER_ENTRY_OVERHEAD = 240
 
-        def default_coder
-          DupCoder
-        end
+      def default_coder
+        DupCoder
+      end
 
-        def cached_size(key, payload)
-          key.to_s.bytesize + payload.bytesize + PER_ENTRY_OVERHEAD
-        end
+      def cached_size(key, payload)
+        key.to_s.bytesize + payload.bytesize + PER_ENTRY_OVERHEAD
+      end
 
-        def read_entry(key, **options)
-          entry = nil
-          synchronize do
-            payload = @data.delete(key)
-            if payload
-              @data[key] = payload
-              entry = deserialize_entry(payload)
-            end
-          end
-          entry
-        end
-
-        def write_entry(key, entry, **options)
-          payload = serialize_entry(entry, **options)
-          synchronize do
-            return false if options[:unless_exist] && @data.key?(key)
-
-            old_payload = @data[key]
-            if old_payload
-              @cache_size -= (old_payload.bytesize - payload.bytesize)
-            else
-              @cache_size += cached_size(key, payload)
-            end
+      def read_entry(key, **options)
+        entry = nil
+        synchronize do
+          payload = @data.delete(key)
+          if payload
             @data[key] = payload
-            prune(@max_size * 0.75, @max_prune_time) if @cache_size > @max_size
-            true
+            entry = deserialize_entry(payload)
           end
         end
+        entry
+      end
 
-        def delete_entry(key, **options)
-          synchronize do
-            payload = @data.delete(key)
-            @cache_size -= cached_size(key, payload) if payload
-            !!payload
-          end
-        end
+      def write_entry(key, entry, **options)
+        payload = serialize_entry(entry, **options)
+        synchronize do
+          return false if options[:unless_exist] && @data.key?(key)
 
-        def modify_value(name, amount, options)
-          options = merged_options(options)
-          synchronize do
-            if num = read(name, options)
-              num = num.to_i + amount
-              write(name, num, options)
-              num
-            end
+          old_payload = @data[key]
+          if old_payload
+            @cache_size -= (old_payload.bytesize - payload.bytesize)
+          else
+            @cache_size += cached_size(key, payload)
+          end
+          @data[key] = payload
+          prune(@max_size * 0.75, @max_prune_time) if @cache_size > @max_size
+          true
+        end
+      end
+
+      def delete_entry(key, **options)
+        synchronize do
+          payload = @data.delete(key)
+          @cache_size -= cached_size(key, payload) if payload
+          !!payload
+        end
+      end
+
+      def modify_value(name, amount, options)
+        options = merged_options(options)
+        synchronize do
+          if num = read(name, options)
+            num = num.to_i + amount
+            write(name, num, options)
+            num
           end
         end
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/spec/test_app'
 
 Capybara::SpecHelper.spec '#current_url, #current_path, #current_host' do

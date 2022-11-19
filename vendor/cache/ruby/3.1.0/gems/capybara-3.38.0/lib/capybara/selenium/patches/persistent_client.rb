@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Capybara
   module Selenium
     class PersistentClient < ::Selenium::WebDriver::Remote::Http::Default

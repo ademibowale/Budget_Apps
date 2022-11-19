@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/string_inquirer"
 require "active_support/environment_inquirer"
 

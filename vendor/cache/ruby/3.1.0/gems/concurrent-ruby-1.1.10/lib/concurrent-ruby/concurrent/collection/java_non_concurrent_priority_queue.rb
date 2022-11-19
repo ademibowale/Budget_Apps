@@ -3,9 +3,8 @@ if Concurrent.on_jruby?
   module Concurrent
     module Collection
 
-
       # @!macro priority_queue
-      # 
+      #
       # @!visibility private
       # @!macro internal_implementation_note
       class JavaNonConcurrentPriorityQueue
@@ -75,7 +74,7 @@ if Concurrent.on_jruby?
         # @!macro priority_queue_method_from_list
         def self.from_list(list, opts = {})
           queue = new(opts)
-          list.each{|item| queue << item }
+          list.each { |item| queue << item }
           queue
         end
       end

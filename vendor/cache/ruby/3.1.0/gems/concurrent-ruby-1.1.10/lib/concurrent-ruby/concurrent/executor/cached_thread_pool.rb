@@ -37,10 +37,10 @@ module Concurrent
     #
     #   @see http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executors.html#newCachedThreadPool--
     def initialize(opts = {})
-      defaults  = { idletime: DEFAULT_THREAD_IDLETIMEOUT }
+      defaults = { idletime: DEFAULT_THREAD_IDLETIMEOUT }
       overrides = { min_threads: 0,
                     max_threads: DEFAULT_MAX_POOL_SIZE,
-                    max_queue:   DEFAULT_MAX_QUEUE_SIZE }
+                    max_queue: DEFAULT_MAX_QUEUE_SIZE }
       super(defaults.merge(opts).merge(overrides))
     end
 
@@ -51,8 +51,8 @@ module Concurrent
     def ns_initialize(opts)
       super(opts)
       if Concurrent.on_jruby?
-        @max_queue          = 0
-        @executor           = java.util.concurrent.Executors.newCachedThreadPool(
+        @max_queue = 0
+        @executor = java.util.concurrent.Executors.newCachedThreadPool(
             DaemonThreadFactory.new(ns_auto_terminate?))
         @executor.setRejectedExecutionHandler(FALLBACK_POLICY_CLASSES[@fallback_policy].new)
         @executor.setKeepAliveTime(opts.fetch(:idletime, DEFAULT_THREAD_IDLETIMEOUT), java.util.concurrent.TimeUnit::SECONDS)

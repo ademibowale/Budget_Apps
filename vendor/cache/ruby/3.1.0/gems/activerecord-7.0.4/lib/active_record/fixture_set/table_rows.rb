@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/fixture_set/table_row"
 require "active_record/fixture_set/model_metadata"
 
@@ -29,18 +27,18 @@ module ActiveRecord
       end
 
       private
-        def build_table_rows_from(table_name, fixtures)
-          now = ActiveRecord.default_timezone == :utc ? Time.now.utc : Time.now
+      def build_table_rows_from(table_name, fixtures)
+        now = ActiveRecord.default_timezone == :utc ? Time.now.utc : Time.now
 
-          @tables[table_name] = fixtures.map do |label, fixture|
-            TableRow.new(
-              fixture,
-              table_rows: self,
-              label: label,
-              now: now,
-            )
-          end
+        @tables[table_name] = fixtures.map do |label, fixture|
+          TableRow.new(
+            fixture,
+            table_rows: self,
+            label: label,
+            now: now,
+          )
         end
+      end
     end
   end
 end

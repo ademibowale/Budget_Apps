@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   class LogSubscriber < ActiveSupport::LogSubscriber
     INTERNAL_PARAMS = %w(controller action format _method only_path)
@@ -8,10 +6,10 @@ module ActionController
       return unless logger.info?
 
       payload = event.payload
-      params  = payload[:params].except(*INTERNAL_PARAMS)
-      format  = payload[:format]
-      format  = format.to_s.upcase if format.is_a?(Symbol)
-      format  = "*/*" if format.nil?
+      params = payload[:params].except(*INTERNAL_PARAMS)
+      format = payload[:format]
+      format = format.to_s.upcase if format.is_a?(Symbol)
+      format = "*/*" if format.nil?
 
       info "Processing by #{payload[:controller]}##{payload[:action]} as #{format}"
       info "  Parameters: #{params.inspect}" unless params.empty?

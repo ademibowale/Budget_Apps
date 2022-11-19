@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController # :nodoc:
   # This module is responsible for providing +rescue_from+ helpers
   # to controllers and configuring when detailed exceptions must be
@@ -18,11 +16,11 @@ module ActionController # :nodoc:
     end
 
     private
-      def process_action(*)
-        super
-      rescue Exception => exception
-        request.env["action_dispatch.show_detailed_exceptions"] ||= show_detailed_exceptions?
-        rescue_with_handler(exception) || raise
-      end
+    def process_action(*)
+      super
+    rescue Exception => exception
+      request.env["action_dispatch.show_detailed_exceptions"] ||= show_detailed_exceptions?
+      rescue_with_handler(exception) || raise
+    end
   end
 end

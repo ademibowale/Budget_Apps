@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "bootsnap"
 require "bootsnap/cli/worker_pool"
 require "optparse"

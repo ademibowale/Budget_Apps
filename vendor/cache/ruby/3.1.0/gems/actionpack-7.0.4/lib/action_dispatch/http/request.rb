@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "stringio"
 
 require "active_support/inflector"
@@ -27,9 +25,9 @@ module ActionDispatch
     include Rack::Request::Env
 
     autoload :Session, "action_dispatch/request/session"
-    autoload :Utils,   "action_dispatch/request/utils"
+    autoload :Utils, "action_dispatch/request/utils"
 
-    LOCALHOST   = Regexp.union [/^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/, /^::1$/, /^0:0:0:0:0:0:0:1(%.*)?$/]
+    LOCALHOST = Regexp.union [/^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/, /^::1$/, /^0:0:0:0:0:0:0:1(%.*)?$/]
 
     ENV_METHODS = %w[ AUTH_TYPE GATEWAY_INTERFACE
         PATH_TRANSLATED REMOTE_HOST
@@ -59,21 +57,27 @@ module ActionDispatch
 
     def initialize(env)
       super
-      @method            = nil
-      @request_method    = nil
-      @remote_ip         = nil
+      @method = nil
+      @request_method = nil
+      @remote_ip = nil
       @original_fullpath = nil
-      @fullpath          = nil
-      @ip                = nil
+      @fullpath = nil
+      @ip = nil
     end
 
     def commit_cookie_jar! # :nodoc:
     end
 
     PASS_NOT_FOUND = Class.new { # :nodoc:
-      def self.action(_); self; end
-      def self.call(_); [404, { "X-Cascade" => "pass" }, []]; end
-      def self.action_encoding_template(action); false; end
+      def self.action(_)
+        self
+      end
+      def self.call(_)
+        [404, { "X-Cascade" => "pass" }, []]
+      end
+      def self.action_encoding_template(action)
+        false
+      end
     }
 
     def controller_class
@@ -402,7 +406,7 @@ module ActionDispatch
     # Returns the authorization header regardless of whether it was specified directly or through one of the
     # proxy alternatives.
     def authorization
-      get_header("HTTP_AUTHORIZATION")   ||
+      get_header("HTTP_AUTHORIZATION") ||
       get_header("X-HTTP_AUTHORIZATION") ||
       get_header("X_HTTP_AUTHORIZATION") ||
       get_header("REDIRECT_X_HTTP_AUTHORIZATION")
@@ -430,14 +434,14 @@ module ActionDispatch
     end
 
     private
-      def check_method(name)
-        HTTP_METHOD_LOOKUP[name] || raise(ActionController::UnknownHttpMethod, "#{name}, accepted HTTP methods are #{HTTP_METHODS[0...-1].join(', ')}, and #{HTTP_METHODS[-1]}")
-        name
-      end
+    def check_method(name)
+      HTTP_METHOD_LOOKUP[name] || raise(ActionController::UnknownHttpMethod, "#{name}, accepted HTTP methods are #{HTTP_METHODS[0...-1].join(', ')}, and #{HTTP_METHODS[-1]}")
+      name
+    end
 
-      def default_session
-        Session.disabled(self)
-      end
+    def default_session
+      Session.disabled(self)
+    end
   end
 end
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # A container of attribute encryption options.
@@ -69,31 +67,31 @@ module ActiveRecord
       end
 
       private
-        def validate_config!
-          raise Errors::Configuration, "ignore_case: can only be used with deterministic encryption" if @ignore_case && !@deterministic
-          raise Errors::Configuration, "key_provider: and key: can't be used simultaneously" if @key_provider_param && @key
-        end
+      def validate_config!
+        raise Errors::Configuration, "ignore_case: can only be used with deterministic encryption" if @ignore_case && !@deterministic
+        raise Errors::Configuration, "key_provider: and key: can't be used simultaneously" if @key_provider_param && @key
+      end
 
-        def validate_keys!
-          validate_credential :key_derivation_salt
-          validate_credential :primary_key, "needs to be configured to use non-deterministic encryption" unless @deterministic
-          validate_credential :deterministic_key, "needs to be configured to use deterministic encryption" if @deterministic
-        end
+      def validate_keys!
+        validate_credential :key_derivation_salt
+        validate_credential :primary_key, "needs to be configured to use non-deterministic encryption" unless @deterministic
+        validate_credential :deterministic_key, "needs to be configured to use deterministic encryption" if @deterministic
+      end
 
-        def validate_credential(key, error_message = "is not configured")
-          unless ActiveRecord::Encryption.config.public_send(key).present?
-            raise Errors::Configuration, "#{key} #{error_message}. Please configure it via credential "\
-              "active_record_encryption.#{key} or by setting config.active_record.encryption.#{key}"
-          end
+      def validate_credential(key, error_message = "is not configured")
+        unless ActiveRecord::Encryption.config.public_send(key).present?
+          raise Errors::Configuration, "#{key} #{error_message}. Please configure it via credential "\
+            "active_record_encryption.#{key} or by setting config.active_record.encryption.#{key}"
         end
+      end
 
-        def build_key_provider
-          return DerivedSecretKeyProvider.new(@key) if @key.present?
+      def build_key_provider
+        return DerivedSecretKeyProvider.new(@key) if @key.present?
 
-          if @deterministic && (deterministic_key = ActiveRecord::Encryption.config.deterministic_key)
-            DeterministicKeyProvider.new(deterministic_key)
-          end
+        if @deterministic && (deterministic_key = ActiveRecord::Encryption.config.deterministic_key)
+          DeterministicKeyProvider.new(deterministic_key)
         end
+      end
     end
   end
 end

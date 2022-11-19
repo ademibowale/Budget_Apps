@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Attached::Changes::DeleteOne # :nodoc:
     attr_reader :name, :record

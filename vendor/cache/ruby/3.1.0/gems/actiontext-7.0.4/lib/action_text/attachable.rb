@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionText
   module Attachable
     extend ActiveSupport::Concern
@@ -26,11 +24,11 @@ module ActionText
       end
 
       private
-        def attachable_from_sgid(sgid)
-          from_attachable_sgid(sgid)
-        rescue ActiveRecord::RecordNotFound
-          nil
-        end
+      def attachable_from_sgid(sgid)
+        from_attachable_sgid(sgid)
+      rescue ActiveRecord::RecordNotFound
+        nil
+      end
     end
 
     class_methods do

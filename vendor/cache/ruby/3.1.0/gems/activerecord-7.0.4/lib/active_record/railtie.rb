@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record"
 require "rails"
 require "active_support/core_ext/object/try"
@@ -21,10 +19,10 @@ module ActiveRecord
                                               timestamps: true
 
     config.action_dispatch.rescue_responses.merge!(
-      "ActiveRecord::RecordNotFound"   => :not_found,
+      "ActiveRecord::RecordNotFound" => :not_found,
       "ActiveRecord::StaleObjectError" => :conflict,
-      "ActiveRecord::RecordInvalid"    => :unprocessable_entity,
-      "ActiveRecord::RecordNotSaved"   => :unprocessable_entity
+      "ActiveRecord::RecordInvalid" => :unprocessable_entity,
+      "ActiveRecord::RecordNotSaved" => :unprocessable_entity
     )
 
     config.active_record.use_schema_cache_dump = true
@@ -362,11 +360,11 @@ To keep using the current cache store, you can turn off cache versioning entirel
         if app.config.active_record.query_log_tags_enabled
           ActiveRecord.query_transformers << ActiveRecord::QueryLogs
           ActiveRecord::QueryLogs.taggings.merge!(
-            application:  Rails.application.class.name.split("::").first,
-            pid:          -> { Process.pid },
-            socket:       -> { ActiveRecord::Base.connection_db_config.socket },
-            db_host:      -> { ActiveRecord::Base.connection_db_config.host },
-            database:     -> { ActiveRecord::Base.connection_db_config.database }
+            application: Rails.application.class.name.split("::").first,
+            pid: -> { Process.pid },
+            socket: -> { ActiveRecord::Base.connection_db_config.socket },
+            db_host: -> { ActiveRecord::Base.connection_db_config.host },
+            database: -> { ActiveRecord::Base.connection_db_config.database }
           )
 
           if app.config.active_record.query_log_tags.present?

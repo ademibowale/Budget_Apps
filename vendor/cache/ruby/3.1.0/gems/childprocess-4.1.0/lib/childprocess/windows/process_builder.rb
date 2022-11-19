@@ -5,22 +5,22 @@ module ChildProcess
       attr_reader :stdin
 
       def initialize(args)
-        @args        = args
+        @args = args
 
-        @detach      = false
-        @duplex      = false
+        @detach = false
+        @duplex = false
         @environment = nil
-        @cwd         = nil
+        @cwd = nil
 
-        @stdout      = nil
-        @stderr      = nil
-        @stdin       = nil
+        @stdout = nil
+        @stderr = nil
+        @stdin = nil
 
-        @flags       = 0
-        @job_ptr     = nil
-        @cmd_ptr     = nil
-        @env_ptr     = nil
-        @cwd_ptr     = nil
+        @flags = 0
+        @job_ptr = nil
+        @cmd_ptr = nil
+        @env_ptr = nil
+        @cwd_ptr = nil
       end
 
       def start
@@ -43,7 +43,7 @@ module ChildProcess
         newstr = str + "\0".encode(str.encoding)
         newstr.encode!('UTF-16LE')
       end
-      
+
       def create_command_pointer
         string = @args.map { |arg| quote_if_necessary(arg.to_s) }.join(' ')
         @cmd_ptr = to_wide_string(string)
@@ -74,16 +74,16 @@ module ChildProcess
 
       def create_process
         ok = Lib.create_process(
-          nil,          # application name
-          @cmd_ptr,     # command line
-          nil,          # process attributes
-          nil,          # thread attributes
-          true,         # inherit handles
-          @flags,       # creation flags
-          @env_ptr,     # environment
-          @cwd_ptr,     # current directory
+          nil, # application name
+          @cmd_ptr, # command line
+          nil, # process attributes
+          nil, # thread attributes
+          true, # inherit handles
+          @flags, # creation flags
+          @env_ptr, # environment
+          @cwd_ptr, # current directory
           startup_info, # startup info
-          process_info  # process info
+          process_info # process info
         )
 
         ok or raise LaunchError, Lib.last_error_message
@@ -118,14 +118,14 @@ module ChildProcess
         end
 
         if @duplex
-          read_pipe_ptr  = FFI::MemoryPointer.new(:pointer)
+          read_pipe_ptr = FFI::MemoryPointer.new(:pointer)
           write_pipe_ptr = FFI::MemoryPointer.new(:pointer)
-          sa             = SecurityAttributes.new(:inherit => true)
+          sa = SecurityAttributes.new(inherit: true)
 
           ok = Lib.create_pipe(read_pipe_ptr, write_pipe_ptr, sa, 0)
           Lib.check_error ok
 
-          @read_pipe  = read_pipe_ptr.read_pointer
+          @read_pipe = read_pipe_ptr.read_pointer
           @write_pipe = write_pipe_ptr.read_pointer
 
           Lib.set_handle_inheritance @read_pipe, true

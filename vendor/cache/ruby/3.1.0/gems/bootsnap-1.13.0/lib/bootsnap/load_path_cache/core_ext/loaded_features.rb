@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class << $LOADED_FEATURES
   alias_method(:delete_without_bootsnap, :delete)
   def delete(key)

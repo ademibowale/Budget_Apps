@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module SecureToken
     class MinimumLengthError < StandardError; end

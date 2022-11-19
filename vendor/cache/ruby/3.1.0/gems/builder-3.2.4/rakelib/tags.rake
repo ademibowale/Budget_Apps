@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 module Tags
   extend Rake::DSL if defined?(Rake::DSL)
 
@@ -27,9 +25,9 @@ module Tags
   # Run ctags command
   def run(*args)
     opts = {
-      :e => true,
-      :totals => true,
-      :recurse => true,
+      e: true,
+      totals: true,
+      recurse: true,
     }
     opts = opts.merge(args.pop) if args.last.is_a?(Hash)
     command_args = opts.map { |k, v|
@@ -42,21 +40,21 @@ end
 namespace "tags" do
   desc "Generate an Emacs TAGS file"
    task :emacs, [:all] => Tags::FILES do |t, args|
-    puts "Making Emacs TAGS file"
+     puts "Making Emacs TAGS file"
     verbose(true) do
       Tags.run(Tags::PROJECT_DIR)
       Tags.run(Tags::RAKEFILES,
-        :language_force => "ruby",
-        :append => true)
+        language_force: "ruby",
+        append: true)
       if args.all
         Tags::SYSTEM_DIRS.each do |dir|
           Tags.run(dir,
-            :language_force => "ruby",
-            :append => true)
+            language_force: "ruby",
+            append: true)
         end
       end
     end
-  end
+   end
 end
 
 desc "Generate the TAGS file"

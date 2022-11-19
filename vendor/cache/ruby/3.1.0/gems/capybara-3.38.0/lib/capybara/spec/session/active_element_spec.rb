@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara::SpecHelper.spec '#active_element', requires: [:active_element] do
   it 'should return the active element' do
     @session.visit('/form')

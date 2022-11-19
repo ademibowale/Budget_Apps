@@ -43,7 +43,7 @@ module Crass
     # Resets the pointer to the first token in the list.
     def reset
       @current = nil
-      @pos     = 0
+      @pos = 0
     end
   end
 

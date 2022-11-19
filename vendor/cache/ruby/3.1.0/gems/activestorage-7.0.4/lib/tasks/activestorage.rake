@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 namespace :active_storage do
   # Prevent migration installation task from showing up twice.
   Rake::Task["install:migrations"].clear_comments

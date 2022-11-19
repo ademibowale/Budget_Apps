@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 namespace :action_mailbox do
   namespace :ingress do
     task :environment do

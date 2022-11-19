@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/delegation"
 
 module ActiveRecord
@@ -84,7 +82,7 @@ module ActiveRecord
       end
 
       def initialize
-        @current_scope        = {}
+        @current_scope = {}
         @ignore_default_scope = {}
         @global_current_scope = {}
       end
@@ -114,22 +112,22 @@ module ActiveRecord
       end
 
       private
-        # Obtains the value for a given +scope_type+ and +model+.
-        def value_for(scope_type, model, skip_inherited_scope = false)
-          return scope_type[model.name] if skip_inherited_scope
-          klass = model
-          base = model.base_class
-          while klass <= base
-            value = scope_type[klass.name]
-            return value if value
-            klass = klass.superclass
-          end
+      # Obtains the value for a given +scope_type+ and +model+.
+      def value_for(scope_type, model, skip_inherited_scope = false)
+        return scope_type[model.name] if skip_inherited_scope
+        klass = model
+        base = model.base_class
+        while klass <= base
+          value = scope_type[klass.name]
+          return value if value
+          klass = klass.superclass
         end
+      end
 
-        # Sets the +value+ for a given +scope_type+ and +model+.
-        def set_value_for(scope_type, model, value)
-          scope_type[model.name] = value
-        end
+      # Sets the +value+ for a given +scope_type+ and +model+.
+      def set_value_for(scope_type, model, value)
+        scope_type[model.name] = value
+      end
     end
   end
 end

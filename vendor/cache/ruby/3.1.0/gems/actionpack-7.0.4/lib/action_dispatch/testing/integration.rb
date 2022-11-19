@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "stringio"
 require "uri"
 require "rack/test"
@@ -154,9 +152,9 @@ module ActionDispatch
         @request_count = 0
         @url_options = nil
 
-        self.host        = DEFAULT_HOST
+        self.host = DEFAULT_HOST
         self.remote_addr = "127.0.0.1"
-        self.accept      = "text/xml,application/xml,application/xhtml+xml," \
+        self.accept = "text/xml,application/xml,application/xhtml+xml," \
                            "text/html;q=0.9,text/plain;q=0.8,image/png," \
                            "*/*;q=0.5"
 
@@ -244,16 +242,16 @@ module ActionDispatch
           :method => method,
           :params => request_encoder.encode_params(params),
 
-          "SERVER_NAME"     => hostname,
-          "SERVER_PORT"     => port || (https? ? "443" : "80"),
-          "HTTPS"           => https? ? "on" : "off",
+          "SERVER_NAME" => hostname,
+          "SERVER_PORT" => port || (https? ? "443" : "80"),
+          "HTTPS" => https? ? "on" : "off",
           "rack.url_scheme" => https? ? "https" : "http",
 
-          "REQUEST_URI"    => path,
-          "HTTP_HOST"      => host,
-          "REMOTE_ADDR"    => remote_addr,
-          "CONTENT_TYPE"   => request_encoder.content_type,
-          "HTTP_ACCEPT"    => request_encoder.accept_header || accept
+          "REQUEST_URI" => path,
+          "HTTP_HOST" => host,
+          "REMOTE_ADDR" => remote_addr,
+          "CONTENT_TYPE" => request_encoder.content_type,
+          "HTTP_ACCEPT" => request_encoder.accept_header || accept
         }
 
         wrapped_headers = Http::Headers.from_hash({})
@@ -297,20 +295,20 @@ module ActionDispatch
       alias :host! :host=
 
       private
-        def _mock_session
-          @_mock_session ||= Rack::MockSession.new(@app, host)
-        end
+      def _mock_session
+        @_mock_session ||= Rack::MockSession.new(@app, host)
+      end
 
-        def build_full_uri(path, env)
-          "#{env['rack.url_scheme']}://#{env['SERVER_NAME']}:#{env['SERVER_PORT']}#{path}"
-        end
+      def build_full_uri(path, env)
+        "#{env['rack.url_scheme']}://#{env['SERVER_NAME']}:#{env['SERVER_PORT']}#{path}"
+      end
 
-        def build_expanded_path(path)
-          location = URI.parse(path)
-          yield location if block_given?
-          path = location.path
-          location.query ? "#{path}?#{location.query}" : path
-        end
+      def build_expanded_path(path)
+        location = URI.parse(path)
+        yield location if block_given?
+        path = location.path
+        location.query ? "#{path}?#{location.query}" : path
+      end
     end
 
     module Runner
@@ -404,8 +402,8 @@ module ActionDispatch
       # test instance.
       def copy_session_variables! # :nodoc:
         @controller = @integration_session.controller
-        @response   = @integration_session.response
-        @request    = @integration_session.request
+        @response = @integration_session.response
+        @request = @integration_session.request
       end
 
       def default_url_options

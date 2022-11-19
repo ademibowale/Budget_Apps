@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # :stopdoc:
   module ConnectionAdapters
@@ -33,10 +31,10 @@ module ActiveRecord
         end
 
         private
-          def deduplicated
-            __setobj__(__getobj__.deduplicate)
-            super
-          end
+        def deduplicated
+          __setobj__(__getobj__.deduplicate)
+          super
+        end
       end
     end
     PostgreSQLTypeMetadata = PostgreSQL::TypeMetadata

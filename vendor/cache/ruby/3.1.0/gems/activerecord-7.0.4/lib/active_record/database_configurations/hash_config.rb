@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class DatabaseConfigurations
     # A HashConfig object is created for each database configuration entry that
@@ -141,14 +139,14 @@ module ActiveRecord
       end
 
       private
-        def schema_file_type(format)
-          case format
-          when :ruby
-            "schema.rb"
-          when :sql
-            "structure.sql"
-          end
+      def schema_file_type(format)
+        case format
+        when :ruby
+          "schema.rb"
+        when :sql
+          "structure.sql"
         end
+      end
     end
   end
 end

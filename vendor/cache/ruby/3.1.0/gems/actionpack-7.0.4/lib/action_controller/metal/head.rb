@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   module Head
     # Returns a response that has no content (merely headers). The options
@@ -49,15 +47,15 @@ module ActionController
     end
 
     private
-      def include_content?(status)
-        case status
-        when 100..199
-          false
-        when 204, 205, 304
-          false
-        else
-          true
-        end
+    def include_content?(status)
+      case status
+      when 100..199
+        false
+      when 204, 205, 304
+        false
+      else
+        true
       end
+    end
   end
 end

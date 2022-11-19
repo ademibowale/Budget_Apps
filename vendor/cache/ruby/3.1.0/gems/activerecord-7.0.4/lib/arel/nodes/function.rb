@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class Function < Arel::Nodes::NodeExpression
@@ -10,8 +8,8 @@ module Arel # :nodoc: all
       def initialize(expr, aliaz = nil)
         super()
         @expressions = expr
-        @alias       = aliaz && SqlLiteral.new(aliaz)
-        @distinct    = false
+        @alias = aliaz && SqlLiteral.new(aliaz)
+        @distinct = false
       end
 
       def as(aliaz)

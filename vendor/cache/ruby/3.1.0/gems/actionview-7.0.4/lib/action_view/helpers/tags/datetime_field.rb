@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers
     module Tags # :nodoc:
@@ -14,17 +12,17 @@ module ActionView
         end
 
         private
-          def format_date(value)
-            raise NotImplementedError
-          end
+        def format_date(value)
+          raise NotImplementedError
+        end
 
-          def datetime_value(value)
-            if value.is_a? String
-              DateTime.parse(value) rescue nil
-            else
-              value
-            end
+        def datetime_value(value)
+          if value.is_a? String
+            DateTime.parse(value) rescue nil
+          else
+            value
           end
+        end
       end
     end
   end

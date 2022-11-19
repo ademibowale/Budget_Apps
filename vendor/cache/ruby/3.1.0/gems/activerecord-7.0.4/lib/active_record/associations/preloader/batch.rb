@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Associations
     class Preloader
@@ -21,7 +19,7 @@ module ActiveRecord
                 branch.future_classes - branch.runnable_loaders.map(&:klass)
               end.map(&:table_name).uniq
 
-              target_loaders = loaders.reject { |l| future_tables.include?(l.table_name)  }
+              target_loaders = loaders.reject { |l| future_tables.include?(l.table_name) }
               target_loaders = loaders if target_loaders.empty?
 
               group_and_load_similar(target_loaders)
@@ -35,13 +33,13 @@ module ActiveRecord
         end
 
         private
-          attr_reader :loaders
+        attr_reader :loaders
 
-          def group_and_load_similar(loaders)
-            loaders.grep_v(ThroughAssociation).group_by(&:loader_query).each_pair do |query, similar_loaders|
-              query.load_records_in_batch(similar_loaders)
-            end
+        def group_and_load_similar(loaders)
+          loaders.grep_v(ThroughAssociation).group_by(&:loader_query).each_pair do |query, similar_loaders|
+            query.load_records_in_batch(similar_loaders)
           end
+        end
       end
     end
   end

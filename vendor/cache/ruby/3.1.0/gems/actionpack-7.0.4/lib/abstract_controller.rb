@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_pack"
 require "active_support"
 require "active_support/rails"

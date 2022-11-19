@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 gem "google-cloud-storage", "~> 1.11"
 require "google/apis/iamcredentials_v1"
 require "google/cloud/storage"
@@ -143,99 +141,98 @@ module ActiveStorage
     end
 
     private
-      def private_url(key, expires_in:, filename:, content_type:, disposition:, **)
-        args = {
-          expires: expires_in,
-          query: {
-            "response-content-disposition" => content_disposition_with(type: disposition, filename: filename),
-            "response-content-type" => content_type
-          }
+    def private_url(key, expires_in:, filename:, content_type:, disposition:, **)
+      args = {
+        expires: expires_in,
+        query: {
+          "response-content-disposition" => content_disposition_with(type: disposition, filename: filename),
+          "response-content-type" => content_type
         }
+      }
 
-        if @config[:iam]
-          args[:issuer] = issuer
-          args[:signer] = signer
+      if @config[:iam]
+        args[:issuer] = issuer
+        args[:signer] = signer
+      end
+
+      file_for(key).signed_url(**args)
+    end
+
+    def public_url(key, **)
+      file_for(key).public_url
+    end
+
+    attr_reader :config
+
+    def file_for(key, skip_lookup: true)
+      bucket.file(key, skip_lookup: skip_lookup)
+    end
+
+    # Reads the file for the given key in chunks, yielding each to the block.
+    def stream(key)
+      file = file_for(key, skip_lookup: false)
+
+      chunk_size = 5.megabytes
+      offset = 0
+
+      raise ActiveStorage::FileNotFoundError unless file.present?
+
+      while offset < file.size
+        yield file.download(range: offset..(offset + chunk_size - 1)).string
+        offset += chunk_size
+      end
+    end
+
+    def bucket
+      @bucket ||= client.bucket(config.fetch(:bucket), skip_lookup: true)
+    end
+
+    def client
+      @client ||= Google::Cloud::Storage.new(**config.except(:bucket, :cache_control, :iam, :gsa_email))
+    end
+
+    def issuer
+      @issuer ||= if @config[:gsa_email]
+        @config[:gsa_email]
+      else
+        uri = URI.parse("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email")
+        http = Net::HTTP.new(uri.host, uri.port)
+        request = Net::HTTP::Get.new(uri.request_uri)
+        request["Metadata-Flavor"] = "Google"
+
+        begin
+          response = http.request(request)
+        rescue SocketError
+          raise MetadataServerNotFoundError
         end
 
-        file_for(key).signed_url(**args)
-      end
-
-      def public_url(key, **)
-        file_for(key).public_url
-      end
-
-
-      attr_reader :config
-
-      def file_for(key, skip_lookup: true)
-        bucket.file(key, skip_lookup: skip_lookup)
-      end
-
-      # Reads the file for the given key in chunks, yielding each to the block.
-      def stream(key)
-        file = file_for(key, skip_lookup: false)
-
-        chunk_size = 5.megabytes
-        offset = 0
-
-        raise ActiveStorage::FileNotFoundError unless file.present?
-
-        while offset < file.size
-          yield file.download(range: offset..(offset + chunk_size - 1)).string
-          offset += chunk_size
-        end
-      end
-
-      def bucket
-        @bucket ||= client.bucket(config.fetch(:bucket), skip_lookup: true)
-      end
-
-      def client
-        @client ||= Google::Cloud::Storage.new(**config.except(:bucket, :cache_control, :iam, :gsa_email))
-      end
-
-      def issuer
-        @issuer ||= if @config[:gsa_email]
-          @config[:gsa_email]
+        if response.is_a?(Net::HTTPSuccess)
+          response.body
         else
-          uri = URI.parse("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email")
-          http = Net::HTTP.new(uri.host, uri.port)
-          request = Net::HTTP::Get.new(uri.request_uri)
-          request["Metadata-Flavor"] = "Google"
-
-          begin
-            response = http.request(request)
-          rescue SocketError
-            raise MetadataServerNotFoundError
-          end
-
-          if response.is_a?(Net::HTTPSuccess)
-            response.body
-          else
-            raise MetadataServerError
-          end
+          raise MetadataServerError
         end
       end
+    end
 
-      def signer
-        # https://googleapis.dev/ruby/google-cloud-storage/latest/Google/Cloud/Storage/Project.html#signed_url-instance_method
-        lambda do |string_to_sign|
-          iam_client = Google::Apis::IamcredentialsV1::IAMCredentialsService.new
+    def signer
+      # https://googleapis.dev/ruby/google-cloud-storage/latest/Google/Cloud/Storage/Project.html#signed_url-instance_method
+      lambda do |string_to_sign|
+        iam_client = Google::Apis::IamcredentialsV1::IAMCredentialsService.new
 
-          scopes = ["https://www.googleapis.com/auth/iam"]
-          iam_client.authorization = Google::Auth.get_application_default(scopes)
+        scopes = ["https://www.googleapis.com/auth/iam"]
+        iam_client.authorization = Google::Auth.get_application_default(scopes)
 
-          request = Google::Apis::IamcredentialsV1::SignBlobRequest.new(
-            payload: string_to_sign
-          )
-          resource = "projects/-/serviceAccounts/#{issuer}"
-          response = iam_client.sign_service_account_blob(resource, request)
-          response.signed_blob
-        end
+        request = Google::Apis::IamcredentialsV1::SignBlobRequest.new(
+          payload: string_to_sign
+        )
+        resource = "projects/-/serviceAccounts/#{issuer}"
+        response = iam_client.sign_service_account_blob(resource, request)
+        response.signed_blob
       end
+    end
 
-      def custom_metadata_headers(metadata)
-        metadata.transform_keys { |key| "x-goog-meta-#{key}" }
-      end
+    def custom_metadata_headers(metadata)
+      metadata.transform_keys { |key| "x-goog-meta-#{key}" }
+    end
   end
 end

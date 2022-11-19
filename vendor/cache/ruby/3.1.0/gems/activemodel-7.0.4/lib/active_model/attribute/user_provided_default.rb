@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_model/attribute"
 
 module ActiveModel
@@ -45,7 +43,7 @@ module ActiveModel
       end
 
       private
-        attr_reader :user_provided_value
+      attr_reader :user_provided_value
     end
   end
 end

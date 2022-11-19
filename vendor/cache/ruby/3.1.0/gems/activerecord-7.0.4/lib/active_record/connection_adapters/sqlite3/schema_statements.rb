@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module SQLite3
@@ -114,58 +112,58 @@ module ActiveRecord
         end
 
         private
-          def schema_creation
-            SQLite3::SchemaCreation.new(self)
-          end
+        def schema_creation
+          SQLite3::SchemaCreation.new(self)
+        end
 
-          def create_table_definition(name, **options)
-            SQLite3::TableDefinition.new(self, name, **options)
-          end
+        def create_table_definition(name, **options)
+          SQLite3::TableDefinition.new(self, name, **options)
+        end
 
-          def validate_index_length!(table_name, new_name, internal = false)
-            super unless internal
-          end
+        def validate_index_length!(table_name, new_name, internal = false)
+          super unless internal
+        end
 
-          def new_column_from_field(table_name, field)
-            default = field["dflt_value"]
+        def new_column_from_field(table_name, field)
+          default = field["dflt_value"]
 
-            type_metadata = fetch_type_metadata(field["type"])
-            default_value = extract_value_from_default(default)
-            default_function = extract_default_function(default_value, default)
+          type_metadata = fetch_type_metadata(field["type"])
+          default_value = extract_value_from_default(default)
+          default_function = extract_default_function(default_value, default)
 
-            Column.new(
-              field["name"],
-              default_value,
-              type_metadata,
-              field["notnull"].to_i == 0,
-              default_function,
-              collation: field["collation"]
-            )
-          end
+          Column.new(
+            field["name"],
+            default_value,
+            type_metadata,
+            field["notnull"].to_i == 0,
+            default_function,
+            collation: field["collation"]
+          )
+        end
 
-          def data_source_sql(name = nil, type: nil)
-            scope = quoted_scope(name, type: type)
-            scope[:type] ||= "'table','view'"
+        def data_source_sql(name = nil, type: nil)
+          scope = quoted_scope(name, type: type)
+          scope[:type] ||= "'table','view'"
 
-            sql = +"SELECT name FROM sqlite_master WHERE name <> 'sqlite_sequence'"
-            sql << " AND name = #{scope[:name]}" if scope[:name]
-            sql << " AND type IN (#{scope[:type]})"
-            sql
-          end
+          sql = +"SELECT name FROM sqlite_master WHERE name <> 'sqlite_sequence'"
+          sql << " AND name = #{scope[:name]}" if scope[:name]
+          sql << " AND type IN (#{scope[:type]})"
+          sql
+        end
 
-          def quoted_scope(name = nil, type: nil)
-            type = \
-              case type
-              when "BASE TABLE"
-                "'table'"
-              when "VIEW"
-                "'view'"
-              end
-            scope = {}
-            scope[:name] = quote(name) if name
-            scope[:type] = type if type
-            scope
-          end
+        def quoted_scope(name = nil, type: nil)
+          type = \
+            case type
+            when "BASE TABLE"
+              "'table'"
+            when "VIEW"
+              "'view'"
+            end
+          scope = {}
+          scope[:name] = quote(name) if name
+          scope[:type] = type if type
+          scope
+        end
       end
     end
   end

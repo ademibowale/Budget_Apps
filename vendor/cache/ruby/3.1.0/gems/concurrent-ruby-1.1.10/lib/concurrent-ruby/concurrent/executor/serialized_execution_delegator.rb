@@ -13,7 +13,7 @@ module Concurrent
     include SerialExecutorService
 
     def initialize(executor)
-      @executor   = executor
+      @executor = executor
       @serializer = SerializedExecution.new
       super(executor)
     end

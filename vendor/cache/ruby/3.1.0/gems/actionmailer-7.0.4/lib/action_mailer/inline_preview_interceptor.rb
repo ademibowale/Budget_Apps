@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "base64"
 
 module ActionMailer
@@ -40,18 +38,18 @@ module ActionMailer
     end
 
     private
-      attr_reader :message
+    attr_reader :message
 
-      def html_part
-        @html_part ||= message.html_part
-      end
+    def html_part
+      @html_part ||= message.html_part
+    end
 
-      def data_url(part)
-        "data:#{part.mime_type};base64,#{strict_encode64(part.body.raw_source)}"
-      end
+    def data_url(part)
+      "data:#{part.mime_type};base64,#{strict_encode64(part.body.raw_source)}"
+    end
 
-      def find_part(cid)
-        message.all_parts.find { |p| p.attachment? && p.cid == cid }
-      end
+    def find_part(cid)
+      message.all_parts.find { |p| p.attachment? && p.cid == cid }
+    end
   end
 end

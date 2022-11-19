@@ -100,11 +100,11 @@ if Concurrent.on_jruby?
       private
 
       def ns_initialize(opts)
-        min_length       = opts.fetch(:min_threads, DEFAULT_MIN_POOL_SIZE).to_i
-        max_length       = opts.fetch(:max_threads, DEFAULT_MAX_POOL_SIZE).to_i
-        idletime         = opts.fetch(:idletime, DEFAULT_THREAD_IDLETIMEOUT).to_i
-        @max_queue       = opts.fetch(:max_queue, DEFAULT_MAX_QUEUE_SIZE).to_i
-        @synchronous     = opts.fetch(:synchronous, DEFAULT_SYNCHRONOUS)
+        min_length = opts.fetch(:min_threads, DEFAULT_MIN_POOL_SIZE).to_i
+        max_length = opts.fetch(:max_threads, DEFAULT_MAX_POOL_SIZE).to_i
+        idletime = opts.fetch(:idletime, DEFAULT_THREAD_IDLETIMEOUT).to_i
+        @max_queue = opts.fetch(:max_queue, DEFAULT_MAX_QUEUE_SIZE).to_i
+        @synchronous = opts.fetch(:synchronous, DEFAULT_SYNCHRONOUS)
         @fallback_policy = opts.fetch(:fallback_policy, :abort)
 
         raise ArgumentError.new("`synchronous` cannot be set unless `max_queue` is 0") if @synchronous && @max_queue > 0

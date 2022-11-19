@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveModel
   module Validations
     # == Active \Model \Validation \Callbacks
@@ -98,17 +96,17 @@ module ActiveModel
         end
 
         private
-          def set_options_for_callback(options)
-            if options.key?(:on)
-              options[:on] = Array(options[:on])
-              options[:if] = [
-                ->(o) {
-                  !(options[:on] & Array(o.validation_context)).empty?
-                },
-                *options[:if]
-              ]
-            end
+        def set_options_for_callback(options)
+          if options.key?(:on)
+            options[:on] = Array(options[:on])
+            options[:if] = [
+              ->(o) {
+                !(options[:on] & Array(o.validation_context)).empty?
+              },
+              *options[:if]
+            ]
           end
+        end
       end
 
     private

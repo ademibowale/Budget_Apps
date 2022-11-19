@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class DatabaseConfigurations
     # ActiveRecord::Base.configurations will return either a HashConfig or

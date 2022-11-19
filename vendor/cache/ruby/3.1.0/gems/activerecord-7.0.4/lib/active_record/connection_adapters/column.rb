@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # :stopdoc:
   module ConnectionAdapters
@@ -92,15 +90,15 @@ module ActiveRecord
       end
 
       private
-        def deduplicated
-          @name = -name
-          @sql_type_metadata = sql_type_metadata.deduplicate if sql_type_metadata
-          @default = -default if default
-          @default_function = -default_function if default_function
-          @collation = -collation if collation
-          @comment = -comment if comment
-          super
-        end
+      def deduplicated
+        @name = -name
+        @sql_type_metadata = sql_type_metadata.deduplicate if sql_type_metadata
+        @default = -default if default
+        @default_function = -default_function if default_function
+        @collation = -collation if collation
+        @comment = -comment if comment
+        super
+      end
     end
 
     class NullColumn < Column

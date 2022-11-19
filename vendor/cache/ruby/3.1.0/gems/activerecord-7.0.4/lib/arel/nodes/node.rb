@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     ###
@@ -45,7 +43,9 @@ module Arel # :nodoc: all
       def fetch_attribute
       end
 
-      def equality?; false; end
+      def equality?
+        false
+      end
     end
   end
 end

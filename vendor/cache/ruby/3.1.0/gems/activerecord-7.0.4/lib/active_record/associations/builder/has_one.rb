@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord::Associations::Builder # :nodoc:
   class HasOne < SingularAssociation # :nodoc:
     def self.macro
@@ -45,7 +43,7 @@ module ActiveRecord::Associations::Builder # :nodoc:
     end
 
     def self.add_touch_callbacks(model, reflection)
-      name  = reflection.name
+      name = reflection.name
       touch = reflection.options[:touch]
 
       callback = -> (record) { HasOne.touch_record(record, name, touch) }

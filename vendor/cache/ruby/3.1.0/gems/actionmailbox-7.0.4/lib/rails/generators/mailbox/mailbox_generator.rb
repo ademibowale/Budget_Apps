@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Rails
   module Generators
     class MailboxGenerator < NamedBase
@@ -20,13 +18,13 @@ module Rails
       hook_for :test_framework
 
       private
-        def file_name # :doc:
-          @_file_name ||= super.sub(/_mailbox\z/i, "")
-        end
+      def file_name # :doc:
+        @_file_name ||= super.sub(/_mailbox\z/i, "")
+      end
 
-        def application_mailbox_file_name
-          "app/mailboxes/application_mailbox.rb"
-        end
+      def application_mailbox_file_name
+        "app/mailboxes/application_mailbox.rb"
+      end
     end
   end
 end

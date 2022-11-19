@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   module Transformers
     # A Transformer applies a set of transformations to an image.
@@ -29,11 +27,11 @@ module ActiveStorage
       end
 
       private
-        # Returns an open Tempfile containing a transformed image in the given +format+.
-        # All subclasses implement this method.
-        def process(file, format:) # :doc:
-          raise NotImplementedError
-        end
+      # Returns an open Tempfile containing a transformed image in the given +format+.
+      # All subclasses implement this method.
+      def process(file, format:) # :doc:
+        raise NotImplementedError
+      end
     end
   end
 end

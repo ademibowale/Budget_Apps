@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   # Represents a template path within ActionView's lookup and rendering system,
   # like "users/show"
@@ -43,8 +41,8 @@ module ActionView
     end
 
     def initialize(name, prefix, partial, virtual)
-      @name    = name
-      @prefix  = prefix
+      @name = name
+      @prefix = prefix
       @partial = partial
       @virtual = virtual
     end

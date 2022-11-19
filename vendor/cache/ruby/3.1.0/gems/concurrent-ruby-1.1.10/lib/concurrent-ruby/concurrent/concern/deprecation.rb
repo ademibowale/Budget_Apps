@@ -11,16 +11,16 @@ module Concurrent
 
       def deprecated(message, strip = 2)
         caller_line = caller(strip).first if strip > 0
-        klass       = if Module === self
-                        self
+        klass = if Module === self
+          self
                       else
                         self.class
-                      end
-        message     = if strip > 0
-                        format("[DEPRECATED] %s\ncalled on: %s", message, caller_line)
+        end
+        message = if strip > 0
+          format("[DEPRECATED] %s\ncalled on: %s", message, caller_line)
                       else
                         format('[DEPRECATED] %s', message)
-                      end
+        end
         log WARN, klass.to_s, message
       end
 

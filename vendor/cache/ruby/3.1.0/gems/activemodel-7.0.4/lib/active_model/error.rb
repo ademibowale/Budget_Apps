@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/class/attribute"
 
 module ActiveModel
@@ -56,9 +54,9 @@ module ActiveModel
       })
 
       I18n.t(defaults.shift,
-        default:  defaults,
+        default: defaults,
         attribute: attr_name,
-        message:   message)
+        message: message)
     end
 
     def self.generate_message(attribute, type, base, options) # :nodoc:
@@ -200,8 +198,8 @@ module ActiveModel
     end
 
     protected
-      def attributes_for_hash
-        [@base, @attribute, @raw_type, @options.except(*CALLBACKS_OPTIONS)]
-      end
+    def attributes_for_hash
+      [@base, @attribute, @raw_type, @options.except(*CALLBACKS_OPTIONS)]
+    end
   end
 end

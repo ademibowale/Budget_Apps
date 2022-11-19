@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attribute_accessors"
 require "active_support/core_ext/module/delegation"
 require "json"
@@ -44,32 +42,32 @@ module ActiveSupport
       end
 
       private
-        def convert_dates_from(data)
-          case data
-          when nil
-            nil
-          when DATE_REGEX
-            begin
-              Date.parse(data)
-            rescue ArgumentError
-              data
-            end
-          when DATETIME_REGEX
-            begin
-              Time.zone.parse(data)
-            rescue ArgumentError
-              data
-            end
-          when Array
-            data.map! { |d| convert_dates_from(d) }
-          when Hash
-            data.transform_values! do |value|
-              convert_dates_from(value)
-            end
-          else
+      def convert_dates_from(data)
+        case data
+        when nil
+          nil
+        when DATE_REGEX
+          begin
+            Date.parse(data)
+          rescue ArgumentError
             data
           end
+        when DATETIME_REGEX
+          begin
+            Time.zone.parse(data)
+          rescue ArgumentError
+            data
+          end
+        when Array
+          data.map! { |d| convert_dates_from(d) }
+        when Hash
+          data.transform_values! do |value|
+            convert_dates_from(value)
+          end
+        else
+          data
         end
+      end
     end
   end
 end

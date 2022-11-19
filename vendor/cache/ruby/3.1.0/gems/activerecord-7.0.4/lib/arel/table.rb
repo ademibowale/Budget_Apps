@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   class Table
     include Arel::FactoryMethods
@@ -112,6 +110,6 @@ module Arel # :nodoc: all
     end
 
     private
-      attr_reader :type_caster
+    attr_reader :type_caster
   end
 end

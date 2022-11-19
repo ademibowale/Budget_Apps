@@ -1,11 +1,15 @@
-# frozen_string_literal: true
-
 module Capybara
   module RSpecMatchers
     module CountSugar
-      def once; exactly(1); end
-      def twice; exactly(2); end
-      def thrice; exactly(3); end
+      def once
+        exactly(1)
+      end
+      def twice
+        exactly(2)
+      end
+      def thrice
+        exactly(3)
+      end
 
       def exactly(number)
         options[:count] = number

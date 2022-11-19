@@ -3,7 +3,7 @@ require "rake/testtask"
 
 begin
   require "rake/extensiontask"
-  task :build => :compile
+  task build: :compile
 
   Rake::ExtensionTask.new("debug") do |ext|
     ext.lib_dir = "lib/debug"
@@ -11,7 +11,7 @@ begin
 rescue LoadError
 end
 
-task :default => [:clobber, :compile, 'README.md', :check_readme, :test_console]
+task default: [:clobber, :compile, 'README.md', :check_readme, :test_console]
 
 file 'README.md' => ['lib/debug/session.rb', 'lib/debug/config.rb',
                      'exe/rdbg', 'misc/README.md.erb'] do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module ViewPaths
     extend ActiveSupport::Concern
@@ -63,11 +61,11 @@ module ActionView
       end
 
       private
-        # Override this method in your controller if you want to change paths prefixes for finding views.
-        # Prefixes defined here will still be added to parents' <tt>._prefixes</tt>.
-        def local_prefixes
-          [controller_path]
-        end
+      # Override this method in your controller if you want to change paths prefixes for finding views.
+      # Prefixes defined here will still be added to parents' <tt>._prefixes</tt>.
+      def local_prefixes
+        [controller_path]
+      end
     end
 
     # :stopdoc:

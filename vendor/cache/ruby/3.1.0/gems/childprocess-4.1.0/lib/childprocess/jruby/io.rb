@@ -12,5 +12,3 @@ module ChildProcess
     end # IO
   end # Unix
 end # ChildProcess
-
-

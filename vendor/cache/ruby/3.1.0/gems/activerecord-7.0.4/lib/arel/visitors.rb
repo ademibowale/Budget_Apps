@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "arel/visitors/visitor"
 require "arel/visitors/to_sql"
 require "arel/visitors/sqlite"

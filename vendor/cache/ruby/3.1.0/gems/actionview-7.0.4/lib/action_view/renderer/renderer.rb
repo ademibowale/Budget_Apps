@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   # This is the main entry point for rendering. It basically delegates
   # to other objects like TemplateRenderer and PartialRenderer which
@@ -97,15 +95,15 @@ module ActionView
     end
 
     private
-      def collection_from_options(options)
-        if options.key?(:collection)
-          collection = options[:collection]
-          collection || []
-        end
+    def collection_from_options(options)
+      if options.key?(:collection)
+        collection = options[:collection]
+        collection || []
       end
+    end
 
-      def collection_from_object(object)
-        object if object.respond_to?(:to_ary)
-      end
+    def collection_from_object(object)
+      object if object.respond_to?(:to_ary)
+    end
   end
 end

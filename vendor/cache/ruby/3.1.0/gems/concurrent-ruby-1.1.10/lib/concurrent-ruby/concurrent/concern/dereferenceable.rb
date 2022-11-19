@@ -29,7 +29,7 @@ module Concurrent
       #
       # @param [Object] value the new value
       def value=(value)
-        synchronize{ @value = value }
+        synchronize { @value = value }
       end
 
       # @!macro dereferenceable_set_deref_options
@@ -46,7 +46,7 @@ module Concurrent
       #   @option opts [String] :copy_on_deref (nil) call the given `Proc` passing
       #     the internal value and returning the value returned from the proc
       def set_deref_options(opts = {})
-        synchronize{ ns_set_deref_options(opts) }
+        synchronize { ns_set_deref_options(opts) }
       end
 
       # @!macro dereferenceable_set_deref_options

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class DestroyAssociationAsyncError < StandardError
   end
@@ -29,8 +27,8 @@ module ActiveRecord
     end
 
     private
-      def owner_destroyed?(owner, ensuring_owner_was_method)
-        !owner || (ensuring_owner_was_method && owner.public_send(ensuring_owner_was_method))
-      end
+    def owner_destroyed?(owner, ensuring_owner_was_method)
+      !owner || (ensuring_owner_was_method && owner.public_send(ensuring_owner_was_method))
+    end
   end
 end

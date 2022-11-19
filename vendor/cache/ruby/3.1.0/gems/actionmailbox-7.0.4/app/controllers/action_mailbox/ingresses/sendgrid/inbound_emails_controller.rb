@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionMailbox
   # Ingests inbound emails from SendGrid. Requires an +email+ parameter containing a full RFC 822 message.
   #
@@ -55,14 +53,14 @@ module ActionMailbox
     end
 
     private
-      def mail
-        params.require(:email).tap do |raw_email|
-          envelope["to"].each { |to| raw_email.prepend("X-Original-To: ", to, "\n") } if params.key?(:envelope)
-        end
+    def mail
+      params.require(:email).tap do |raw_email|
+        envelope["to"].each { |to| raw_email.prepend("X-Original-To: ", to, "\n") } if params.key?(:envelope)
       end
+    end
 
-      def envelope
-        JSON.parse(params.require(:envelope))
-      end
+    def envelope
+      JSON.parse(params.require(:envelope))
+    end
   end
 end

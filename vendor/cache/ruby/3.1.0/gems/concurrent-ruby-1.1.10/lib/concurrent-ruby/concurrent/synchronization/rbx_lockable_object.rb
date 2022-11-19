@@ -9,13 +9,13 @@ module Concurrent
       def initialize(*defaults)
         super(*defaults)
         @__Waiters__ = []
-        @__owner__   = nil
+        @__owner__ = nil
       end
 
       def initialize_copy(other)
         super
         @__Waiters__ = []
-        @__owner__   = nil
+        @__owner__ = nil
       end
 
       protected
@@ -28,7 +28,7 @@ module Concurrent
           Rubinius.synchronize(self) do
             begin
               @__owner__ = Thread.current
-              result     = yield
+              result = yield
             ensure
               @__owner__ = nil
             end

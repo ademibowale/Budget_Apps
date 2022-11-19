@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Capybara
   module Queries
     class AncestorQuery < Capybara::Queries::SelectorQuery
@@ -11,8 +9,8 @@ module Capybara
           scope = node.respond_to?(:session) ? node.session.current_scope : node.find(:xpath, '/*')
           match_results = super(scope, exact)
           ancestors = node.find_xpath(XPath.ancestor.to_s)
-                          .map(&method(:to_element))
-                          .select { |el| match_results.include?(el) }
+            .map(&method(:to_element))
+            .select { |el| match_results.include?(el) }
           Capybara::Result.new(ordered_results(ancestors), self)
         end
       end

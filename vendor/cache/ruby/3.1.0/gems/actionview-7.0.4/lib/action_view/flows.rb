@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/string/output_safety"
 
 module ActionView
@@ -29,12 +27,12 @@ module ActionView
 
   class StreamingFlow < OutputFlow # :nodoc:
     def initialize(view, fiber)
-      @view    = view
-      @parent  = nil
-      @child   = view.output_buffer
+      @view = view
+      @parent = nil
+      @child = view.output_buffer
       @content = view.view_flow.content
-      @fiber   = fiber
-      @root    = Fiber.current.object_id
+      @fiber = fiber
+      @root = Fiber.current.object_id
     end
 
     # Try to get stored content. If the content
@@ -68,8 +66,8 @@ module ActionView
     end
 
     private
-      def inside_fiber?
-        Fiber.current.object_id != @root
-      end
+    def inside_fiber?
+      Fiber.current.object_id != @root
+    end
   end
 end

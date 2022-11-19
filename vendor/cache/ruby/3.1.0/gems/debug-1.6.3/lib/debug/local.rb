@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'io/console/size'
 require_relative 'console'
 
@@ -13,9 +11,9 @@ module DEBUGGER__
       false
     end
 
-    def activate session, on_fork: false
+    def activate(session, on_fork: false)
       unless CONFIG[:no_sigint_hook]
-        prev_handler = trap(:SIGINT){
+        prev_handler = trap(:SIGINT) {
           if session.active?
             ThreadClient.current.on_trap :SIGINT
           end
@@ -41,25 +39,25 @@ module DEBUGGER__
       end
     end
 
-    def quit n
+    def quit(n)
       exit n
     end
 
-    def ask prompt
+    def ask(prompt)
       setup_interrupt do
         print prompt
         ($stdin.gets || '').strip
       end
     end
 
-    def puts str = nil
+    def puts(str = nil)
       case str
       when Array
-        str.each{|line|
+        str.each { |line|
           $stdout.puts line.chomp
         }
       when String
-        str.each_line{|line|
+        str.each_line { |line|
           $stdout.puts line.chomp
         }
       when nil
@@ -67,7 +65,7 @@ module DEBUGGER__
       end
     end
 
-    def readline prompt = '(rdbg)'
+    def readline(prompt = '(rdbg)')
       setup_interrupt do
         (@console.readline(prompt) || 'quit').strip
       end
@@ -77,7 +75,7 @@ module DEBUGGER__
       SESSION.intercept_trap_sigint false do
         current_thread = Thread.current # should be session_server thread
 
-        prev_handler = trap(:INT){
+        prev_handler = trap(:INT) {
           current_thread.raise Interrupt
         }
 
@@ -90,7 +88,7 @@ module DEBUGGER__
     def after_fork_parent
       parent_pid = Process.pid
 
-      at_exit{
+      at_exit {
         SESSION.intercept_trap_sigint_end
         trap(:SIGINT, :IGNORE)
 
@@ -106,4 +104,3 @@ module DEBUGGER__
     end
   end
 end
-

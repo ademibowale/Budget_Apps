@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/session/matchers'
 require 'addressable/uri'
 
@@ -873,7 +871,7 @@ module Capybara
     end
 
     def default_fn(extension)
-      timestamp = Time.new.strftime('%Y%m%d%H%M%S')
+      timestamp = Time.zone.now.strftime('%Y%m%d%H%M%S')
       "capybara-#{timestamp}#{rand(10**10)}.#{extension}"
     end
 

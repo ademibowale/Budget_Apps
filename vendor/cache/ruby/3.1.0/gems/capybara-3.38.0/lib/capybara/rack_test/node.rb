@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/rack_test/errors'
 
 class Capybara::RackTest::Node < Capybara::Driver::Node
@@ -7,19 +5,19 @@ class Capybara::RackTest::Node < Capybara::Driver::Node
 
   def all_text
     native.text
-          .gsub(/[\u200b\u200e\u200f]/, '')
-          .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
-          .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
-          .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
-          .tr("\u00a0", ' ')
+      .gsub(/[\u200b\u200e\u200f]/, '')
+      .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
+      .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
+      .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
+      .tr("\u00a0", ' ')
   end
 
   def visible_text
     displayed_text.squeeze(' ')
-                  .gsub(/[\ \n]*\n[\ \n]*/, "\n")
-                  .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
-                  .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
-                  .tr("\u00a0", ' ')
+      .gsub(/[\ \n]*\n[\ \n]*/, "\n")
+      .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
+      .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
+      .tr("\u00a0", ' ')
   end
 
   def [](name)
@@ -154,8 +152,8 @@ protected
       ''
     elsif native.text?
       native.text
-            .gsub(/[\u200b\u200e\u200f]/, '')
-            .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
+        .gsub(/[\u200b\u200e\u200f]/, '')
+        .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
     elsif native.element?
       text = native.children.map do |child|
         Capybara::RackTest::Node.new(driver, child).displayed_text(check_ancestor: false)

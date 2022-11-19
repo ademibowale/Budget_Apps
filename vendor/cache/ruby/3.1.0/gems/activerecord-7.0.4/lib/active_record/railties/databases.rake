@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record"
 require "active_support/configuration_file"
 require "active_support/deprecation"

@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 #--
 # Portions copyright 2004 by Jim Weirich (jim@weirichhouse.org).
 # Portions copyright 2005 by Sam Ruby (rubys@intertwingly.net).
@@ -32,17 +30,16 @@ class TestEvents < Builder::Test
     def end_tag(tag)
       @events << [:end_tag, tag]
     end
-    
+
     def text(string)
       @events << [:text, string]
     end
-    
-  end
 
+  end
 
   def setup
     @target = Target.new
-    @xml = Builder::XmlEvents.new(:target=>@target)
+    @xml = Builder::XmlEvents.new(target: @target)
   end
 
   def test_simple
@@ -86,31 +83,31 @@ class TestEvents < Builder::Test
   end
 
   def test_attributes
-    @xml.a(:b=>"c", :x=>"y")
-    expect [:start_tag, :a, {:x => "y", :b => "c"}]
+    @xml.a(b: "c", x: "y")
+    expect [:start_tag, :a, { x: "y", b: "c" }]
     expect [:end_tag, :a]
     expect_done
   end
 
   def test_moderately_complex
     @xml.tag! "address-book" do |x|
-      x.entry :id=>"1" do
-	x.name {
-	  x.first "Bill"
-	  x.last "Smith"
-	}
-	x.address "Cincinnati"
+      x.entry id: "1" do
+        x.name {
+          x.first "Bill"
+          x.last "Smith"
+        }
+  x.address "Cincinnati"
       end
-      x.entry :id=>"2" do
-	x.name {
-	  x.first "John"
-	  x.last "Doe"
-	}
-	x.address "Columbus"
+      x.entry id: "2" do
+        x.name {
+          x.first "John"
+          x.last "Doe"
+        }
+  x.address "Columbus"
       end
     end
     expect [:start_tag, "address-book".intern, nil]
-    expect [:start_tag, :entry, {:id => "1"}]
+    expect [:start_tag, :entry, { id: "1" }]
     expect [:start_tag, :name, nil]
     expect [:start_tag, :first, nil]
     expect [:text, "Bill"]
@@ -123,7 +120,7 @@ class TestEvents < Builder::Test
     expect [:text, "Cincinnati"]
     expect [:end_tag, :address]
     expect [:end_tag, :entry]
-    expect [:start_tag, :entry, {:id => "2"}]
+    expect [:start_tag, :entry, { id: "2" }]
     expect [:start_tag, :name, nil]
     expect [:start_tag, :first, nil]
     expect [:text, "John"]

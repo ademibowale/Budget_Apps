@@ -187,7 +187,7 @@ module Concurrent
 
     # @!visibility private
     def notify_observers(value, reason)
-      observers.notify_and_delete_observers{ [Time.now, value, reason] }
+      observers.notify_and_delete_observers { [Time.now, value, reason] }
     end
 
     # @!visibility private

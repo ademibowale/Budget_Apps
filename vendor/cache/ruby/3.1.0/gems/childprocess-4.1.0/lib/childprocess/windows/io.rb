@@ -21,5 +21,3 @@ module ChildProcess
     end # IO
   end # Windows
 end # ChildProcess
-
-

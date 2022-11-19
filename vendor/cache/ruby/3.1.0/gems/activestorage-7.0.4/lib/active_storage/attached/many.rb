@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   # Decorated proxy object representing of multiple attachments to a model.
   class Attached::Many < Attached
@@ -67,12 +65,12 @@ module ActiveStorage
     end
 
     private
-      def purge_many
-        Attached::Changes::PurgeMany.new(name, record, attachments)
-      end
+    def purge_many
+      Attached::Changes::PurgeMany.new(name, record, attachments)
+    end
 
-      def detach_many
-        Attached::Changes::DetachMany.new(name, record, attachments)
-      end
+    def detach_many
+      Attached::Changes::DetachMany.new(name, record, attachments)
+    end
   end
 end

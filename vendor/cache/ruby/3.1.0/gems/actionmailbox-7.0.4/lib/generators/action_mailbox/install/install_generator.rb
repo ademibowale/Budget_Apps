@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rails/generators/mailbox/mailbox_generator"
 
 module ActionMailbox

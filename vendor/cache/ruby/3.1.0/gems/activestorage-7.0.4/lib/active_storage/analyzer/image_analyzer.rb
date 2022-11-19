@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   # This is an abstract base class for image analyzers, which extract width and height from an image blob.
   #

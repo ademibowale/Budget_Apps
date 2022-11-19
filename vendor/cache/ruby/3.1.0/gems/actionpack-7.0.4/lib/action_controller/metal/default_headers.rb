@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   # Allows configuring default headers that will be automatically merged into
   # each response.

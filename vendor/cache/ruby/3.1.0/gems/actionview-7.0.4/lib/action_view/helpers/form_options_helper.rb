@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "cgi"
 require "erb"
 require "active_support/core_ext/string/output_safety"
@@ -529,7 +527,7 @@ module ActionView
       # <b>Note:</b> Only the <tt><optgroup></tt> and <tt><option></tt> tags are returned, so you still have to
       # wrap the output in an appropriate <tt><select></tt> tag.
       def grouped_options_for_select(grouped_options, selected_key = nil, options = {})
-        prompt  = options[:prompt]
+        prompt = options[:prompt]
         divider = options[:divider]
 
         body = "".html_safe
@@ -781,56 +779,56 @@ module ActionView
       end
 
       private
-        def option_html_attributes(element)
-          if Array === element
-            element.select { |e| Hash === e }.reduce({}, :merge!)
-          else
-            {}
+      def option_html_attributes(element)
+        if Array === element
+          element.select { |e| Hash === e }.reduce({}, :merge!)
+        else
+          {}
+        end
+      end
+
+      def option_text_and_value(option)
+        # Options are [text, value] pairs or strings used for both.
+        if !option.is_a?(String) && option.respond_to?(:first) && option.respond_to?(:last)
+          option = option.reject { |e| Hash === e } if Array === option
+          [option.first, option.last]
+        else
+          [option, option]
+        end
+      end
+
+      def option_value_selected?(value, selected)
+        Array(selected).include? value
+      end
+
+      def extract_selected_and_disabled(selected)
+        if selected.is_a?(Proc)
+          [selected, nil]
+        else
+          selected = Array.wrap(selected)
+          options = selected.extract_options!.symbolize_keys
+          selected_items = options.fetch(:selected, selected)
+          [selected_items, options[:disabled]]
+        end
+      end
+
+      def extract_values_from_collection(collection, value_method, selected)
+        if selected.is_a?(Proc)
+          collection.filter_map do |element|
+            element.public_send(value_method) if selected.call(element)
           end
+        else
+          selected
         end
+      end
 
-        def option_text_and_value(option)
-          # Options are [text, value] pairs or strings used for both.
-          if !option.is_a?(String) && option.respond_to?(:first) && option.respond_to?(:last)
-            option = option.reject { |e| Hash === e } if Array === option
-            [option.first, option.last]
-          else
-            [option, option]
-          end
-        end
+      def value_for_collection(item, value)
+        value.respond_to?(:call) ? value.call(item) : item.public_send(value)
+      end
 
-        def option_value_selected?(value, selected)
-          Array(selected).include? value
-        end
-
-        def extract_selected_and_disabled(selected)
-          if selected.is_a?(Proc)
-            [selected, nil]
-          else
-            selected = Array.wrap(selected)
-            options = selected.extract_options!.symbolize_keys
-            selected_items = options.fetch(:selected, selected)
-            [selected_items, options[:disabled]]
-          end
-        end
-
-        def extract_values_from_collection(collection, value_method, selected)
-          if selected.is_a?(Proc)
-            collection.filter_map do |element|
-              element.public_send(value_method) if selected.call(element)
-            end
-          else
-            selected
-          end
-        end
-
-        def value_for_collection(item, value)
-          value.respond_to?(:call) ? value.call(item) : item.public_send(value)
-        end
-
-        def prompt_text(prompt)
-          prompt.kind_of?(String) ? prompt : I18n.translate("helpers.select.prompt", default: "Please select")
-        end
+      def prompt_text(prompt)
+        prompt.kind_of?(String) ? prompt : I18n.translate("helpers.select.prompt", default: "Please select")
+      end
     end
 
     class FormBuilder

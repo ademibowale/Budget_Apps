@@ -15,7 +15,9 @@ if ChildProcess.windows?
 
     it "raises an ArgumentError if the #to_io does not return an IO " do
       fake_io = Object.new
-      def fake_io.to_io() StringIO.new end
+      def fake_io.to_io()
+        StringIO.new
+      end
 
       expect { io.stdout = fake_io }.to raise_error(ArgumentError, /must have :fileno or :to_io/)
     end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara::SpecHelper.spec '#has_text?' do
   it 'should be true if the given text is on the page at least once' do
     @session.visit('/with_html')
@@ -114,8 +112,12 @@ Capybara::SpecHelper.spec '#has_text?' do
   context 'with object implementing to_s and to_hash' do
     it 'should work if the object is passed alone' do
       with_to_hash = Class.new do
-        def to_s; '42' end
-        def to_hash; { value: 'Other hash' } end
+        def to_s
+          '42'
+        end
+        def to_hash
+          { value: 'Other hash' }
+        end
       end.new
       @session.visit('/with_html')
       expect(@session).to have_text(with_to_hash)
@@ -123,8 +125,12 @@ Capybara::SpecHelper.spec '#has_text?' do
 
     it 'should work if passed with empty options' do
       with_to_hash = Class.new do
-        def to_s; '42' end
-        def to_hash; { value: 'Other hash' } end
+        def to_s
+          '42'
+        end
+        def to_hash
+          { value: 'Other hash' }
+        end
       end.new
       @session.visit('/with_html')
       expect(@session).to have_text(:visible, with_to_hash, **{})

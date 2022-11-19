@@ -64,11 +64,10 @@ module Concurrent
                       else
                         warn 'Possibly unsupported Ruby implementation'
                         ::Set
-                      end
+  end
   private_constant :SetImplementation
 
   # @!macro concurrent_set
   class Set < SetImplementation
   end
 end
-

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_dispatch/journey"
 require "active_support/core_ext/object/to_query"
 require "active_support/core_ext/module/redefine_method"
@@ -23,12 +21,14 @@ module ActionDispatch
           @raise_on_name_error = raise_on_name_error
         end
 
-        def dispatcher?; true; end
+        def dispatcher?
+          true
+        end
 
         def serve(req)
-          params     = req.path_parameters
+          params = req.path_parameters
           controller = controller req
-          res        = controller.make_response! req
+          res = controller.make_response! req
           dispatch(controller, params[:action], req, res)
         rescue ActionController::RoutingError
           if @raise_on_name_error
@@ -57,7 +57,9 @@ module ActionDispatch
         end
 
         private
-          def controller(_); @controller_class; end
+        def controller(_)
+          @controller_class
+          end
       end
 
       # A NamedRouteCollection instance is a collection of named routes, and also
@@ -72,7 +74,7 @@ module ActionDispatch
           @routes = {}
           @path_helpers = Set.new
           @url_helpers = Set.new
-          @url_helpers_module  = Module.new
+          @url_helpers_module = Module.new
           @path_helpers_module = Module.new
         end
 
@@ -100,9 +102,9 @@ module ActionDispatch
         end
 
         def add(name, route)
-          key       = name.to_sym
+          key = name.to_sym
           path_name = :"#{name}_path"
-          url_name  = :"#{name}_url"
+          url_name = :"#{name}_url"
 
           if routes.key? key
             @path_helpers_module.undef_method path_name
@@ -127,8 +129,8 @@ module ActionDispatch
           routes.key? name.to_sym
         end
 
-        alias []=   add
-        alias []    get
+        alias []= add
+        alias [] get
         alias clear clear!
 
         def each(&block)
@@ -190,7 +192,7 @@ module ActionDispatch
             def initialize(route, options, route_name)
               super
               @required_parts = @route.required_parts
-              @arg_size       = @required_parts.size
+              @arg_size = @required_parts.size
             end
 
             def call(t, method_name, args, inner_options, url_strategy)
@@ -216,47 +218,47 @@ module ActionDispatch
             end
 
             private
-              def optimized_helper(args)
-                params = parameterize_args(args) do
-                  raise_generation_error(args)
-                end
-
-                @route.format params
+            def optimized_helper(args)
+              params = parameterize_args(args) do
+                raise_generation_error(args)
               end
 
-              def optimize_routes_generation?(t)
-                t.send(:optimize_routes_generation?)
-              end
+              @route.format params
+            end
 
-              def parameterize_args(args)
-                params = {}
-                @arg_size.times { |i|
-                  key = @required_parts[i]
-                  value = args[i].to_param
-                  yield key if value.nil? || value.empty?
-                  params[key] = value
-                }
-                params
-              end
+            def optimize_routes_generation?(t)
+              t.send(:optimize_routes_generation?)
+            end
 
-              def raise_generation_error(args)
-                missing_keys = []
-                params = parameterize_args(args) { |missing_key|
-                  missing_keys << missing_key
-                }
-                constraints = Hash[@route.requirements.merge(params).sort_by { |k, v| k.to_s }]
-                message = +"No route matches #{constraints.inspect}"
-                message << ", missing required keys: #{missing_keys.sort.inspect}"
+            def parameterize_args(args)
+              params = {}
+              @arg_size.times { |i|
+                key = @required_parts[i]
+                value = args[i].to_param
+                yield key if value.nil? || value.empty?
+                params[key] = value
+              }
+              params
+            end
 
-                raise ActionController::UrlGenerationError, message
-              end
+            def raise_generation_error(args)
+              missing_keys = []
+              params = parameterize_args(args) { |missing_key|
+                missing_keys << missing_key
+              }
+              constraints = Hash[@route.requirements.merge(params).sort_by { |k, v| k.to_s }]
+              message = +"No route matches #{constraints.inspect}"
+              message << ", missing required keys: #{missing_keys.sort.inspect}"
+
+              raise ActionController::UrlGenerationError, message
+            end
           end
 
           def initialize(route, options, route_name)
-            @options      = options
+            @options = options
             @segment_keys = route.segment_keys.uniq
-            @route        = route
-            @route_name   = route_name
+            @route = route
+            @route_name = route_name
           end
 
           def call(t, method_name, args, inner_options, url_strategy)
@@ -301,36 +303,36 @@ module ActionDispatch
         end
 
         private
-          # Create a URL helper allowing ordered parameters to be associated
-          # with corresponding dynamic segments, so you can do:
-          #
-          #   foo_url(bar, baz, bang)
-          #
-          # Instead of:
-          #
-          #   foo_url(bar: bar, baz: baz, bang: bang)
-          #
-          # Also allow options hash, so you can do:
-          #
-          #   foo_url(bar, baz, bang, sort_by: 'baz')
-          #
-          def define_url_helper(mod, name, helper, url_strategy)
-            mod.define_method(name) do |*args|
-              last = args.last
-              options = \
-                case last
-                when Hash
-                  args.pop
-                when ActionController::Parameters
-                  args.pop.to_h
-                end
-              helper.call(self, name, args, options, url_strategy)
-            end
+        # Create a URL helper allowing ordered parameters to be associated
+        # with corresponding dynamic segments, so you can do:
+        #
+        #   foo_url(bar, baz, bang)
+        #
+        # Instead of:
+        #
+        #   foo_url(bar: bar, baz: baz, bang: bang)
+        #
+        # Also allow options hash, so you can do:
+        #
+        #   foo_url(bar, baz, bang, sort_by: 'baz')
+        #
+        def define_url_helper(mod, name, helper, url_strategy)
+          mod.define_method(name) do |*args|
+            last = args.last
+            options = \
+              case last
+              when Hash
+                args.pop
+              when ActionController::Parameters
+                args.pop.to_h
+              end
+            helper.call(self, name, args, options, url_strategy)
           end
+        end
       end
 
       # strategy for building URLs to send to the client
-      PATH    = ->(options) { ActionDispatch::Http::URL.path_for(options) }
+      PATH = ->(options) { ActionDispatch::Http::URL.path_for(options) }
       UNKNOWN = ->(options) { ActionDispatch::Http::URL.url_for(options) }
 
       attr_accessor :formatter, :set, :named_routes, :default_scope, :router
@@ -369,14 +371,14 @@ module ActionDispatch
         self.default_url_options = {}
         self.draw_paths = []
 
-        @config                     = config
-        @append                     = []
-        @prepend                    = []
+        @config = config
+        @append = []
+        @prepend = []
         @disable_clear_and_finalize = false
-        @finalized                  = false
-        @env_key                    = "ROUTES_#{object_id}_SCRIPT_NAME"
+        @finalized = false
+        @env_key = "ROUTES_#{object_id}_SCRIPT_NAME"
 
-        @set    = Journey::Routes.new
+        @set = Journey::Routes.new
         @router = Journey::Router.new @set
         @formatter = Journey::Formatter.new self
         @polymorphic_mappings = {}
@@ -537,8 +539,12 @@ module ActionDispatch
               @_proxy.polymorphic_path(record_or_hash_or_array, options)
             end
 
-            def _routes; @_proxy._routes; end
-            def url_options; {}; end
+            def _routes
+              @_proxy._routes
+            end
+            def url_options
+              {}
+            end
           end
 
           url_helpers = routes.named_routes.url_helpers_module
@@ -641,13 +647,13 @@ module ActionDispatch
         end
 
         private
-          def eval_block(t, args, options)
-            t.instance_exec(*args, merge_defaults(options), &block)
-          end
+        def eval_block(t, args, options)
+          t.instance_exec(*args, merge_defaults(options), &block)
+        end
 
-          def merge_defaults(options)
-            defaults ? defaults.merge(options) : options
-          end
+        def merge_defaults(options)
+          defaults ? defaults.merge(options) : options
+        end
       end
 
       class Generator
@@ -655,9 +661,9 @@ module ActionDispatch
 
         def initialize(named_route, options, recall, set)
           @named_route = named_route
-          @options     = options
-          @recall      = recall
-          @set         = set
+          @options = options
+          @recall = recall
+          @set = set
 
           normalize_options!
           normalize_controller_action_id!
@@ -692,8 +698,8 @@ module ActionDispatch
           # be "index", not the recalled action of "show".
 
           if options[:controller]
-            options[:action]     ||= "index"
-            options[:controller]   = options[:controller].to_s
+            options[:action] ||= "index"
+            options[:controller] = options[:controller].to_s
           end
 
           if options.key?(:action)
@@ -746,13 +752,13 @@ module ActionDispatch
         end
 
         private
-          def named_route_exists?
-            named_route && set.named_routes[named_route]
-          end
+        def named_route_exists?
+          named_route && set.named_routes[named_route]
+        end
 
-          def segment_keys
-            set.named_routes[named_route].segment_keys
-          end
+        def segment_keys
+          set.named_routes[named_route].segment_keys
+        end
       end
 
       # Generate the path indicated by the arguments, and return an array of
@@ -804,7 +810,7 @@ module ActionDispatch
         user = password = nil
 
         if options[:user] && options[:password]
-          user     = options.delete :user
+          user = options.delete :user
           password = options.delete :password
         end
 
@@ -837,11 +843,11 @@ module ActionDispatch
           end
         end
 
-        options[:path]        = path
+        options[:path] = path
         options[:script_name] = script_name
-        options[:params]      = params
-        options[:user]        = user
-        options[:password]    = password
+        options[:params] = params
+        options[:user] = user
+        options[:password] = password
 
         url_strategy.call options
       end

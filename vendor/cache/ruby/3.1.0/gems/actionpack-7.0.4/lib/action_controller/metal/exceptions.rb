@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   class ActionControllerError < StandardError # :nodoc:
   end
@@ -26,8 +24,8 @@ module ActionController
     attr_reader :routes, :route_name, :method_name
 
     def initialize(message, routes = nil, route_name = nil, method_name = nil)
-      @routes      = routes
-      @route_name  = route_name
+      @routes = routes
+      @route_name = route_name
       @method_name = method_name
 
       super(message)

@@ -3,7 +3,7 @@ require_relative 'lib/concurrent-ruby-edge/concurrent/edge/version'
 require_relative 'lib/concurrent-ruby/concurrent/utility/engine'
 
 core_gemspec = Gem::Specification.load File.join(__dir__, 'concurrent-ruby.gemspec')
-ext_gemspec  = Gem::Specification.load File.join(__dir__, 'concurrent-ruby-ext.gemspec')
+ext_gemspec = Gem::Specification.load File.join(__dir__, 'concurrent-ruby-ext.gemspec')
 edge_gemspec = Gem::Specification.load File.join(__dir__, 'concurrent-ruby-edge.gemspec')
 
 require 'rake/javaextensiontask'
@@ -19,11 +19,11 @@ unless Concurrent.on_jruby? || Concurrent.on_truffleruby?
   require 'rake/extensiontask'
 
   Rake::ExtensionTask.new('concurrent_ruby_ext', ext_gemspec) do |ext|
-    ext.ext_dir        = 'ext/concurrent-ruby-ext'
-    ext.lib_dir        = 'lib/concurrent-ruby/concurrent'
+    ext.ext_dir = 'ext/concurrent-ruby-ext'
+    ext.lib_dir = 'lib/concurrent-ruby/concurrent'
     ext.source_pattern = '*.{c,h}'
 
-    ext.cross_compile  = true
+    ext.cross_compile = true
     ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
   end
 end
@@ -65,7 +65,7 @@ begin
   namespace :spec do
     desc '* Configured for ci'
     RSpec::Core::RakeTask.new(:ci) do |t|
-      options      = %w[ --color
+      options = %w[ --color
                     --backtrace
                     --order defined
                     --format documentation ]
@@ -86,9 +86,9 @@ begin
   end
 
   desc 'executed in CI'
-  task :ci => [:compile, 'spec:ci']
+  task ci: [:compile, 'spec:ci']
 
-  task :default => [:clobber, :compile, :spec]
+  task default: [:clobber, :compile, :spec]
 rescue LoadError => e
   puts 'RSpec is not installed, skipping test task definitions: ' + e.message
 end
@@ -111,7 +111,7 @@ begin
                          '--default-return', 'undocumented']
 
   desc 'Generate YARD Documentation (signpost, master)'
-  task :yard => ['yard:signpost', 'yard:master']
+  task yard: ['yard:signpost', 'yard:master']
 
   namespace :yard do
 
@@ -219,12 +219,12 @@ rescue LoadError => e
 end
 
 desc 'build, test, and publish the gem'
-task :release => ['release:checks', 'release:build', 'release:test', 'release:publish']
+task release: ['release:checks', 'release:build', 'release:test', 'release:publish']
 
 namespace :release do
   # Depends on environment of @pitr-ch
 
-  task :checks => "yard:#{current_yard_version_name}:uptodate" do
+  task checks: "yard:#{current_yard_version_name}:uptodate" do
     Dir.chdir(__dir__) do
       sh 'test -z "$(git status --porcelain)"' do |ok, res|
         unless ok
@@ -251,14 +251,14 @@ namespace :release do
   end
 
   desc '* build all *.gem files necessary for release'
-  task :build => [:clobber, 'repackage:all']
+  task build: [:clobber, 'repackage:all']
 
   desc '* test actual installed gems instead of cloned repository on MRI and JRuby'
   task :test do
     Dir.chdir(__dir__) do
       old = ENV['RBENV_VERSION']
 
-      mri_version   = `ruby -e 'puts RUBY_VERSION'`.chomp
+      mri_version = `ruby -e 'puts RUBY_VERSION'`.chomp
       jruby_version = File.basename(ENV['CONCURRENT_JRUBY_HOME'])
 
       puts "Using following version:"
@@ -279,7 +279,7 @@ namespace :release do
   end
 
   desc '* do all nested steps'
-  task :publish => ['publish:ask', 'publish:tag', 'publish:rubygems', 'publish:post_steps']
+  task publish: ['publish:ask', 'publish:tag', 'publish:rubygems', 'publish:post_steps']
 
   namespace :publish do
     publish_edge = false
@@ -298,7 +298,7 @@ namespace :release do
     end
 
     desc '** tag HEAD with current version and push to github'
-    task :tag => :ask do
+    task tag: :ask do
       Dir.chdir(__dir__) do
         sh "git tag v#{Concurrent::VERSION}"
         sh "git push origin v#{Concurrent::VERSION}"
@@ -308,7 +308,7 @@ namespace :release do
     end
 
     desc '** push all *.gem files to rubygems'
-    task :rubygems => :ask do
+    task rubygems: :ask do
       Dir.chdir(__dir__) do
         sh "gem push pkg/concurrent-ruby-#{Concurrent::VERSION}.gem"
         sh "gem push pkg/concurrent-ruby-edge-#{Concurrent::EDGE_VERSION}.gem" if publish_edge

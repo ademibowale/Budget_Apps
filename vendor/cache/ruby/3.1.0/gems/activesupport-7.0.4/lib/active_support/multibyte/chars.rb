@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/json"
 require "active_support/core_ext/string/access"
 require "active_support/core_ext/string/behavior"
@@ -168,9 +166,9 @@ module ActiveSupport # :nodoc:
       end
 
       private
-        def chars(string)
-          self.class.new(string)
-        end
+      def chars(string)
+        self.class.new(string)
+      end
     end
   end
 end

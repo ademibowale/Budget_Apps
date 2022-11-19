@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative("path_scanner")
 
 module Bootsnap
@@ -71,7 +69,7 @@ module Bootsnap
         cached_mtime, entries, dirs = store.get(expanded_path)
 
         current_mtime = latest_mtime(expanded_path, dirs || [])
-        return [[], []]        if current_mtime == -1 # path does not exist
+        return [[], []] if current_mtime == -1 # path does not exist
         return [entries, dirs] if cached_mtime == current_mtime
 
         entries, dirs = scan!
@@ -112,12 +110,12 @@ module Bootsnap
       # a Path can be either stable of volatile, depending on how frequently we
       # expect its contents may change. Stable paths aren't rescanned nearly as
       # often.
-      STABLE   = :stable
+      STABLE = :stable
       VOLATILE = :volatile
 
       # Built-in ruby lib stuff doesn't change, but things can occasionally be
       # installed into sitedir, which generally lives under libdir.
-      RUBY_LIBDIR  = RbConfig::CONFIG["libdir"]
+      RUBY_LIBDIR = RbConfig::CONFIG["libdir"]
       RUBY_SITEDIR = RbConfig::CONFIG["sitedir"]
 
       def stability

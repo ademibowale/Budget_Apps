@@ -115,13 +115,13 @@ module Concurrent
     end
 
     def ns_next_generation
-      @generation     = Generation.new(:waiting)
+      @generation = Generation.new(:waiting)
       @number_waiting = 0
     end
 
     def ns_initialize(parties, &block)
       @parties = parties
-      @action  = block
+      @action = block
       ns_next_generation
     end
   end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/delegation"
 
 module ActiveSupport
@@ -52,14 +50,14 @@ module ActiveSupport
     end
 
     private
-      def method_missing(name, *args, &block)
-        # Caches the method definition as a singleton method of the receiver.
-        #
-        # By letting #delegate handle it, we avoid an enclosure that'll capture args.
-        singleton_class.delegate name, to: :instance
+    def method_missing(name, *args, &block)
+      # Caches the method definition as a singleton method of the receiver.
+      #
+      # By letting #delegate handle it, we avoid an enclosure that'll capture args.
+      singleton_class.delegate name, to: :instance
 
-        send(name, *args, &block)
-      end
-      ruby2_keywords(:method_missing)
+      send(name, *args, &block)
+    end
+    ruby2_keywords(:method_missing)
   end
 end

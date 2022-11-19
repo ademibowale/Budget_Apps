@@ -56,7 +56,7 @@ module Concurrent
                         else
                           warn 'Possibly unsupported Ruby implementation'
                           ::Array
-                        end
+  end
   private_constant :ArrayImplementation
 
   # @!macro concurrent_array

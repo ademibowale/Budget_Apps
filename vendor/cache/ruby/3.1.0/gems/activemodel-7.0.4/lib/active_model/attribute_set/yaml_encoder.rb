@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveModel
   class AttributeSet
     # Attempts to do more intelligent YAML dumping of an
@@ -34,7 +32,7 @@ module ActiveModel
       end
 
       private
-        attr_reader :default_types
+      attr_reader :default_types
     end
   end
 end

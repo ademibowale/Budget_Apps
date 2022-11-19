@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module Testing
     class Parallelization # :nodoc:
@@ -40,8 +38,8 @@ module ActiveSupport
         end
 
         def perform_job(job)
-          klass    = job[0]
-          method   = job[1]
+          klass = job[0]
+          method = job[1]
           reporter = job[2]
 
           set_process_title("#{klass}##{method}")
@@ -90,13 +88,13 @@ module ActiveSupport
         end
 
         private
-          def add_setup_exception(result)
-            result.failures.prepend Minitest::UnexpectedError.new(@setup_exception)
-          end
+        def add_setup_exception(result)
+          result.failures.prepend Minitest::UnexpectedError.new(@setup_exception)
+        end
 
-          def set_process_title(status)
-            Process.setproctitle("Rails test worker #{@number} - #{status}")
-          end
+        def set_process_title(status)
+          Process.setproctitle("Rails test worker #{@number} - #{status}")
+        end
       end
     end
   end

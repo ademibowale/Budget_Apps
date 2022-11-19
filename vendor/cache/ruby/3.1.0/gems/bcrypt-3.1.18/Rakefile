@@ -18,7 +18,7 @@ CLOBBER.include(
 
 GEMSPEC = Gem::Specification.load("bcrypt.gemspec")
 
-task :default => [:compile, :spec]
+task default: [:compile, :spec]
 
 desc "Run all specs"
 RSpec::Core::RakeTask.new do |t|
@@ -66,7 +66,7 @@ task :benchmark do
   require File.expand_path(File.join(File.dirname(__FILE__), "lib", "bcrypt"))
   Benchmark.bmbm do |results|
     4.upto(10) do |n|
-      results.report("cost #{n}:") { TESTS.times { BCrypt::Password.create(TEST_PWD, :cost => n) } }
+      results.report("cost #{n}:") { TESTS.times { BCrypt::Password.create(TEST_PWD, cost: n) } }
     end
   end
 end

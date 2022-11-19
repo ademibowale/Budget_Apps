@@ -12,7 +12,7 @@ module Concurrent
                                        JavaThreadPoolExecutor
                                      else
                                        RubyThreadPoolExecutor
-                                     end
+  end
   private_constant :ThreadPoolExecutorImplementation
 
   # @!macro thread_pool_executor

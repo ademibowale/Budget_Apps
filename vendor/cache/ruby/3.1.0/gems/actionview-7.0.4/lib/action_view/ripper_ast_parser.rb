@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "ripper"
 
 module ActionView
@@ -156,31 +154,31 @@ module ActionView
         end
 
         private
-          def on_fcall(name, *args)
-            on_render_call(super)
-          end
+        def on_fcall(name, *args)
+          on_render_call(super)
+        end
 
-          def on_command(name, *args)
-            on_render_call(super)
-          end
+        def on_command(name, *args)
+          on_render_call(super)
+        end
 
-          def on_render_call(node)
-            METHODS_TO_PARSE.each do |method|
-              if node.fcall_named?(method)
-                @render_calls << [method, node]
-                return node
-              end
+        def on_render_call(node)
+          METHODS_TO_PARSE.each do |method|
+            if node.fcall_named?(method)
+              @render_calls << [method, node]
+              return node
             end
-            node
           end
+          node
+        end
 
-          def on_arg_paren(content)
-            content
-          end
+        def on_arg_paren(content)
+          content
+        end
 
-          def on_paren(content)
-            content
-          end
+        def on_paren(content)
+          content
+        end
       end
 
       extend self

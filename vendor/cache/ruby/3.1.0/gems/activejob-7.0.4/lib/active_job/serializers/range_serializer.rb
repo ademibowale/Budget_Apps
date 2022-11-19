@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveJob
   module Serializers
     class RangeSerializer < ObjectSerializer
@@ -15,9 +13,9 @@ module ActiveJob
       end
 
       private
-        def klass
-          ::Range
-        end
+      def klass
+        ::Range
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   class Deprecation
     # DeprecatedConstantAccessor transforms a constant into a deprecated one by

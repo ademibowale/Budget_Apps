@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/enumerable"
 
 module ActionView
@@ -48,7 +46,7 @@ module ActionView
 
       searched_paths = @prefixes.map { |prefix| [prefix, path].join("/") }
 
-      out  = "Missing #{template_type} #{searched_paths.join(", ")} with #{details.inspect}.\n\nSearched in:\n"
+      out = "Missing #{template_type} #{searched_paths.join(", ")} with #{details.inspect}.\n\nSearched in:\n"
       out += paths.compact.map { |p| "  * #{p.to_s.inspect}\n" }.join
       super out
     end
@@ -183,7 +181,7 @@ module ActionView
         source_code = @template.encode!.split("\n")
 
         start_on_line = [ num - SOURCE_CODE_RADIUS - 1, 0 ].max
-        end_on_line   = [ num + SOURCE_CODE_RADIUS - 1, source_code.length].min
+        end_on_line = [ num + SOURCE_CODE_RADIUS - 1, source_code.length].min
 
         indent = end_on_line.to_s.size + indentation
         return [] unless source_code = source_code[start_on_line..end_on_line]
@@ -209,21 +207,21 @@ module ActionView
       end
 
       private
-        def source_location
-          if line_number
-            "on line ##{line_number} of "
-          else
-            "in "
-          end + file_name
-        end
+      def source_location
+        if line_number
+          "on line ##{line_number} of "
+        else
+          "in "
+        end + file_name
+      end
 
-        def formatted_code_for(source_code, line_counter, indent)
-          indent_template = "%#{indent}s: %s"
-          source_code.map do |line|
-            line_counter += 1
-            indent_template % [line_counter, line]
-          end
+      def formatted_code_for(source_code, line_counter, indent)
+        indent_template = "%#{indent}s: %s"
+        source_code.map do |line|
+          line_counter += 1
+          indent_template % [line_counter, line]
         end
+      end
     end
   end
 

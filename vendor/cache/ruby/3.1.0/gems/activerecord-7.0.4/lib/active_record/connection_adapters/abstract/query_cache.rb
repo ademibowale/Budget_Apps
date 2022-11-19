@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "concurrent/map"
 
 module ActiveRecord
@@ -51,7 +49,7 @@ module ActiveRecord
 
       def initialize(*)
         super
-        @query_cache         = Hash.new { |h, sql| h[sql] = {} }
+        @query_cache = Hash.new { |h, sql| h[sql] = {} }
         @query_cache_enabled = false
       end
 
@@ -112,50 +110,50 @@ module ActiveRecord
       end
 
       private
-        def lookup_sql_cache(sql, name, binds)
-          @lock.synchronize do
+      def lookup_sql_cache(sql, name, binds)
+        @lock.synchronize do
+          if @query_cache[sql].key?(binds)
+            ActiveSupport::Notifications.instrument(
+              "sql.active_record",
+              cache_notification_info(sql, name, binds)
+            )
+            @query_cache[sql][binds]
+          end
+        end
+      end
+
+      def cache_sql(sql, name, binds)
+        @lock.synchronize do
+          result =
             if @query_cache[sql].key?(binds)
               ActiveSupport::Notifications.instrument(
                 "sql.active_record",
                 cache_notification_info(sql, name, binds)
               )
               @query_cache[sql][binds]
+            else
+              @query_cache[sql][binds] = yield
             end
-          end
+          result.dup
         end
+      end
 
-        def cache_sql(sql, name, binds)
-          @lock.synchronize do
-            result =
-              if @query_cache[sql].key?(binds)
-                ActiveSupport::Notifications.instrument(
-                  "sql.active_record",
-                  cache_notification_info(sql, name, binds)
-                )
-                @query_cache[sql][binds]
-              else
-                @query_cache[sql][binds] = yield
-              end
-            result.dup
-          end
-        end
+      # Database adapters can override this method to
+      # provide custom cache information.
+      def cache_notification_info(sql, name, binds)
+        {
+          sql: sql,
+          binds: binds,
+          type_casted_binds: -> { type_casted_binds(binds) },
+          name: name,
+          connection: self,
+          cached: true
+        }
+      end
 
-        # Database adapters can override this method to
-        # provide custom cache information.
-        def cache_notification_info(sql, name, binds)
-          {
-            sql: sql,
-            binds: binds,
-            type_casted_binds: -> { type_casted_binds(binds) },
-            name: name,
-            connection: self,
-            cached: true
-          }
-        end
-
-        def configure_query_cache!
-          enable_query_cache! if pool.query_cache_enabled
-        end
+      def configure_query_cache!
+        enable_query_cache! if pool.query_cache_enabled
+      end
     end
   end
 end

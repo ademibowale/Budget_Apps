@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Devise::RegistrationsController < DeviseController
   prepend_before_action :require_no_authentication, only: [:new, :create, :cancel]
   prepend_before_action :authenticate_scope!, only: [:edit, :update, :destroy]
@@ -67,7 +65,7 @@ class Devise::RegistrationsController < DeviseController
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
     set_flash_message! :notice, :destroyed
     yield resource if block_given?
-    respond_with_navigational(resource){ redirect_to after_sign_out_path_for(resource_name) }
+    respond_with_navigational(resource) { redirect_to after_sign_out_path_for(resource_name) }
   end
 
   # GET /resource/cancel
@@ -151,12 +149,12 @@ class Devise::RegistrationsController < DeviseController
     return unless is_flashing_format?
 
     flash_key = if update_needs_confirmation?(resource, prev_unconfirmed_email)
-                  :update_needs_confirmation
+      :update_needs_confirmation
                 elsif sign_in_after_change_password?
                   :updated
                 else
                   :updated_but_not_signed_in
-                end
+    end
     set_flash_message :notice, flash_key
   end
 

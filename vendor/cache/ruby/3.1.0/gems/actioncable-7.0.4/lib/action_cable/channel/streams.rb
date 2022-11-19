@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionCable
   module Channel
     # Streams allow channels to route broadcastings to the subscriber. A broadcasting is, as discussed elsewhere, a pubsub queue where any data
@@ -135,66 +133,66 @@ module ActionCable
       end
 
       private
-        delegate :pubsub, to: :connection
+      delegate :pubsub, to: :connection
 
-        def streams
-          @_streams ||= {}
+      def streams
+        @_streams ||= {}
+      end
+
+      # Always wrap the outermost handler to invoke the user handler on the
+      # worker pool rather than blocking the event loop.
+      def worker_pool_stream_handler(broadcasting, user_handler, coder: nil)
+        handler = stream_handler(broadcasting, user_handler, coder: coder)
+
+        -> message do
+          connection.worker_pool.async_invoke handler, :call, message, connection: connection
         end
+      end
 
-        # Always wrap the outermost handler to invoke the user handler on the
-        # worker pool rather than blocking the event loop.
-        def worker_pool_stream_handler(broadcasting, user_handler, coder: nil)
-          handler = stream_handler(broadcasting, user_handler, coder: coder)
-
-          -> message do
-            connection.worker_pool.async_invoke handler, :call, message, connection: connection
-          end
+      # May be overridden to add instrumentation, logging, specialized error
+      # handling, or other forms of handler decoration.
+      #
+      # TODO: Tests demonstrating this.
+      def stream_handler(broadcasting, user_handler, coder: nil)
+        if user_handler
+          stream_decoder user_handler, coder: coder
+        else
+          default_stream_handler broadcasting, coder: coder
         end
+      end
 
-        # May be overridden to add instrumentation, logging, specialized error
-        # handling, or other forms of handler decoration.
-        #
-        # TODO: Tests demonstrating this.
-        def stream_handler(broadcasting, user_handler, coder: nil)
-          if user_handler
-            stream_decoder user_handler, coder: coder
-          else
-            default_stream_handler broadcasting, coder: coder
-          end
+      # May be overridden to change the default stream handling behavior
+      # which decodes JSON and transmits to the client.
+      #
+      # TODO: Tests demonstrating this.
+      #
+      # TODO: Room for optimization. Update transmit API to be coder-aware
+      # so we can no-op when pubsub and connection are both JSON-encoded.
+      # Then we can skip decode+encode if we're just proxying messages.
+      def default_stream_handler(broadcasting, coder:)
+        coder ||= ActiveSupport::JSON
+        stream_transmitter stream_decoder(coder: coder), broadcasting: broadcasting
+      end
+
+      def stream_decoder(handler = identity_handler, coder:)
+        if coder
+          -> message { handler.(coder.decode(message)) }
+        else
+          handler
         end
+      end
 
-        # May be overridden to change the default stream handling behavior
-        # which decodes JSON and transmits to the client.
-        #
-        # TODO: Tests demonstrating this.
-        #
-        # TODO: Room for optimization. Update transmit API to be coder-aware
-        # so we can no-op when pubsub and connection are both JSON-encoded.
-        # Then we can skip decode+encode if we're just proxying messages.
-        def default_stream_handler(broadcasting, coder:)
-          coder ||= ActiveSupport::JSON
-          stream_transmitter stream_decoder(coder: coder), broadcasting: broadcasting
+      def stream_transmitter(handler = identity_handler, broadcasting:)
+        via = "streamed from #{broadcasting}"
+
+        -> (message) do
+          transmit handler.(message), via: via
         end
+      end
 
-        def stream_decoder(handler = identity_handler, coder:)
-          if coder
-            -> message { handler.(coder.decode(message)) }
-          else
-            handler
-          end
-        end
-
-        def stream_transmitter(handler = identity_handler, broadcasting:)
-          via = "streamed from #{broadcasting}"
-
-          -> (message) do
-            transmit handler.(message), via: via
-          end
-        end
-
-        def identity_handler
-          -> message { message }
-        end
+      def identity_handler
+        -> message { message }
+      end
     end
   end
 end

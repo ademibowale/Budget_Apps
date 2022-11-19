@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionText
   module SystemTestHelper
     # Locates a Trix editor and fills it in with the given HTML.

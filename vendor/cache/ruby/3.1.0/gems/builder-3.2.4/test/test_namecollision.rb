@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 #--
 # Portions copyright 2004 by Jim Weirich (jim@weirichhouse.org).
 # Portions copyright 2005 by Sam Ruby (rubys@intertwingly.net).

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport::Dependencies::RequireDependency
   # <b>Warning:</b> This method is obsolete. The semantics of the autoloader
   # match Ruby's and you do not need to be defensive with load order anymore.

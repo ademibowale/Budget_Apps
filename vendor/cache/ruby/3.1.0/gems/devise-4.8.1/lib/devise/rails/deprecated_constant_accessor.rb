@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 begin
   require 'active_support/deprecation/constant_accessor'
 

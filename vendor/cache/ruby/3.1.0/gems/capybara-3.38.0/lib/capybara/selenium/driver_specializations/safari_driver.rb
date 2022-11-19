@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selenium/nodes/safari_node'
 
 module Capybara::Selenium::Driver::SafariDriver

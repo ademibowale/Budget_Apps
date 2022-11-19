@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionHandling
-    RAILS_ENV   = -> { (Rails.env if defined?(Rails.env)) || ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence }
+    RAILS_ENV = -> { (Rails.env if defined?(Rails.env)) || ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence }
     DEFAULT_ENV = -> { RAILS_ENV.call || "default_env" }
 
     # Establishes the connection to the database. Accepts a hash as input where
@@ -338,62 +336,62 @@ module ActiveRecord
       :clear_all_connections!, :flush_idle_connections!, to: :connection_handler
 
     private
-      def clear_on_handler(handler)
-        handler.all_connection_pools.each do |pool|
-          pool.connection.clear_query_cache if pool.active_connection?
-        end
+    def clear_on_handler(handler)
+      handler.all_connection_pools.each do |pool|
+        pool.connection.clear_query_cache if pool.active_connection?
       end
+    end
 
-      def resolve_config_for_connection(config_or_env)
-        raise "Anonymous class is not allowed." unless name
+    def resolve_config_for_connection(config_or_env)
+      raise "Anonymous class is not allowed." unless name
 
-        owner_name = primary_class? ? Base.name : name
-        self.connection_specification_name = owner_name
+      owner_name = primary_class? ? Base.name : name
+      self.connection_specification_name = owner_name
 
-        db_config = Base.configurations.resolve(config_or_env)
-        [db_config, self]
-      end
+      db_config = Base.configurations.resolve(config_or_env)
+      [db_config, self]
+    end
 
-      def with_handler(handler_key, &blk)
-        handler = lookup_connection_handler(handler_key)
-        swap_connection_handler(handler, &blk)
-      end
+    def with_handler(handler_key, &blk)
+      handler = lookup_connection_handler(handler_key)
+      swap_connection_handler(handler, &blk)
+    end
 
-      def with_role_and_shard(role, shard, prevent_writes)
-        prevent_writes = true if role == ActiveRecord.reading_role
+    def with_role_and_shard(role, shard, prevent_writes)
+      prevent_writes = true if role == ActiveRecord.reading_role
 
-        if ActiveRecord.legacy_connection_handling
-          with_handler(role.to_sym) do
-            connection_handler.while_preventing_writes(prevent_writes) do
-              append_to_connected_to_stack(shard: shard, klasses: [self])
-              yield
-            end
+      if ActiveRecord.legacy_connection_handling
+        with_handler(role.to_sym) do
+          connection_handler.while_preventing_writes(prevent_writes) do
+            append_to_connected_to_stack(shard: shard, klasses: [self])
+            yield
           end
-        else
-          append_to_connected_to_stack(role: role, shard: shard, prevent_writes: prevent_writes, klasses: [self])
-          return_value = yield
-          return_value.load if return_value.is_a? ActiveRecord::Relation
-          return_value
         end
-      ensure
-        self.connected_to_stack.pop
-      end
-
-      def append_to_connected_to_stack(entry)
-        if shard_swapping_prohibited? && entry[:shard].present?
-          raise ArgumentError, "cannot swap `shard` while shard swapping is prohibited."
-        end
-
-        connected_to_stack << entry
-      end
-
-      def swap_connection_handler(handler, &blk) # :nodoc:
-        old_handler, ActiveRecord::Base.connection_handler = ActiveRecord::Base.connection_handler, handler
+      else
+        append_to_connected_to_stack(role: role, shard: shard, prevent_writes: prevent_writes, klasses: [self])
         return_value = yield
         return_value.load if return_value.is_a? ActiveRecord::Relation
         return_value
-      ensure
-        ActiveRecord::Base.connection_handler = old_handler
       end
+    ensure
+      self.connected_to_stack.pop
+    end
+
+    def append_to_connected_to_stack(entry)
+      if shard_swapping_prohibited? && entry[:shard].present?
+        raise ArgumentError, "cannot swap `shard` while shard swapping is prohibited."
+      end
+
+      connected_to_stack << entry
+    end
+
+    def swap_connection_handler(handler, &blk) # :nodoc:
+      old_handler, ActiveRecord::Base.connection_handler = ActiveRecord::Base.connection_handler, handler
+      return_value = yield
+      return_value.load if return_value.is_a? ActiveRecord::Relation
+      return_value
+    ensure
+      ActiveRecord::Base.connection_handler = old_handler
+    end
   end
 end

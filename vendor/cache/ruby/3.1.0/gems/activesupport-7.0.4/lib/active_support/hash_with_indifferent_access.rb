@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/hash/reverse_merge"
 require "active_support/core_ext/hash/except"
@@ -305,16 +303,30 @@ module ActiveSupport
     end
     alias_method :without, :except
 
-    def stringify_keys!; self end
-    def deep_stringify_keys!; self end
-    def stringify_keys; dup end
-    def deep_stringify_keys; dup end
+    def stringify_keys!
+      self
+    end
+    def deep_stringify_keys!
+      self
+    end
+    def stringify_keys
+      dup
+    end
+    def deep_stringify_keys
+      dup
+    end
     undef :symbolize_keys!
     undef :deep_symbolize_keys!
-    def symbolize_keys; to_hash.symbolize_keys! end
+    def symbolize_keys
+      to_hash.symbolize_keys!
+    end
     alias_method :to_options, :symbolize_keys
-    def deep_symbolize_keys; to_hash.deep_symbolize_keys! end
-    def to_options!; self end
+    def deep_symbolize_keys
+      to_hash.deep_symbolize_keys!
+    end
+    def to_options!
+      self
+    end
 
     def select(*args, &block)
       return to_enum(:select) unless block_given?
@@ -370,53 +382,53 @@ module ActiveSupport
     end
 
     private
-      if Symbol.method_defined?(:name)
-        def convert_key(key)
-          key.kind_of?(Symbol) ? key.name : key
+    if Symbol.method_defined?(:name)
+      def convert_key(key)
+        key.kind_of?(Symbol) ? key.name : key
+      end
+    else
+      def convert_key(key)
+        key.kind_of?(Symbol) ? key.to_s : key
+      end
+    end
+
+    def convert_value(value, conversion: nil)
+      if value.is_a? Hash
+        if conversion == :to_hash
+          value.to_hash
+        else
+          value.nested_under_indifferent_access
         end
+      elsif value.is_a?(Array)
+        if conversion != :assignment || value.frozen?
+          value = value.dup
+        end
+        value.map! { |e| convert_value(e, conversion: conversion) }
       else
-        def convert_key(key)
-          key.kind_of?(Symbol) ? key.to_s : key
-        end
+        value
       end
+    end
 
-      def convert_value(value, conversion: nil)
-        if value.is_a? Hash
-          if conversion == :to_hash
-            value.to_hash
-          else
-            value.nested_under_indifferent_access
-          end
-        elsif value.is_a?(Array)
-          if conversion != :assignment || value.frozen?
-            value = value.dup
-          end
-          value.map! { |e| convert_value(e, conversion: conversion) }
-        else
-          value
-        end
+    def set_defaults(target)
+      if default_proc
+        target.default_proc = default_proc.dup
+      else
+        target.default = default
       end
+    end
 
-      def set_defaults(target)
-        if default_proc
-          target.default_proc = default_proc.dup
-        else
-          target.default = default
-        end
-      end
-
-      def update_with_single_argument(other_hash, block)
-        if other_hash.is_a? HashWithIndifferentAccess
-          regular_update(other_hash, &block)
-        else
-          other_hash.to_hash.each_pair do |key, value|
-            if block && key?(key)
-              value = block.call(convert_key(key), self[key], value)
-            end
-            regular_writer(convert_key(key), convert_value(value))
+    def update_with_single_argument(other_hash, block)
+      if other_hash.is_a? HashWithIndifferentAccess
+        regular_update(other_hash, &block)
+      else
+        other_hash.to_hash.each_pair do |key, value|
+          if block && key?(key)
+            value = block.call(convert_key(key), self[key], value)
           end
+          regular_writer(convert_key(key), convert_value(value))
         end
       end
+    end
   end
 end
 

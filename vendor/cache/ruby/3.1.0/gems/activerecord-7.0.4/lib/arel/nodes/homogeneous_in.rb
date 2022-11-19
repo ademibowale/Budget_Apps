@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class HomogeneousIn < Node
@@ -68,9 +66,9 @@ module Arel # :nodoc: all
       end
 
       protected
-        def ivars
-          [@attribute, @values, @type]
-        end
+      def ivars
+        [@attribute, @values, @type]
+      end
     end
   end
 end

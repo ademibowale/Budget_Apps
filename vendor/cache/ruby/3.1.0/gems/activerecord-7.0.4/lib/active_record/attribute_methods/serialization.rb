@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module AttributeMethods
     module Serialization
@@ -123,10 +121,10 @@ module ActiveRecord
         end
 
         private
-          def type_incompatible_with_serialize?(type, class_name)
-            type.is_a?(ActiveRecord::Type::Json) && class_name == ::JSON ||
-              type.respond_to?(:type_cast_array, true) && class_name == ::Array
-          end
+        def type_incompatible_with_serialize?(type, class_name)
+          type.is_a?(ActiveRecord::Type::Json) && class_name == ::JSON ||
+            type.respond_to?(:type_cast_array, true) && class_name == ::Array
+        end
       end
     end
   end

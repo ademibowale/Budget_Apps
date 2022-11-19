@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord # :nodoc:
   # = Active Record \Serialization
   module Serialization
@@ -22,8 +20,8 @@ module ActiveRecord # :nodoc:
     end
 
     private
-      def attribute_names_for_serialization
-        attribute_names
-      end
+    def attribute_names_for_serialization
+      attribute_names
+    end
   end
 end

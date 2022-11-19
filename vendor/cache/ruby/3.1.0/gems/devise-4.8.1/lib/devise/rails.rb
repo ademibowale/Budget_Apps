@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'devise/rails/routes'
 require 'devise/rails/warden_compat'
 

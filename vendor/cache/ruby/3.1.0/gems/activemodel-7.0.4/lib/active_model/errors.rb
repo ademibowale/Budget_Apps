@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/array/conversions"
 require "active_support/core_ext/string/inflections"
 require "active_support/core_ext/object/deep_dup"
@@ -462,14 +460,14 @@ module ActiveModel
     end
 
     private
-      def normalize_arguments(attribute, type, **options)
-        # Evaluate proc first
-        if type.respond_to?(:call)
-          type = type.call(@base, options)
-        end
-
-        [attribute.to_sym, type, options]
+    def normalize_arguments(attribute, type, **options)
+      # Evaluate proc first
+      if type.respond_to?(:call)
+        type = type.call(@base, options)
       end
+
+      [attribute.to_sym, type, options]
+    end
   end
 
   # Raised when a validation cannot be corrected by end users and are considered

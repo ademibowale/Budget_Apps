@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/string/filters"
 require "active_support/log_subscriber"
 
@@ -101,39 +99,39 @@ module ActiveJob
     end
 
     private
-      def queue_name(event)
-        event.payload[:adapter].class.name.demodulize.remove("Adapter") + "(#{event.payload[:job].queue_name})"
-      end
+    def queue_name(event)
+      event.payload[:adapter].class.name.demodulize.remove("Adapter") + "(#{event.payload[:job].queue_name})"
+    end
 
-      def args_info(job)
-        if job.class.log_arguments? && job.arguments.any?
-          " with arguments: " +
-            job.arguments.map { |arg| format(arg).inspect }.join(", ")
-        else
-          ""
-        end
+    def args_info(job)
+      if job.class.log_arguments? && job.arguments.any?
+        " with arguments: " +
+          job.arguments.map { |arg| format(arg).inspect }.join(", ")
+      else
+        ""
       end
+    end
 
-      def format(arg)
-        case arg
-        when Hash
-          arg.transform_values { |value| format(value) }
-        when Array
-          arg.map { |value| format(value) }
-        when GlobalID::Identification
-          arg.to_global_id rescue arg
-        else
-          arg
-        end
+    def format(arg)
+      case arg
+      when Hash
+        arg.transform_values { |value| format(value) }
+      when Array
+        arg.map { |value| format(value) }
+      when GlobalID::Identification
+        arg.to_global_id rescue arg
+      else
+        arg
       end
+    end
 
-      def scheduled_at(event)
-        Time.at(event.payload[:job].scheduled_at).utc
-      end
+    def scheduled_at(event)
+      Time.at(event.payload[:job].scheduled_at).utc
+    end
 
-      def logger
-        ActiveJob::Base.logger
-      end
+    def logger
+      ActiveJob::Base.logger
+    end
   end
 end
 

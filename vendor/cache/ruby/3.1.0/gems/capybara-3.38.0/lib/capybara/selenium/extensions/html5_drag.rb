@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Capybara::Selenium::Node
   module Html5Drag
     # Implement methods to emulate HTML5 drag and drop

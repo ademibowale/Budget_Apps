@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveModel
   module Type
     class Integer < Value # :nodoc:
@@ -37,34 +35,34 @@ module ActiveModel
       end
 
       private
-        attr_reader :range
+      attr_reader :range
 
-        def in_range?(value)
-          !value || range.member?(value)
-        end
+      def in_range?(value)
+        !value || range.member?(value)
+      end
 
-        def cast_value(value)
-          value.to_i rescue nil
-        end
+      def cast_value(value)
+        value.to_i rescue nil
+      end
 
-        def ensure_in_range(value)
-          unless in_range?(value)
-            raise ActiveModel::RangeError, "#{value} is out of range for #{self.class} with limit #{_limit} bytes"
-          end
-          value
+      def ensure_in_range(value)
+        unless in_range?(value)
+          raise ActiveModel::RangeError, "#{value} is out of range for #{self.class} with limit #{_limit} bytes"
         end
+        value
+      end
 
-        def max_value
-          1 << (_limit * 8 - 1) # 8 bits per byte with one bit for sign
-        end
+      def max_value
+        1 << (_limit * 8 - 1) # 8 bits per byte with one bit for sign
+      end
 
-        def min_value
-          -max_value
-        end
+      def min_value
+        -max_value
+      end
 
-        def _limit
-          limit || DEFAULT_LIMIT
-        end
+      def _limit
+        limit || DEFAULT_LIMIT
+      end
     end
   end
 end

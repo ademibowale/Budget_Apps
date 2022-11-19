@@ -426,7 +426,7 @@ module Concurrent
         raise Error.new('agent is not failed') unless failed?
         raise ValidationError unless ns_validate(new_value)
         @current.value = new_value
-        @error.value   = nil
+        @error.value = nil
         @queue.clear if clear_actions
         ns_post_next_job unless @queue.empty?
       end
@@ -461,7 +461,7 @@ module Concurrent
       # @!macro agent_await_warning
       def await_for(timeout, *agents)
         end_at = Concurrent.monotonic_time + timeout.to_f
-        ok     = agents.length.times do |i|
+        ok = agents.length.times do |i|
           break false if (delay = end_at - Concurrent.monotonic_time) < 0
           break false unless agents[i].await_for(delay)
         end
@@ -487,7 +487,7 @@ module Concurrent
     private
 
     def ns_initialize(initial, opts)
-      @error_mode    = opts[:error_mode]
+      @error_mode = opts[:error_mode]
       @error_handler = opts[:error_handler]
 
       if @error_mode && !ERROR_MODES.include?(@error_mode)
@@ -497,11 +497,11 @@ module Concurrent
       end
 
       @error_handler ||= DEFAULT_ERROR_HANDLER
-      @validator     = opts.fetch(:validator, DEFAULT_VALIDATOR)
-      @current       = Concurrent::AtomicReference.new(initial)
-      @error         = Concurrent::AtomicReference.new(nil)
-      @caller        = Concurrent::ThreadLocalVar.new(nil)
-      @queue         = []
+      @validator = opts.fetch(:validator, DEFAULT_VALIDATOR)
+      @current = Concurrent::AtomicReference.new(initial)
+      @error = Concurrent::AtomicReference.new(nil)
+      @caller = Concurrent::ThreadLocalVar.new(nil)
+      @queue = []
 
       self.observers = Collection::CopyOnNotifyObserverSet.new
     end
@@ -517,7 +517,7 @@ module Concurrent
         if (index = ns_find_last_job_for_thread)
           job = Job.new(AWAIT_ACTION, [latch], Concurrent.global_immediate_executor,
                         Thread.current.object_id)
-          ns_enqueue_job(job, index+1)
+          ns_enqueue_job(job, index + 1)
         else
           latch.count_down
           true
@@ -540,11 +540,11 @@ module Concurrent
     end
 
     def execute_next_job
-      job       = synchronize { @queue.first }
+      job = synchronize { @queue.first }
       old_value = @current.value
 
       @caller.value = job.caller # for nested actions
-      new_value     = job.action.call(old_value, *job.args)
+      new_value = job.action.call(old_value, *job.args)
       @caller.value = nil
 
       return if new_value == AWAIT_FLAG

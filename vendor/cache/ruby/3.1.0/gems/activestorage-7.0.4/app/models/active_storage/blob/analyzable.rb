@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_storage/analyzer/null_analyzer"
 
 module ActiveStorage::Blob::Analyzable
@@ -47,15 +45,15 @@ module ActiveStorage::Blob::Analyzable
   end
 
   private
-    def extract_metadata_via_analyzer
-      analyzer.metadata.merge(analyzed: true)
-    end
+  def extract_metadata_via_analyzer
+    analyzer.metadata.merge(analyzed: true)
+  end
 
-    def analyzer
-      analyzer_class.new(self)
-    end
+  def analyzer
+    analyzer_class.new(self)
+  end
 
-    def analyzer_class
-      ActiveStorage.analyzers.detect { |klass| klass.accept?(self) } || ActiveStorage::Analyzer::NullAnalyzer
-    end
+  def analyzer_class
+    ActiveStorage.analyzers.detect { |klass| klass.accept?(self) } || ActiveStorage::Analyzer::NullAnalyzer
+  end
 end

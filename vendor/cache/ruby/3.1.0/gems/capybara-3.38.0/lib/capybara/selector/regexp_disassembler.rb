@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'regexp_parser'
 
 module Capybara
@@ -136,10 +134,10 @@ module Capybara
 
         def terminal_strings
           text = case @exp.type
-          when :literal then @exp.text
-          when :escape then @exp.char
+                 when :literal then @exp.text
+                 when :escape then @exp.char
           else
-            return [nil]
+                   return [nil]
           end
 
           optional? ? options_set(text) : repeat_set(text)

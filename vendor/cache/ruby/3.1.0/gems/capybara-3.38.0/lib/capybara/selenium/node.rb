@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Selenium specific implementation of the Capybara::Driver::Node API
 
 require 'capybara/selenium/extensions/find'
@@ -18,10 +16,10 @@ class Capybara::Selenium::Node < Capybara::Driver::Node
   def all_text
     text = driver.evaluate_script('arguments[0].textContent', self) || ''
     text.gsub(/[\u200b\u200e\u200f]/, '')
-        .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
-        .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
-        .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
-        .tr("\u00a0", ' ')
+      .gsub(/[\ \n\f\t\v\u2028\u2029]+/, ' ')
+      .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
+      .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
+      .tr("\u00a0", ' ')
   end
 
   def [](name)
@@ -188,10 +186,18 @@ class Capybara::Selenium::Node < Capybara::Driver::Node
       end
   end
 
-  def visible?; boolean_attr(native.displayed?); end
-  def readonly?; boolean_attr(self[:readonly]); end
-  def multiple?; boolean_attr(self[:multiple]); end
-  def selected?; boolean_attr(native.selected?); end
+  def visible?
+    boolean_attr(native.displayed?)
+  end
+  def readonly?
+    boolean_attr(self[:readonly])
+  end
+  def multiple?
+    boolean_attr(self[:multiple])
+  end
+  def selected?
+    boolean_attr(native.selected?)
+  end
   alias :checked? :selected?
 
   def disabled?

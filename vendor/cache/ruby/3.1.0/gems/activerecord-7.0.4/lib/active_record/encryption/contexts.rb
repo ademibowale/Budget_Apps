@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # ActiveRecord::Encryption uses encryption contexts to configure the different entities used to

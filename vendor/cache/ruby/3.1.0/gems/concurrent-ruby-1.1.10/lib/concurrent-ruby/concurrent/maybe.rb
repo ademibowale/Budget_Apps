@@ -138,9 +138,9 @@ module Concurrent
       raise ArgumentError.new('no block given') unless block_given?
       begin
         value = yield(*args)
-        return new(value, NONE)
+        new(value, NONE)
       rescue => ex
-        return new(NONE, ex)
+        new(NONE, ex)
       end
     end
 
@@ -150,7 +150,7 @@ module Concurrent
     #
     # @return [Maybe] The newly created object.
     def self.just(value)
-      return new(value, NONE)
+      new(value, NONE)
     end
 
     # Create a new `Nothing` with the given (optional) reason.
@@ -167,7 +167,7 @@ module Concurrent
       else
         nothing = StandardError.new(error.to_s)
       end
-      return new(NONE, nothing)
+      new(NONE, nothing)
     end
 
     # Is this `Maybe` a `Just` (successfully fulfilled with a value)?

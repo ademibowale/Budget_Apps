@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_model/attribute_mutation_tracker"
 
 module ActiveModel
@@ -247,48 +245,48 @@ module ActiveModel
     end
 
     private
-      def clear_attribute_change(attr_name)
-        mutations_from_database.forget_change(attr_name.to_s)
-      end
+    def clear_attribute_change(attr_name)
+      mutations_from_database.forget_change(attr_name.to_s)
+    end
 
-      def mutations_from_database
-        @mutations_from_database ||= if defined?(@attributes)
-          ActiveModel::AttributeMutationTracker.new(@attributes)
-        else
-          ActiveModel::ForcedMutationTracker.new(self)
-        end
+    def mutations_from_database
+      @mutations_from_database ||= if defined?(@attributes)
+        ActiveModel::AttributeMutationTracker.new(@attributes)
+      else
+        ActiveModel::ForcedMutationTracker.new(self)
       end
+    end
 
-      def forget_attribute_assignments
-        @attributes = @attributes.map(&:forgetting_assignment) if defined?(@attributes)
-      end
+    def forget_attribute_assignments
+      @attributes = @attributes.map(&:forgetting_assignment) if defined?(@attributes)
+    end
 
-      def mutations_before_last_save
-        @mutations_before_last_save ||= ActiveModel::NullMutationTracker.instance
-      end
+    def mutations_before_last_save
+      @mutations_before_last_save ||= ActiveModel::NullMutationTracker.instance
+    end
 
-      # Dispatch target for <tt>*_change</tt> attribute methods.
-      def attribute_change(attr_name)
-        mutations_from_database.change_to_attribute(attr_name.to_s)
-      end
+    # Dispatch target for <tt>*_change</tt> attribute methods.
+    def attribute_change(attr_name)
+      mutations_from_database.change_to_attribute(attr_name.to_s)
+    end
 
-      # Dispatch target for <tt>*_previous_change</tt> attribute methods.
-      def attribute_previous_change(attr_name)
-        mutations_before_last_save.change_to_attribute(attr_name.to_s)
-      end
+    # Dispatch target for <tt>*_previous_change</tt> attribute methods.
+    def attribute_previous_change(attr_name)
+      mutations_before_last_save.change_to_attribute(attr_name.to_s)
+    end
 
-      # Dispatch target for <tt>*_will_change!</tt> attribute methods.
-      def attribute_will_change!(attr_name)
-        mutations_from_database.force_change(attr_name.to_s)
-      end
+    # Dispatch target for <tt>*_will_change!</tt> attribute methods.
+    def attribute_will_change!(attr_name)
+      mutations_from_database.force_change(attr_name.to_s)
+    end
 
-      # Dispatch target for <tt>restore_*!</tt> attribute methods.
-      def restore_attribute!(attr_name)
-        attr_name = attr_name.to_s
-        if attribute_changed?(attr_name)
-          __send__("#{attr_name}=", attribute_was(attr_name))
-          clear_attribute_change(attr_name)
-        end
+    # Dispatch target for <tt>restore_*!</tt> attribute methods.
+    def restore_attribute!(attr_name)
+      attr_name = attr_name.to_s
+      if attribute_changed?(attr_name)
+        __send__("#{attr_name}=", attribute_was(attr_name))
+        clear_attribute_change(attr_name)
       end
+    end
   end
 end

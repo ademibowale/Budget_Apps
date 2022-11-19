@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/concern"
 require "active_support/core_ext/module/attribute_accessors"
 require "concurrent"
@@ -55,9 +53,9 @@ module ActiveSupport
 
       if message.nil?
         if block_given?
-          message  = yield
+          message = yield
         else
-          message  = progname
+          message = progname
           progname = @progname
         end
       end

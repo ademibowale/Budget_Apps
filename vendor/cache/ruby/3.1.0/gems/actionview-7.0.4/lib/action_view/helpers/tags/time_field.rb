@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers
     module Tags # :nodoc:
@@ -10,13 +8,13 @@ module ActionView
         end
 
         private
-          def format_date(value)
-            if @include_seconds
-              value&.strftime("%T.%L")
-            else
-              value&.strftime("%H:%M")
-            end
+        def format_date(value)
+          if @include_seconds
+            value&.strftime("%T.%L")
+          else
+            value&.strftime("%H:%M")
           end
+        end
       end
     end
   end

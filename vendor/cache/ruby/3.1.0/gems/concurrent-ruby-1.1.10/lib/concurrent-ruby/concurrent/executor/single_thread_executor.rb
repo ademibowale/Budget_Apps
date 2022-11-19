@@ -12,7 +12,7 @@ module Concurrent
                                          JavaSingleThreadExecutor
                                        else
                                          RubySingleThreadExecutor
-                                       end
+  end
   private_constant :SingleThreadExecutorImplementation
 
   # @!macro single_thread_executor

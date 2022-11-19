@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -58,56 +56,56 @@ module ActiveRecord
           end
 
           private
-            def type_cast_single(value)
-              infinity?(value) ? value : @subtype.deserialize(value)
-            end
+          def type_cast_single(value)
+            infinity?(value) ? value : @subtype.deserialize(value)
+          end
 
-            def type_cast_single_for_database(value)
-              infinity?(value) ? value : @subtype.serialize(@subtype.cast(value))
-            end
+          def type_cast_single_for_database(value)
+            infinity?(value) ? value : @subtype.serialize(@subtype.cast(value))
+          end
 
-            def extract_bounds(value)
-              from, to = value[1..-2].split(",", 2)
-              {
-                from:          (from == "" || from == "-infinity") ? infinity(negative: true) : unquote(from),
-                to:            (to == "" || to == "infinity") ? infinity : unquote(to),
-                exclude_start: value.start_with?("("),
-                exclude_end:   value.end_with?(")")
-              }
-            end
+          def extract_bounds(value)
+            from, to = value[1..-2].split(",", 2)
+            {
+              from: (from == "" || from == "-infinity") ? infinity(negative: true) : unquote(from),
+              to: (to == "" || to == "infinity") ? infinity : unquote(to),
+              exclude_start: value.start_with?("("),
+              exclude_end: value.end_with?(")")
+            }
+          end
 
-            # When formatting the bound values of range types, PostgreSQL quotes
-            # the bound value using double-quotes in certain conditions. Within
-            # a double-quoted string, literal " and \ characters are themselves
-            # escaped. In input, PostgreSQL accepts multiple escape styles for "
-            # (either \" or "") but in output always uses "".
-            # See:
-            # * https://www.postgresql.org/docs/current/rangetypes.html#RANGETYPES-IO
-            # * https://www.postgresql.org/docs/current/rowtypes.html#ROWTYPES-IO-SYNTAX
-            def unquote(value)
-              if value.start_with?('"') && value.end_with?('"')
-                unquoted_value = value[1..-2]
-                unquoted_value.gsub!('""', '"')
-                unquoted_value.gsub!("\\\\", "\\")
-                unquoted_value
-              else
-                value
-              end
+          # When formatting the bound values of range types, PostgreSQL quotes
+          # the bound value using double-quotes in certain conditions. Within
+          # a double-quoted string, literal " and \ characters are themselves
+          # escaped. In input, PostgreSQL accepts multiple escape styles for "
+          # (either \" or "") but in output always uses "".
+          # See:
+          # * https://www.postgresql.org/docs/current/rangetypes.html#RANGETYPES-IO
+          # * https://www.postgresql.org/docs/current/rowtypes.html#ROWTYPES-IO-SYNTAX
+          def unquote(value)
+            if value.start_with?('"') && value.end_with?('"')
+              unquoted_value = value[1..-2]
+              unquoted_value.gsub!('""', '"')
+              unquoted_value.gsub!("\\\\", "\\")
+              unquoted_value
+            else
+              value
             end
+          end
 
-            def infinity(negative: false)
-              if subtype.respond_to?(:infinity)
-                subtype.infinity(negative: negative)
-              elsif negative
-                -::Float::INFINITY
-              else
-                ::Float::INFINITY
-              end
+          def infinity(negative: false)
+            if subtype.respond_to?(:infinity)
+              subtype.infinity(negative: negative)
+            elsif negative
+              -::Float::INFINITY
+            else
+              ::Float::INFINITY
             end
+          end
 
-            def infinity?(value)
-              value.respond_to?(:infinite?) && value.infinite?
-            end
+          def infinity?(value)
+            value.respond_to?(:infinite?) && value.infinite?
+          end
         end
       end
     end

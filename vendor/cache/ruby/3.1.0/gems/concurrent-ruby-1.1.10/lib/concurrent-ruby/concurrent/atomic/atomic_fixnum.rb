@@ -102,7 +102,7 @@ module Concurrent
                                  CAtomicFixnum
                                else
                                  MutexAtomicFixnum
-                               end
+  end
   private_constant :AtomicFixnumImplementation
 
   # @!macro atomic_fixnum

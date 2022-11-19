@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView # :nodoc:
   # = Action View HTML Template
   class Template # :nodoc:
@@ -8,7 +6,7 @@ module ActionView # :nodoc:
 
       def initialize(string, type)
         @string = string.to_s
-        @type   = type
+        @type = type
       end
 
       def identifier

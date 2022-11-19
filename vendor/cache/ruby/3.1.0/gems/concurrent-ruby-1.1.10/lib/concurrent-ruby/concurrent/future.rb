@@ -8,7 +8,6 @@ require 'concurrent/options'
 
 # TODO (pitr-ch 14-Mar-2017): deprecate, Future, Promise, etc.
 
-
 module Concurrent
 
   # {include:file:docs-source/future.md}
@@ -52,7 +51,7 @@ module Concurrent
     #   future.state #=> :pending
     def execute
       if compare_and_set_state(:pending, :unscheduled)
-        @executor.post{ safe_execute(@task, @args) }
+        @executor.post { safe_execute(@task, @args) }
         self
       end
     end

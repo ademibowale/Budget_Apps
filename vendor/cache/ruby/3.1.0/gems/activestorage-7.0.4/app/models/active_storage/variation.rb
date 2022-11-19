@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "mini_mime"
 
 # A set of transformations that can be applied to a blob to create a variant. This class is exposed via
@@ -79,7 +77,7 @@ class ActiveStorage::Variation
   end
 
   private
-    def transformer
-      ActiveStorage::Transformers::ImageProcessingTransformer.new(transformations.except(:format))
-    end
+  def transformer
+    ActiveStorage::Transformers::ImageProcessingTransformer.new(transformations.except(:format))
+  end
 end

@@ -4,9 +4,9 @@ module ChildProcess
       BUFFER_SIZE = 2048
 
       def initialize(input, output)
-        @input  = input
+        @input = input
         @output = output
-        @stop   = false
+        @stop = false
       end
 
       def stop

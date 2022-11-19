@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionCable
   module Connection
     # Allows the use of per-connection tags against the server logger. This wouldn't work using the traditional
@@ -34,9 +32,9 @@ module ActionCable
       end
 
       private
-        def log(type, message) # :doc:
-          tag(@logger) { @logger.send type, message }
-        end
+      def log(type, message) # :doc:
+        tag(@logger) { @logger.send type, message }
+      end
     end
   end
 end

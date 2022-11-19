@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/anonymous"
 
 module ActiveModel
@@ -167,9 +165,9 @@ module ActiveModel
     end
 
     private
-      def prepare_value_for_validation(value, record, attr_name)
-        value
-      end
+    def prepare_value_for_validation(value, record, attr_name)
+      value
+    end
   end
 
   # +BlockValidator+ is a special +EachValidator+ which receives a block on initialization
@@ -181,8 +179,8 @@ module ActiveModel
     end
 
     private
-      def validate_each(record, attribute, value)
-        @block.call(record, attribute, value)
-      end
+    def validate_each(record, attribute, value)
+      @block.call(record, attribute, value)
+    end
   end
 end

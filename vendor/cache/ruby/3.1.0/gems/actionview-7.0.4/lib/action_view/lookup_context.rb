@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "concurrent/map"
 require "active_support/core_ext/module/attribute_accessors"
 require "action_view/template/resolver"
@@ -47,7 +45,7 @@ module ActionView
       locales.uniq!
       locales
     end
-    register_detail(:formats) { ActionView::Base.default_formats || [:html, :text, :js, :css,  :xml, :json] }
+    register_detail(:formats) { ActionView::Base.default_formats || [:html, :text, :js, :css, :xml, :json] }
     register_detail(:variants) { [] }
     register_detail(:handlers) { Template::Handlers.extensions }
 
@@ -205,7 +203,7 @@ module ActionView
           prefixes = prefixes.map { |p| "#{p}/#{path_prefix}" }
         end
 
-        return name, prefixes
+        [name, prefixes]
       end
     end
 

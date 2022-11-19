@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/hash/except"
 require "active_support/core_ext/hash/slice"
 require "active_record/relation/merger"
@@ -68,10 +66,10 @@ module ActiveRecord
     end
 
     private
-      def relation_with(values)
-        result = spawn
-        result.instance_variable_set(:@values, values)
-        result
-      end
+    def relation_with(values)
+      result = spawn
+      result.instance_variable_set(:@values, values)
+      result
+    end
   end
 end

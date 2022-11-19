@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView # :nodoc:
   # = Action View PathSet
   #
@@ -62,24 +60,24 @@ module ActionView # :nodoc:
     end
 
     private
-      def search_combinations(prefixes)
-        prefixes = Array(prefixes)
-        prefixes.each do |prefix|
-          paths.each do |resolver|
-            yield resolver, prefix
-          end
+    def search_combinations(prefixes)
+      prefixes = Array(prefixes)
+      prefixes.each do |prefix|
+        paths.each do |resolver|
+          yield resolver, prefix
         end
       end
+    end
 
-      def typecast(paths)
-        paths.map do |path|
-          case path
-          when Pathname, String
-            FileSystemResolver.new path.to_s
-          else
-            path
-          end
+    def typecast(paths)
+      paths.map do |path|
+        case path
+        when Pathname, String
+          FileSystemResolver.new path.to_s
+        else
+          path
         end
       end
+    end
   end
 end

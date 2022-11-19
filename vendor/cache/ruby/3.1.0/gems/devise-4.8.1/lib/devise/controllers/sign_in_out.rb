@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Devise
   module Controllers
     # Provide sign in and sign out functionality.
@@ -31,8 +29,8 @@ module Devise
       #   sign_in @user, store: false               # sign_in(resource, options)
       #
       def sign_in(resource_or_scope, *args)
-        options  = args.extract_options!
-        scope    = Devise::Mapping.find_scope!(resource_or_scope)
+        options = args.extract_options!
+        scope = Devise::Mapping.find_scope!(resource_or_scope)
         resource = args.last || resource_or_scope
 
         expire_data_after_sign_in!

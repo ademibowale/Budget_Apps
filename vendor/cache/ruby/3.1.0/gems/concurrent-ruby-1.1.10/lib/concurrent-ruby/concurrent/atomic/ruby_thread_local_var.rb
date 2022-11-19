@@ -28,8 +28,8 @@ module Concurrent
     # But when a Thread is GC'd, we need to drop the reference to its thread-local
     #   array, so we don't leak memory
 
-    FREE                = []
-    LOCK                = Mutex.new
+    FREE = []
+    LOCK = Mutex.new
     THREAD_LOCAL_ARRAYS = {} # used as a hash set
 
     # synchronize when not on MRI

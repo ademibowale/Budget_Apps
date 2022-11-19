@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_view/helpers/tag_helper"
 require "active_support/html_safe_translation"
 
@@ -119,43 +117,43 @@ module ActionView
       alias :l :localize
 
       private
-        MISSING_TRANSLATION = -(2**60)
-        private_constant :MISSING_TRANSLATION
+      MISSING_TRANSLATION = -(2**60)
+      private_constant :MISSING_TRANSLATION
 
-        NO_DEFAULT = [].freeze
-        private_constant :NO_DEFAULT
+      NO_DEFAULT = [].freeze
+      private_constant :NO_DEFAULT
 
-        def scope_key_by_partial(key)
-          if key&.start_with?(".")
-            if @virtual_path
-              @_scope_key_by_partial_cache ||= {}
-              @_scope_key_by_partial_cache[@virtual_path] ||= @virtual_path.gsub(%r{/_?}, ".")
-              "#{@_scope_key_by_partial_cache[@virtual_path]}#{key}"
-            else
-              raise "Cannot use t(#{key.inspect}) shortcut because path is not available"
-            end
+      def scope_key_by_partial(key)
+        if key&.start_with?(".")
+          if @virtual_path
+            @_scope_key_by_partial_cache ||= {}
+            @_scope_key_by_partial_cache[@virtual_path] ||= @virtual_path.gsub(%r{/_?}, ".")
+            "#{@_scope_key_by_partial_cache[@virtual_path]}#{key}"
           else
-            key
+            raise "Cannot use t(#{key.inspect}) shortcut because path is not available"
+          end
+        else
+          key
+        end
+      end
+
+      def missing_translation(key, options)
+        keys = I18n.normalize_keys(options[:locale] || I18n.locale, key, options[:scope])
+
+        title = +"translation missing: #{keys.join(".")}"
+
+        options.each do |name, value|
+          unless name == :scope
+            title << ", " << name.to_s << ": " << ERB::Util.html_escape(value)
           end
         end
 
-        def missing_translation(key, options)
-          keys = I18n.normalize_keys(options[:locale] || I18n.locale, key, options[:scope])
-
-          title = +"translation missing: #{keys.join(".")}"
-
-          options.each do |name, value|
-            unless name == :scope
-              title << ", " << name.to_s << ": " << ERB::Util.html_escape(value)
-            end
-          end
-
-          if ActionView::Base.debug_missing_translation
-            content_tag("span", keys.last.to_s.titleize, class: "translation_missing", title: title)
-          else
-            title
-          end
+        if ActionView::Base.debug_missing_translation
+          content_tag("span", keys.last.to_s.titleize, class: "translation_missing", title: title)
+        else
+          title
         end
+      end
     end
   end
 end

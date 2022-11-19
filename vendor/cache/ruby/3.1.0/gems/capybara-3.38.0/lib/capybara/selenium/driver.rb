@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'uri'
 require 'English'
 
@@ -130,8 +128,12 @@ class Capybara::Selenium::Driver < Capybara::Driver::Base
     browser.current_url
   end
 
-  def wait?; true; end
-  def needs_server?; true; end
+  def wait?
+    true
+  end
+  def needs_server?
+    true
+  end
 
   def execute_script(script, *args)
     browser.execute_script(script, *native_args(args))

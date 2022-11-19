@@ -5,6 +5,8 @@ ruby '3.1.2'
 
 gem 'rubocop', '>= 1.0', '< 2.0'
 
+gem 'rubocop-discourse', '~> 1.0'
+
 gem 'devise'
 # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "mail"
 
 module ActionMailbox
@@ -72,7 +70,6 @@ module ActionMailbox
     def create_inbound_email_from_source(source, status: :processing)
       ActionMailbox::InboundEmail.create_and_extract_message_id! source, status: status
     end
-
 
     # Create an InboundEmail from fixture using the same arguments as create_inbound_email_from_fixture
     # and immediately route it to processing.

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -209,17 +207,17 @@ module ActiveRecord
         end
 
         private
-          def aliased_types(name, fallback)
-            fallback
-          end
+        def aliased_types(name, fallback)
+          fallback
+        end
 
-          def integer_like_primary_key_type(type, options)
-            if type == :bigint || options[:limit] == 8
-              :bigserial
-            else
-              :serial
-            end
+        def integer_like_primary_key_type(type, options)
+          if type == :bigint || options[:limit] == 8
+            :bigserial
+          else
+            :serial
           end
+        end
       end
 
       class Table < ActiveRecord::ConnectionAdapters::Table

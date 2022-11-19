@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # Configuration API for ActiveRecord::Encryption

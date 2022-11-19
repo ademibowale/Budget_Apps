@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require("bootsnap/bootsnap")
 
 module Bootsnap
@@ -211,7 +209,7 @@ module Bootsnap
           end
 
           def input_to_output(data, kwargs)
-            ::YAML.load(data, **(kwargs || {}))
+            ::YAML.safe_load(data, **(kwargs || {}))
           end
         end
 
@@ -270,7 +268,7 @@ module Bootsnap
         extend self
 
         def input_to_storage(contents, _)
-          obj = ::YAML.load(contents)
+          obj = ::YAML.safe_load(contents)
           packer = CompileCache::YAML.msgpack_factory.packer
           packer.pack(false) # not safe loaded
           begin
@@ -292,7 +290,7 @@ module Bootsnap
         end
 
         def input_to_output(data, kwargs)
-          ::YAML.load(data, **(kwargs || {}))
+          ::YAML.safe_load(data, **(kwargs || {}))
         end
 
         module Patch

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # An encryption context configures the different entities used to perform encryption:
@@ -23,13 +21,13 @@ module ActiveRecord
       alias frozen_encryption? frozen_encryption
 
       private
-        def set_defaults
-          self.frozen_encryption = false
-          self.key_generator = ActiveRecord::Encryption::KeyGenerator.new
-          self.cipher = ActiveRecord::Encryption::Cipher.new
-          self.encryptor = ActiveRecord::Encryption::Encryptor.new
-          self.message_serializer = ActiveRecord::Encryption::MessageSerializer.new
-        end
+      def set_defaults
+        self.frozen_encryption = false
+        self.key_generator = ActiveRecord::Encryption::KeyGenerator.new
+        self.cipher = ActiveRecord::Encryption::Cipher.new
+        self.encryptor = ActiveRecord::Encryption::Encryptor.new
+        self.message_serializer = ActiveRecord::Encryption::MessageSerializer.new
+      end
     end
   end
 end

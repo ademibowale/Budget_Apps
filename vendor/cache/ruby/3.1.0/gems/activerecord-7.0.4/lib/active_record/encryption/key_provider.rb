@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # A +KeyProvider+ serves keys:
@@ -38,9 +36,9 @@ module ActiveRecord
       end
 
       private
-        def keys_grouped_by_id
-          @keys_grouped_by_id ||= @keys.group_by(&:id)
-        end
+      def keys_grouped_by_id
+        @keys_grouped_by_id ||= @keys.group_by(&:id)
+      end
     end
   end
 end

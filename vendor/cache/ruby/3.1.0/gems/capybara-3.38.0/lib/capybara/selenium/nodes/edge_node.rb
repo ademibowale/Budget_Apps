@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selenium/extensions/html5_drag'
 
 class Capybara::Selenium::EdgeNode < Capybara::Selenium::Node

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 begin
   require "nokogiri"
 rescue LoadError => e
@@ -16,7 +14,7 @@ module ActiveSupport
     # Class that will build the hash while the XML document
     # is being parsed using SAX events.
     class HashBuilder < Nokogiri::XML::SAX::Document
-      CONTENT_KEY   = "__content__"
+      CONTENT_KEY = "__content__"
       HASH_SIZE_KEY = "__hash_size__"
 
       attr_reader :hash
@@ -44,8 +42,8 @@ module ActiveSupport
 
         case current_hash[name]
         when Array then current_hash[name] << new_hash
-        when Hash  then current_hash[name] = [current_hash[name], new_hash]
-        when nil   then current_hash[name] = new_hash
+        when Hash then current_hash[name] = [current_hash[name], new_hash]
+        when nil then current_hash[name] = new_hash
         end
 
         @hash_stack.push(new_hash)

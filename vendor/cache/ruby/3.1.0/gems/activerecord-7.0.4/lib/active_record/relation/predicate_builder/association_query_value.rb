@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class PredicateBuilder
     class AssociationQueryValue # :nodoc:
@@ -13,30 +11,30 @@ module ActiveRecord
       end
 
       private
-        attr_reader :associated_table, :value
+      attr_reader :associated_table, :value
 
-        def ids
-          case value
-          when Relation
-            value.select_values.empty? ? value.select(primary_key) : value
-          when Array
-            value.map { |v| convert_to_id(v) }
-          else
-            convert_to_id(value)
-          end
+      def ids
+        case value
+        when Relation
+          value.select_values.empty? ? value.select(primary_key) : value
+        when Array
+          value.map { |v| convert_to_id(v) }
+        else
+          convert_to_id(value)
         end
+      end
 
-        def primary_key
-          associated_table.join_primary_key
-        end
+      def primary_key
+        associated_table.join_primary_key
+      end
 
-        def convert_to_id(value)
-          if value.respond_to?(primary_key)
-            value.public_send(primary_key)
-          else
-            value
-          end
+      def convert_to_id(value)
+        if value.respond_to?(primary_key)
+          value.public_send(primary_key)
+        else
+          value
         end
+      end
     end
   end
 end

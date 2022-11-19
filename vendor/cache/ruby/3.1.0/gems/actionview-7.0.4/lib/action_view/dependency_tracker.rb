@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "concurrent/map"
 require "action_view/path_set"
 require "action_view/render_parser"

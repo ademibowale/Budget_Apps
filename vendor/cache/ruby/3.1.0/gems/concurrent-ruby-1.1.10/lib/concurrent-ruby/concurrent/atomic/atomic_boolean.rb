@@ -85,7 +85,7 @@ module Concurrent
                                   CAtomicBoolean
                                 else
                                   MutexAtomicBoolean
-                                end
+  end
   private_constant :AtomicBooleanImplementation
 
   # @!macro atomic_boolean

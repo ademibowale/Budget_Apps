@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class Over < Binary
@@ -9,7 +7,9 @@ module Arel # :nodoc: all
         super(left, right)
       end
 
-      def operator; "OVER" end
+      def operator
+        "OVER"
+      end
     end
   end
 end

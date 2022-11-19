@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 module ActiveModel
   module Validations
     class LengthValidator < EachValidator # :nodoc:
-      MESSAGES  = { is: :wrong_length, minimum: :too_short, maximum: :too_long }.freeze
-      CHECKS    = { is: :==, minimum: :>=, maximum: :<= }.freeze
+      MESSAGES = { is: :wrong_length, minimum: :too_short, maximum: :too_long }.freeze
+      CHECKS = { is: :==, minimum: :>=, maximum: :<= }.freeze
 
       RESERVED_OPTIONS = [:minimum, :maximum, :within, :is, :too_short, :too_long]
 
@@ -64,9 +62,9 @@ module ActiveModel
       end
 
       private
-        def skip_nil_check?(key)
-          key == :maximum && options[:allow_nil].nil? && options[:allow_blank].nil?
-        end
+      def skip_nil_check?(key)
+        key == :maximum && options[:allow_nil].nil? && options[:allow_blank].nil?
+      end
     end
 
     module HelperMethods

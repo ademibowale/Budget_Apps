@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "websocket/driver"
 
 module ActionCable
@@ -35,7 +33,7 @@ module ActionCable
       end
 
       private
-        attr_reader :websocket
+      attr_reader :websocket
     end
   end
 end

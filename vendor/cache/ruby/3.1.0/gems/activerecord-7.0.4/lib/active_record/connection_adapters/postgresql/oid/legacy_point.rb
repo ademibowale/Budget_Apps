@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -34,9 +32,9 @@ module ActiveRecord
           end
 
           private
-            def number_for_point(number)
-              number.to_s.delete_suffix(".0")
-            end
+          def number_for_point(number)
+            number.to_s.delete_suffix(".0")
+          end
         end
       end
     end

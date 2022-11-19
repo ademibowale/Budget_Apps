@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module Cache
     # A cache store implementation which doesn't actually store anything. Useful in
@@ -33,24 +31,24 @@ module ActiveSupport
       end
 
       private
-        def read_entry(key, **s)
-          deserialize_entry(read_serialized_entry(key))
-        end
+      def read_entry(key, **s)
+        deserialize_entry(read_serialized_entry(key))
+      end
 
-        def read_serialized_entry(_key, **)
-        end
+      def read_serialized_entry(_key, **)
+      end
 
-        def write_entry(key, entry, **)
-          write_serialized_entry(key, serialize_entry(entry))
-        end
+      def write_entry(key, entry, **)
+        write_serialized_entry(key, serialize_entry(entry))
+      end
 
-        def write_serialized_entry(_key, _payload, **)
-          true
-        end
+      def write_serialized_entry(_key, _payload, **)
+        true
+      end
 
-        def delete_entry(key, **options)
-          false
-        end
+      def delete_entry(key, **options)
+        false
+      end
     end
   end
 end

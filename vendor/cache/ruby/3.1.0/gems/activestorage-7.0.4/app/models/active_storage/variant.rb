@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Image blobs can have variants that are the result of a set of transformations applied to the original.
 # These variants are used to create thumbnails, fixed-size avatars, or any other derivative image from the
 # original.
@@ -101,15 +99,15 @@ class ActiveStorage::Variant
   end
 
   private
-    def processed?
-      service.exist?(key)
-    end
+  def processed?
+    service.exist?(key)
+  end
 
-    def process
-      blob.open do |input|
-        variation.transform(input) do |output|
-          service.upload(key, output, content_type: content_type)
-        end
+  def process
+    blob.open do |input|
+      variation.transform(input) do |output|
+        service.upload(key, output, content_type: content_type)
       end
     end
+  end
 end

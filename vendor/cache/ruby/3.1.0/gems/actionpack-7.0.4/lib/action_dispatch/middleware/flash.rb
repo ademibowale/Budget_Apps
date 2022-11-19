@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/hash/keys"
 
 module ActionDispatch
@@ -140,7 +138,7 @@ module ActionDispatch
       def initialize(flashes = {}, discard = []) # :nodoc:
         @discard = Set.new(stringify_array(discard))
         @flashes = flashes.stringify_keys
-        @now     = nil
+        @now = nil
       end
 
       def initialize_copy(other)
@@ -278,19 +276,21 @@ module ActionDispatch
       end
 
       protected
-        def now_is_loaded?
-          @now
-        end
+      def now_is_loaded?
+        @now
+      end
 
       private
-        def stringify_array(array) # :doc:
-          array.map do |item|
-            item.kind_of?(Symbol) ? item.to_s : item
-          end
+      def stringify_array(array) # :doc:
+        array.map do |item|
+          item.kind_of?(Symbol) ? item.to_s : item
         end
+      end
     end
 
-    def self.new(app) app; end
+    def self.new(app)
+      app
+    end
   end
 
   class Request

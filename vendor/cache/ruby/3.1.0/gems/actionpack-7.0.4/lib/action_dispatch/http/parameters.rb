@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionDispatch
   module Http
     module Parameters
@@ -84,34 +82,34 @@ module ActionDispatch
       end
 
       private
-        def parse_formatted_parameters(parsers)
-          return yield if content_length.zero? || content_mime_type.nil?
+      def parse_formatted_parameters(parsers)
+        return yield if content_length.zero? || content_mime_type.nil?
 
-          strategy = parsers.fetch(content_mime_type.symbol) { return yield }
+        strategy = parsers.fetch(content_mime_type.symbol) { return yield }
 
-          begin
-            strategy.call(raw_post)
-          rescue # JSON or Ruby code block errors.
-            log_parse_error_once
-            raise ParseError, "Error occurred while parsing request parameters"
-          end
+        begin
+          strategy.call(raw_post)
+        rescue # JSON or Ruby code block errors.
+          log_parse_error_once
+          raise ParseError, "Error occurred while parsing request parameters"
         end
+      end
 
-        def log_parse_error_once
-          @parse_error_logged ||= begin
-            parse_logger = logger || ActiveSupport::Logger.new($stderr)
-            parse_logger.debug <<~MSG.chomp
+      def log_parse_error_once
+        @parse_error_logged ||= begin
+          parse_logger = logger || ActiveSupport::Logger.new($stderr)
+          parse_logger.debug <<~MSG.chomp
               Error occurred while parsing request parameters.
               Contents:
 
               #{raw_post}
             MSG
-          end
         end
+      end
 
-        def params_parsers
-          ActionDispatch::Request.parameter_parsers
-        end
+      def params_parsers
+        ActionDispatch::Request.parameter_parsers
+      end
     end
   end
 end

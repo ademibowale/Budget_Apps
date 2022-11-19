@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Copyright (C) Bob Aman
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +11,6 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-
 
 require "spec_helper"
 
@@ -262,8 +259,8 @@ describe Addressable::IDNA, "when using the pure-Ruby implementation" do
     load "addressable/idna/pure.rb"
   end
 
-  it_should_behave_like "converting from unicode to ASCII"
-  it_should_behave_like "converting from ASCII to unicode"
+  it_behaves_like "converting from unicode to ASCII"
+  it_behaves_like "converting from ASCII to unicode"
 
   begin
     require "fiber"
@@ -290,8 +287,8 @@ begin
       load "addressable/idna/native.rb"
     end
 
-    it_should_behave_like "converting from unicode to ASCII"
-    it_should_behave_like "converting from ASCII to unicode"
+    it_behaves_like "converting from unicode to ASCII"
+    it_behaves_like "converting from ASCII to unicode"
   end
 rescue LoadError => error
   raise error if ENV["CI"] && TestHelper.native_supported?

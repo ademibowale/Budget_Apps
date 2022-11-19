@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController # :nodoc:
   module ContentSecurityPolicy
     extend ActiveSupport::Concern
@@ -70,16 +68,16 @@ module ActionController # :nodoc:
     end
 
     private
-      def content_security_policy?
-        request.content_security_policy
-      end
+    def content_security_policy?
+      request.content_security_policy
+    end
 
-      def content_security_policy_nonce
-        request.content_security_policy_nonce
-      end
+    def content_security_policy_nonce
+      request.content_security_policy_nonce
+    end
 
-      def current_content_security_policy
-        request.content_security_policy&.clone || ActionDispatch::ContentSecurityPolicy.new
-      end
+    def current_content_security_policy
+      request.content_security_policy&.clone || ActionDispatch::ContentSecurityPolicy.new
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/object/try"
 
 module ActiveRecord
@@ -35,33 +33,33 @@ module ActiveRecord
         end
 
         private
-          def convert_time_to_time_zone(value)
-            return if value.nil?
+        def convert_time_to_time_zone(value)
+          return if value.nil?
 
-            if value.acts_like?(:time)
-              value.in_time_zone
-            elsif value.respond_to?(:infinite?) && value.infinite?
-              value
-            elsif value.is_a?(Range)
-              Range.new(convert_time_to_time_zone(value.begin), convert_time_to_time_zone(value.end), value.exclude_end?)
+          if value.acts_like?(:time)
+            value.in_time_zone
+          elsif value.respond_to?(:infinite?) && value.infinite?
+            value
+          elsif value.is_a?(Range)
+            Range.new(convert_time_to_time_zone(value.begin), convert_time_to_time_zone(value.end), value.exclude_end?)
+          else
+            map_avoiding_infinite_recursion(value) { |v| convert_time_to_time_zone(v) }
+          end
+        end
+
+        def set_time_zone_without_conversion(value)
+          ::Time.zone.local_to_utc(value).try(:in_time_zone) if value
+        end
+
+        def map_avoiding_infinite_recursion(value)
+          map(value) do |v|
+            if value.equal?(v)
+              nil
             else
-              map_avoiding_infinite_recursion(value) { |v| convert_time_to_time_zone(v) }
+              yield(v)
             end
           end
-
-          def set_time_zone_without_conversion(value)
-            ::Time.zone.local_to_utc(value).try(:in_time_zone) if value
-          end
-
-          def map_avoiding_infinite_recursion(value)
-            map(value) do |v|
-              if value.equal?(v)
-                nil
-              else
-                yield(v)
-              end
-            end
-          end
+        end
       end
 
       extend ActiveSupport::Concern
@@ -81,12 +79,12 @@ module ActiveRecord
         end
 
         private
-          def create_time_zone_conversion_attribute?(name, cast_type)
-            enabled_for_column = time_zone_aware_attributes &&
-              !skip_time_zone_conversion_for_attributes.include?(name.to_sym)
+        def create_time_zone_conversion_attribute?(name, cast_type)
+          enabled_for_column = time_zone_aware_attributes &&
+            !skip_time_zone_conversion_for_attributes.include?(name.to_sym)
 
-            enabled_for_column && time_zone_aware_types.include?(cast_type.type)
-          end
+          enabled_for_column && time_zone_aware_types.include?(cast_type.type)
+        end
       end
     end
   end

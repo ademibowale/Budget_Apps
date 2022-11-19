@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Devise
   module Controllers
     # Those helpers are convenience methods added to ApplicationController.
@@ -233,8 +231,8 @@ module Devise
       # then to the url specified by after_sign_in_path_for. It accepts the same
       # parameters as the sign_in method.
       def sign_in_and_redirect(resource_or_scope, *args)
-        options  = args.extract_options!
-        scope    = Devise::Mapping.find_scope!(resource_or_scope)
+        options = args.extract_options!
+        scope = Devise::Mapping.find_scope!(resource_or_scope)
         resource = args.last || resource_or_scope
         sign_in(scope, resource, options)
         redirect_to after_sign_in_path_for(resource)
@@ -274,7 +272,7 @@ module Devise
       private
 
       def expire_data_after_sign_out!
-        Devise.mappings.each { |_,m| instance_variable_set("@current_#{m.name}", nil) }
+        Devise.mappings.each { |_, m| instance_variable_set("@current_#{m.name}", nil) }
         super
       end
     end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # = Active Record Signed Id
   module SignedId
@@ -93,7 +91,6 @@ module ActiveRecord
         [ base_class.name.underscore, purpose.to_s ].compact_blank.join("/")
       end
     end
-
 
     # Returns a signed id that's generated using a preconfigured +ActiveSupport::MessageVerifier+ instance.
     # This signed id is tamper proof, so it's safe to send in an email or otherwise share with the outside world.

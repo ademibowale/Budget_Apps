@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "openssl"
 require "base64"
 require "active_support/core_ext/object/blank"
@@ -191,47 +189,47 @@ module ActiveSupport
     end
 
     private
-      def encode(data)
-        ::Base64.strict_encode64(data)
-      end
+    def encode(data)
+      ::Base64.strict_encode64(data)
+    end
 
-      def decode(data)
-        ::Base64.strict_decode64(data)
-      end
+    def decode(data)
+      ::Base64.strict_decode64(data)
+    end
 
-      def generate_digest(data)
-        OpenSSL::HMAC.hexdigest(@digest, @secret, data)
-      end
+    def generate_digest(data)
+      OpenSSL::HMAC.hexdigest(@digest, @secret, data)
+    end
 
-      def digest_length_in_hex
-        # In hexadecimal (AKA base16) it takes 4 bits to represent a character,
-        # hence we multiply the digest's length (in bytes) by 8 to get it in
-        # bits and divide by 4 to get its number of characters it hex. Well, 8
-        # divided by 4 is 2.
-        @digest_length_in_hex ||= OpenSSL::Digest.new(@digest).digest_length * 2
-      end
+    def digest_length_in_hex
+      # In hexadecimal (AKA base16) it takes 4 bits to represent a character,
+      # hence we multiply the digest's length (in bytes) by 8 to get it in
+      # bits and divide by 4 to get its number of characters it hex. Well, 8
+      # divided by 4 is 2.
+      @digest_length_in_hex ||= OpenSSL::Digest.new(@digest).digest_length * 2
+    end
 
-      def separator_index_for(signed_message)
-        index = signed_message.length - digest_length_in_hex - SEPARATOR_LENGTH
-        return if index.negative? || signed_message[index, SEPARATOR_LENGTH] != SEPARATOR
+    def separator_index_for(signed_message)
+      index = signed_message.length - digest_length_in_hex - SEPARATOR_LENGTH
+      return if index.negative? || signed_message[index, SEPARATOR_LENGTH] != SEPARATOR
 
-        index
-      end
+      index
+    end
 
-      def get_data_and_digest_from(signed_message)
-        return if signed_message.nil? || !signed_message.valid_encoding? || signed_message.empty?
+    def get_data_and_digest_from(signed_message)
+      return if signed_message.nil? || !signed_message.valid_encoding? || signed_message.empty?
 
-        separator_index = separator_index_for(signed_message)
-        return if separator_index.nil?
+      separator_index = separator_index_for(signed_message)
+      return if separator_index.nil?
 
-        data = signed_message[0...separator_index]
-        digest = signed_message[separator_index + SEPARATOR_LENGTH..-1]
+      data = signed_message[0...separator_index]
+      digest = signed_message[separator_index + SEPARATOR_LENGTH..-1]
 
-        [data, digest]
-      end
+      [data, digest]
+    end
 
-      def digest_matches_data?(digest, data)
-        data.present? && digest.present? && ActiveSupport::SecurityUtils.secure_compare(digest, generate_digest(data))
-      end
+    def digest_matches_data?(digest, data)
+      data.present? && digest.present? && ActiveSupport::SecurityUtils.secure_compare(digest, generate_digest(data))
+    end
   end
 end

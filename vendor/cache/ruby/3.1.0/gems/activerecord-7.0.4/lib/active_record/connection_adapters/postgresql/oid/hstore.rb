@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "strscan"
 
 module ActiveRecord
@@ -91,17 +89,17 @@ module ActiveRecord
           end
 
           private
-            def escape_hstore(value)
-              if value.nil?
-                "NULL"
+          def escape_hstore(value)
+            if value.nil?
+              "NULL"
+            else
+              if value == ""
+                '""'
               else
-                if value == ""
-                  '""'
-                else
-                  '"%s"' % value.to_s.gsub(/(["\\])/, '\\\\\1')
-                end
+                '"%s"' % value.to_s.gsub(/(["\\])/, '\\\\\1')
               end
             end
+          end
         end
       end
     end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Bootsnap
   module CompileCache
     UNCOMPILABLE = BasicObject.new

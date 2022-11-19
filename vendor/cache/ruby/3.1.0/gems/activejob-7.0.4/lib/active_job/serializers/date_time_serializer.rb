@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveJob
   module Serializers
     class DateTimeSerializer < TimeObjectSerializer # :nodoc:
@@ -8,9 +6,9 @@ module ActiveJob
       end
 
       private
-        def klass
-          DateTime
-        end
+      def klass
+        DateTime
+      end
     end
   end
 end

@@ -44,14 +44,14 @@ module ChildProcess
         raise ArgumentError, "all arguments must be String: #{args.inspect}"
       end
 
-      @args        = args
-      @started     = false
-      @exit_code   = nil
-      @io          = nil
-      @cwd         = nil
-      @detach      = false
-      @duplex      = false
-      @leader      = false
+      @args = args
+      @started = false
+      @exit_code = nil
+      @io = nil
+      @cwd = nil
+      @detach = false
+      @duplex = false
+      @leader = false
       @environment = {}
     end
 

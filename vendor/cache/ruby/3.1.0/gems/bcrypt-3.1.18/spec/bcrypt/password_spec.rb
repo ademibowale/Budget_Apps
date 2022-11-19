@@ -5,7 +5,7 @@ describe "Creating a hashed password" do
 
   before :each do
     @secret = "wheedle"
-    @password = BCrypt::Password.create(@secret, :cost => 4)
+    @password = BCrypt::Password.create(@secret, cost: 4)
   end
 
   specify "should return a BCrypt::Password" do
@@ -18,18 +18,18 @@ describe "Creating a hashed password" do
 
   specify "should behave normally if the secret is not a string" do
     expect { BCrypt::Password.create(nil) }.not_to raise_error
-    expect { BCrypt::Password.create({:woo => "yeah"}) }.not_to raise_error
+    expect { BCrypt::Password.create({ woo: "yeah" }) }.not_to raise_error
     expect { BCrypt::Password.create(false) }.not_to raise_error
   end
 
   specify "should tolerate empty string secrets" do
-    expect { BCrypt::Password.create( "\n".chop  ) }.not_to raise_error
-    expect { BCrypt::Password.create( ""         ) }.not_to raise_error
-    expect { BCrypt::Password.create( String.new ) }.not_to raise_error
+    expect { BCrypt::Password.create("\n".chop) }.not_to raise_error
+    expect { BCrypt::Password.create("") }.not_to raise_error
+    expect { BCrypt::Password.create(String.new) }.not_to raise_error
   end
 
   specify "should tolerate very long string secrets" do
-    expect { BCrypt::Password.create("abcd"*1024) }.not_to raise_error
+    expect { BCrypt::Password.create("abcd" * 1024) }.not_to raise_error
   end
 end
 
@@ -41,12 +41,12 @@ describe "Reading a hashed password" do
 
   specify "the cost is too damn high" do
     expect {
-      BCrypt::Password.create("hello", :cost => 32)
+      BCrypt::Password.create("hello", cost: 32)
     }.to raise_error(ArgumentError)
   end
 
   specify "the cost should be set to the default if nil" do
-    expect(BCrypt::Password.create("hello", :cost => nil).cost).to equal(BCrypt::Engine::DEFAULT_COST)
+    expect(BCrypt::Password.create("hello", cost: nil).cost).to equal(BCrypt::Engine::DEFAULT_COST)
   end
 
   specify "the cost should be set to the default if empty hash" do
@@ -54,7 +54,7 @@ describe "Reading a hashed password" do
   end
 
   specify "the cost should be set to the passed value if provided" do
-    expect(BCrypt::Password.create("hello", :cost => 5).cost).to equal(5)
+    expect(BCrypt::Password.create("hello", cost: 5).cost).to equal(5)
   end
 
   specify "the cost should be set to the global value if set" do

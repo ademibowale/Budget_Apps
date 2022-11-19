@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rails/generators/active_record"
 
 module ActiveRecord
@@ -36,50 +34,50 @@ module ActiveRecord
       hook_for :test_framework
 
       private
-        # Skip creating migration file if:
-        #   - options parent is present and database option is not present
-        #   - migrations option is nil or false
-        def skip_migration_creation?
-          parent && !database || !migration
-        end
+      # Skip creating migration file if:
+      #   - options parent is present and database option is not present
+      #   - migrations option is nil or false
+      def skip_migration_creation?
+        parent && !database || !migration
+      end
 
-        def attributes_with_index
-          attributes.select { |a| !a.reference? && a.has_index? }
-        end
+      def attributes_with_index
+        attributes.select { |a| !a.reference? && a.has_index? }
+      end
 
-        # Used by the migration template to determine the parent name of the model
-        def parent_class_name
-          if parent
-            parent
-          elsif database
-            abstract_class_name
-          else
-            "ApplicationRecord"
-          end
+      # Used by the migration template to determine the parent name of the model
+      def parent_class_name
+        if parent
+          parent
+        elsif database
+          abstract_class_name
+        else
+          "ApplicationRecord"
         end
+      end
 
-        def generate_abstract_class
-          path = File.join("app/models", "#{database.underscore}_record.rb")
-          return if File.exist?(path)
+      def generate_abstract_class
+        path = File.join("app/models", "#{database.underscore}_record.rb")
+        return if File.exist?(path)
 
-          template "abstract_base_class.rb", path
-        end
+        template "abstract_base_class.rb", path
+      end
 
-        def abstract_class_name
-          "#{database.camelize}Record"
-        end
+      def abstract_class_name
+        "#{database.camelize}Record"
+      end
 
-        def database
-          options[:database]
-        end
+      def database
+        options[:database]
+      end
 
-        def parent
-          options[:parent]
-        end
+      def parent
+        options[:parent]
+      end
 
-        def migration
-          options[:migration]
-        end
+      def migration
+        options[:migration]
+      end
     end
   end
 end

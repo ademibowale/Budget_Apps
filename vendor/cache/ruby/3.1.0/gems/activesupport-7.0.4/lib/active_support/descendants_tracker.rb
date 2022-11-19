@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "weakref"
 require "active_support/ruby_features"
 
@@ -140,14 +138,14 @@ module ActiveSupport
         end
 
         private
-          def accumulate_descendants(klass, acc)
-            if direct_descendants = @@direct_descendants[klass]
-              direct_descendants.each do |direct_descendant|
-                acc << direct_descendant
-                accumulate_descendants(direct_descendant, acc)
-              end
+        def accumulate_descendants(klass, acc)
+          if direct_descendants = @@direct_descendants[klass]
+            direct_descendants.each do |direct_descendant|
+              acc << direct_descendant
+              accumulate_descendants(direct_descendant, acc)
             end
           end
+        end
       end
 
       def inherited(base)

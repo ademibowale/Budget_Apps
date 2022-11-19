@@ -30,7 +30,7 @@ module Concurrent
     def compare_and_set(expected_val, new_val, expected_mark, new_mark)
       # Memoize a valid reference to the current AtomicReference for
       # later comparison.
-      current             = reference
+      current = reference
       curr_val, curr_mark = current
 
       # Ensure that that the expected marks match.

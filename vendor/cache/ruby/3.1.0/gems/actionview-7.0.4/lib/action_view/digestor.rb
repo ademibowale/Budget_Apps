@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_view/dependency_tracker"
 
 module ActionView
@@ -68,11 +66,11 @@ module ActionView
       end
 
       private
-        def find_template(finder, name, prefixes, partial, keys)
-          finder.disable_cache do
-            finder.find_all(name, prefixes, partial, keys).first
-          end
+      def find_template(finder, name, prefixes, partial, keys)
+        finder.disable_cache do
+          finder.find_all(name, prefixes, partial, keys).first
         end
+      end
     end
 
     class Node
@@ -84,10 +82,10 @@ module ActionView
       end
 
       def initialize(name, logical_name, template, children = [])
-        @name         = name
+        @name = name
         @logical_name = logical_name
-        @template     = template
-        @children     = children
+        @template = template
+        @children = children
       end
 
       def digest(finder, stack = [])
@@ -115,11 +113,15 @@ module ActionView
     class Partial < Node; end
 
     class Missing < Node
-      def digest(finder, _ = []) "" end
+      def digest(finder, _ = [])
+        ""
+      end
     end
 
     class Injected < Node
-      def digest(finder, _ = []) name end
+      def digest(finder, _ = [])
+        name
+      end
     end
 
     class NullLogger

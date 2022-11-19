@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'color'
 
 module DEBUGGER__
@@ -17,19 +15,19 @@ module DEBUGGER__
         @loaded_file_map = {} # path => nil
       end
 
-      def add iseq, src
+      def add(iseq, src)
         # do nothing
         if (path = (iseq.absolute_path || iseq.path)) && File.exist?(path)
           if @loaded_file_map.has_key? path
-            return path, true # reloaded
+            [path, true] # reloaded
           else
             @loaded_file_map[path] = path
-            return path, false
+            [path, false]
           end
         end
       end
 
-      def get iseq
+      def get(iseq)
         return unless iseq
 
         if lines = iseq.script_lines&.map(&:chomp)
@@ -43,7 +41,7 @@ module DEBUGGER__
         end
       end
 
-      def get_colored iseq
+      def get_colored(iseq)
         if lines = @cmap[iseq]
           lines
         else
@@ -62,7 +60,7 @@ module DEBUGGER__
         @files = {} # filename => SrcInfo
       end
 
-      def add iseq, src
+      def add(iseq, src)
         if (path = (iseq.absolute_path || iseq.path)) && File.exist?(path)
           reloaded = @files.has_key? path
           add_path path
@@ -74,35 +72,35 @@ module DEBUGGER__
         nil
       end
 
-      private def all_iseq iseq, rs = []
+      private def all_iseq(iseq, rs = [])
         rs << iseq
-        iseq.each_child{|ci|
+        iseq.each_child { |ci|
           all_iseq(ci, rs)
         }
         rs
       end
 
-      private def add_iseq iseq, src
+      private def add_iseq(iseq, src)
         line = iseq.first_line
         if line > 1
           src = ("\n" * (line - 1)) + src
         end
         si = SrcInfo.new(src.lines)
-        all_iseq(iseq).each{|e|
+        all_iseq(iseq).each { |e|
           e.instance_variable_set(:@debugger_si, si)
           e.freeze
         }
       end
 
-      private def add_path path
+      private def add_path(path)
         src_lines = File.readlines(path, chomp: true)
         @files[path] = SrcInfo.new(src_lines)
       rescue SystemCallError
       end
 
-      private def get_si iseq
+      private def get_si(iseq)
         return unless iseq
-      
+
         if iseq.instance_variable_defined?(:@debugger_si)
           iseq.instance_variable_get(:@debugger_si)
         elsif @files.has_key?(path = (iseq.absolute_path || iseq.path))
@@ -112,13 +110,13 @@ module DEBUGGER__
         end
       end
 
-      def get iseq
+      def get(iseq)
         if si = get_si(iseq)
           si.src
         end
       end
 
-      def get_colored iseq
+      def get_colored(iseq)
         if si = get_si(iseq)
           si.colored || begin
             si.colored = colorize_code(si.src.join("\n")).lines

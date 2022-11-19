@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Rails
   class Conductor::ActionMailbox::InboundEmails::SourcesController < Rails::Conductor::BaseController
     def new

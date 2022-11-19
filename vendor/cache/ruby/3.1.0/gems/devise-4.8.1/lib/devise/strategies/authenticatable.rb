@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'devise/strategies/base'
 
 module Devise
@@ -139,8 +137,8 @@ module Devise
 
       def http_authentication_key
         @http_authentication_key ||= mapping.to.http_authentication_key || case authentication_keys
-          when Array then authentication_keys.first
-          when Hash then authentication_keys.keys.first
+                                                                           when Array then authentication_keys.first
+                                                                           when Hash then authentication_keys.keys.first
         end
       end
 

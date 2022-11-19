@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   Point = Struct.new(:x, :y)
 
@@ -50,13 +48,13 @@ module ActiveRecord
           end
 
           private
-            def number_for_point(number)
-              number.to_s.delete_suffix(".0")
-            end
+          def number_for_point(number)
+            number.to_s.delete_suffix(".0")
+          end
 
-            def build_point(x, y)
-              ActiveRecord::Point.new(Float(x), Float(y))
-            end
+          def build_point(x, y)
+            ActiveRecord::Point.new(Float(x), Float(y))
+          end
         end
       end
     end

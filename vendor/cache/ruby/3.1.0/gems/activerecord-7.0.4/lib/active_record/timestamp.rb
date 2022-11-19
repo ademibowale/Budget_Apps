@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # = Active Record \Timestamp
   #
@@ -79,20 +77,20 @@ module ActiveRecord
       end
 
       private
-        def timestamp_attributes_for_create
-          ["created_at", "created_on"].map! { |name| attribute_aliases[name] || name }
-        end
+      def timestamp_attributes_for_create
+        ["created_at", "created_on"].map! { |name| attribute_aliases[name] || name }
+      end
 
-        def timestamp_attributes_for_update
-          ["updated_at", "updated_on"].map! { |name| attribute_aliases[name] || name }
-        end
+      def timestamp_attributes_for_update
+        ["updated_at", "updated_on"].map! { |name| attribute_aliases[name] || name }
+      end
 
-        def reload_schema_from_cache
-          @timestamp_attributes_for_create_in_model = nil
-          @timestamp_attributes_for_update_in_model = nil
-          @all_timestamp_attributes_in_model = nil
-          super
-        end
+      def reload_schema_from_cache
+        @timestamp_attributes_for_create_in_model = nil
+        @timestamp_attributes_for_update_in_model = nil
+        @all_timestamp_attributes_in_model = nil
+        super
+      end
     end
 
   private

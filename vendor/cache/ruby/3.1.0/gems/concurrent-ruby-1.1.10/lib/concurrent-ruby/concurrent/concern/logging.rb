@@ -18,10 +18,10 @@ module Concurrent
         #NOTE: Cannot require 'concurrent/configuration' above due to circular references.
         #      Assume that the gem has been initialized if we've gotten this far.
         logger = if defined?(@logger) && @logger
-                   @logger
+          @logger
                  else
                    Concurrent.global_logger
-                 end
+        end
         logger.call level, progname, message, &block
       rescue => error
         $stderr.puts "`Concurrent.configuration.logger` failed to log #{[level, progname, message, block]}\n" +

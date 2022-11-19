@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative("../explicit_require")
 
 Bootsnap::ExplicitRequire.with_gems("msgpack") { require("msgpack") }
@@ -109,7 +107,7 @@ module Bootsnap
       end
 
       def default_data
-        {VERSION_KEY => CURRENT_VERSION}
+        { VERSION_KEY => CURRENT_VERSION }
       end
 
       def mkdir_p(path)

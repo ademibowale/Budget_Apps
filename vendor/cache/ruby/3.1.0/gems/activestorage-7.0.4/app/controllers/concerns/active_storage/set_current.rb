@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Sets the <tt>ActiveStorage::Current.url_options</tt> attribute, which the disk service uses to generate URLs.
 # Include this concern in custom controllers that call ActiveStorage::Blob#url,
 # ActiveStorage::Variant#url, or ActiveStorage::Preview#url so the disk service can

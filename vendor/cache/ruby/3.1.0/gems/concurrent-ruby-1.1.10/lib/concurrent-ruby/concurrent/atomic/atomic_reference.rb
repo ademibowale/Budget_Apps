@@ -137,7 +137,6 @@ module Concurrent
   #   @!method try_update!
   #     @!macro atomic_reference_method_try_update!
 
-
   # @!macro internal_implementation_note
   class ConcurrentUpdateError < ThreadError
     # frozen pre-allocated backtrace to speed ConcurrentUpdateError
@@ -189,7 +188,7 @@ module Concurrent
                                     RbxAtomicReference
                                   else
                                     MutexAtomicReference
-                                  end
+  end
   private_constant :AtomicReferenceImplementation
 
   # @!macro atomic_reference

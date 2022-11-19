@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_model/type"
 
 require "active_record/type/internal/timezone"
@@ -51,9 +49,9 @@ module ActiveRecord
       end
 
       private
-        def current_adapter_name
-          adapter_name_from(ActiveRecord::Base)
-        end
+      def current_adapter_name
+        adapter_name_from(ActiveRecord::Base)
+      end
     end
 
     BigInteger = ActiveModel::Type::BigInteger

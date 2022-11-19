@@ -457,7 +457,7 @@ module Concurrent
       class PartiallyRejected < ResolvedWithResult
         def initialize(value, reason)
           super()
-          @Value  = value
+          @Value = value
           @Reason = reason
         end
 
@@ -519,12 +519,12 @@ module Concurrent
 
       def initialize(promise, default_executor)
         super()
-        @Lock               = Mutex.new
-        @Condition          = ConditionVariable.new
-        @Promise            = promise
-        @DefaultExecutor    = default_executor
-        @Callbacks          = LockFreeStack.new
-        @Waiters            = AtomicFixnum.new 0
+        @Lock = Mutex.new
+        @Condition = ConditionVariable.new
+        @Promise = promise
+        @DefaultExecutor = default_executor
+        @Callbacks = LockFreeStack.new
+        @Waiters = AtomicFixnum.new 0
         self.internal_state = PENDING
       end
 
@@ -816,7 +816,6 @@ module Concurrent
 
       alias_method :then, :chain
 
-
       # @!macro promises.method.zip
       #   Creates a new event or a future which will be resolved when receiver and other are.
       #   Returns an event if receiver and other are events, otherwise returns a future.
@@ -893,7 +892,7 @@ module Concurrent
 
       def rejected_resolution(raise_on_reassign, state)
         Concurrent::MultipleAssignmentError.new('Event can be resolved only once') if raise_on_reassign
-        return false
+        false
       end
 
       def callback_on_resolution(state, args, callback)
@@ -1009,10 +1008,10 @@ module Concurrent
           ex
         else
           ex = if reason[0].respond_to? :exception
-                 reason[0].exception(*args)
+            reason[0].exception(*args)
                else
                  RuntimeError.new(reason[0]).exception(*args)
-               end
+          end
           ex.set_backtrace Array(ex.backtrace) + caller
           ex
         end
@@ -1246,10 +1245,10 @@ module Concurrent
             raise Concurrent::MultipleAssignmentError.new(
                 "Future can be resolved only once. It's #{result}, trying to set #{state.result}.",
                 current_result: result,
-                new_result:     state.result)
+                new_result: state.result)
           end
         end
-        return false
+        false
       end
 
       def wait_until_resolved!(timeout = nil)
@@ -1611,7 +1610,7 @@ module Concurrent
 
       def self.new_blocked_by1(blocker, *args, &block)
         blocker_delayed = blocker.promise.delayed_because
-        promise         = new(blocker_delayed, 1, *args, &block)
+        promise = new(blocker_delayed, 1, *args, &block)
         blocker.add_callback_notify_blocked promise, 0
         promise
       end
@@ -1619,13 +1618,13 @@ module Concurrent
       def self.new_blocked_by2(blocker1, blocker2, *args, &block)
         blocker_delayed1 = blocker1.promise.delayed_because
         blocker_delayed2 = blocker2.promise.delayed_because
-        delayed          = if blocker_delayed1 && blocker_delayed2
-                             # TODO (pitr-ch 23-Dec-2016): use arrays when we know it will not grow (only flat adds delay)
-                             LockFreeStack.of2(blocker_delayed1, blocker_delayed2)
+        delayed = if blocker_delayed1 && blocker_delayed2
+          # TODO (pitr-ch 23-Dec-2016): use arrays when we know it will not grow (only flat adds delay)
+          LockFreeStack.of2(blocker_delayed1, blocker_delayed2)
                            else
                              blocker_delayed1 || blocker_delayed2
-                           end
-        promise          = new(delayed, 2, *args, &block)
+        end
+        promise = new(delayed, 2, *args, &block)
         blocker1.add_callback_notify_blocked promise, 0
         blocker2.add_callback_notify_blocked promise, 1
         promise
@@ -1649,12 +1648,12 @@ module Concurrent
 
       def initialize(delayed, blockers_count, future)
         super(future)
-        @Delayed   = delayed
+        @Delayed = delayed
         @Countdown = AtomicFixnum.new blockers_count
       end
 
       def on_blocker_resolution(future, index)
-        countdown  = process_on_blocker_resolution(future, index)
+        countdown = process_on_blocker_resolution(future, index)
         resolvable = resolvable?(countdown, future, index)
 
         on_resolvable(future, index) if resolvable
@@ -1707,8 +1706,8 @@ module Concurrent
         raise ArgumentError, 'no block given' unless block_given?
         super delayed, 1, Future.new(self, default_executor)
         @Executor = executor
-        @Task     = task
-        @Args     = args
+        @Task = task
+        @Args = args
       end
 
       def executor
@@ -1778,7 +1777,7 @@ module Concurrent
     class ImmediateFuturePromise < InnerPromise
       def initialize(default_executor, fulfilled, value, reason)
         super Future.new(self, default_executor).
-            resolve_with(fulfilled ? Fulfilled.new(value) : Rejected.new(reason))
+          resolve_with(fulfilled ? Fulfilled.new(value) : Rejected.new(reason))
       end
     end
 
@@ -1788,7 +1787,7 @@ module Concurrent
         delayed = LockFreeStack.of1(self)
         super(delayed, blockers_count, event_or_future)
         # noinspection RubyArgCount
-        @Touched        = AtomicBoolean.new false
+        @Touched = AtomicBoolean.new false
         @DelayedBecause = delayed_because || LockFreeStack.new
 
         event_or_future.add_callback_clear_delayed_node delayed.peek
@@ -1912,7 +1911,7 @@ module Concurrent
           return 0
         end
 
-        value               = internal_state.value
+        value = internal_state.value
         continuation_future = @RunTest.call value
 
         if continuation_future
@@ -2001,12 +2000,12 @@ module Concurrent
 
       def on_resolvable(resolved_future, index)
         all_fulfilled = true
-        values        = ::Array.new(@Resolutions.size)
-        reasons       = ::Array.new(@Resolutions.size)
+        values = ::Array.new(@Resolutions.size)
+        reasons = ::Array.new(@Resolutions.size)
 
         @Resolutions.each_with_index do |internal_state, i|
           fulfilled, values[i], reasons[i] = internal_state.result
-          all_fulfilled                    &&= fulfilled
+          all_fulfilled &&= fulfilled
         end
 
         if all_fulfilled
@@ -2084,7 +2083,7 @@ module Concurrent
     class DelayPromise < InnerPromise
 
       def initialize(default_executor)
-        event    = Event.new(self, default_executor)
+        event = Event.new(self, default_executor)
         @Delayed = LockFreeStack.of1(self)
         super event
         event.add_callback_clear_delayed_node @Delayed.peek
@@ -2117,12 +2116,12 @@ module Concurrent
         @IntendedTime = intended_time
 
         in_seconds = begin
-          now           = Time.now
+          now = Time.now
           schedule_time = if @IntendedTime.is_a? Time
-                            @IntendedTime
+            @IntendedTime
                           else
                             now + @IntendedTime
-                          end
+          end
           [0, schedule_time.to_f - now.to_f].max
         end
 
@@ -2161,7 +2160,6 @@ module Concurrent
                      :AnyResolvedEventPromise,
                      :DelayPromise,
                      :ScheduledPromise
-
 
   end
 end

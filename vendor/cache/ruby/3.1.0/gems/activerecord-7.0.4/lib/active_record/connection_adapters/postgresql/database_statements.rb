@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
@@ -56,7 +54,7 @@ module ActiveRecord
             fields = result.fields
             fields.each_with_index do |fname, i|
               ftype = result.ftype i
-              fmod  = result.fmod i
+              fmod = result.fmod i
               case type = get_oid_type(ftype, fmod, fname)
               when Type::Integer, Type::Float, OID::Decimal, Type::String, Type::DateTime, Type::Boolean
                 # skip if a column has already been type casted by pg decoders
@@ -134,22 +132,22 @@ module ActiveRecord
         end
 
         private
-          def execute_batch(statements, name = nil)
-            execute(combine_multi_statements(statements))
-          end
+        def execute_batch(statements, name = nil)
+          execute(combine_multi_statements(statements))
+        end
 
-          def build_truncate_statements(table_names)
-            ["TRUNCATE TABLE #{table_names.map(&method(:quote_table_name)).join(", ")}"]
-          end
+        def build_truncate_statements(table_names)
+          ["TRUNCATE TABLE #{table_names.map(&method(:quote_table_name)).join(", ")}"]
+        end
 
-          # Returns the current ID of a table's sequence.
-          def last_insert_id_result(sequence_name)
-            exec_query("SELECT currval(#{quote(sequence_name)})", "SQL")
-          end
+        # Returns the current ID of a table's sequence.
+        def last_insert_id_result(sequence_name)
+          exec_query("SELECT currval(#{quote(sequence_name)})", "SQL")
+        end
 
-          def suppress_composite_primary_key(pk)
-            pk unless pk.is_a?(Array)
-          end
+        def suppress_composite_primary_key(pk)
+          pk unless pk.is_a?(Array)
+        end
       end
     end
   end

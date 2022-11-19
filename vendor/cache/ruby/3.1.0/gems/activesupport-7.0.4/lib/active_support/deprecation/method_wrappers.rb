@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/array/extract_options"
 require "active_support/core_ext/module/redefine_method"
 

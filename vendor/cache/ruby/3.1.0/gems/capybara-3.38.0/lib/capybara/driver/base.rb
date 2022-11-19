@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Capybara::Driver::Base
   attr_writer :session
 

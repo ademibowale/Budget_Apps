@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/database_configurations"
 
 module ActiveRecord
@@ -63,7 +61,7 @@ module ActiveRecord
       def check_protected_environments!
         unless ENV["DISABLE_DATABASE_ENVIRONMENT_CHECK"]
           current = ActiveRecord::Base.connection.migration_context.current_environment
-          stored  = ActiveRecord::Base.connection.migration_context.last_stored_environment
+          stored = ActiveRecord::Base.connection.migration_context.last_stored_environment
 
           if ActiveRecord::Base.connection.migration_context.protected_environment?
             raise ActiveRecord::ProtectedEnvironmentError.new(stored)
@@ -81,9 +79,9 @@ module ActiveRecord
         @tasks[pattern] = task
       end
 
-      register_task(/mysql/,        "ActiveRecord::Tasks::MySQLDatabaseTasks")
-      register_task(/postgresql/,   "ActiveRecord::Tasks::PostgreSQLDatabaseTasks")
-      register_task(/sqlite/,       "ActiveRecord::Tasks::SQLiteDatabaseTasks")
+      register_task(/mysql/, "ActiveRecord::Tasks::MySQLDatabaseTasks")
+      register_task(/postgresql/, "ActiveRecord::Tasks::PostgreSQLDatabaseTasks")
+      register_task(/sqlite/, "ActiveRecord::Tasks::SQLiteDatabaseTasks")
 
       def db_dir
         @db_dir ||= Rails.application.config.paths["db"].first
@@ -515,86 +513,86 @@ module ActiveRecord
       end
 
       private
-        def configs_for(**options)
-          Base.configurations.configs_for(**options)
+      def configs_for(**options)
+        Base.configurations.configs_for(**options)
+      end
+
+      def resolve_configuration(configuration)
+        Base.configurations.resolve(configuration)
+      end
+
+      def verbose?
+        ENV["VERBOSE"] ? ENV["VERBOSE"] != "false" : true
+      end
+
+      # Create a new instance for the specified db configuration object
+      # For classes that have been converted to use db_config objects, pass a
+      # `DatabaseConfig`, otherwise pass a `Hash`
+      def database_adapter_for(db_config, *arguments)
+        klass = class_for_adapter(db_config.adapter)
+        converted = klass.respond_to?(:using_database_configurations?) && klass.using_database_configurations?
+
+        config = converted ? db_config : db_config.configuration_hash
+        klass.new(config, *arguments)
+      end
+
+      def class_for_adapter(adapter)
+        _key, task = @tasks.reverse_each.detect { |pattern, _task| adapter[pattern] }
+        unless task
+          raise DatabaseNotSupported, "Rake tasks not supported by '#{adapter}' adapter"
         end
+        task.is_a?(String) ? task.constantize : task
+      end
 
-        def resolve_configuration(configuration)
-          Base.configurations.resolve(configuration)
-        end
+      def each_current_configuration(environment, name = nil)
+        environments = [environment]
+        environments << "test" if environment == "development" && !ENV["SKIP_TEST_DATABASE"] && !ENV["DATABASE_URL"]
 
-        def verbose?
-          ENV["VERBOSE"] ? ENV["VERBOSE"] != "false" : true
-        end
+        environments.each do |env|
+          configs_for(env_name: env).each do |db_config|
+            next if name && name != db_config.name
 
-        # Create a new instance for the specified db configuration object
-        # For classes that have been converted to use db_config objects, pass a
-        # `DatabaseConfig`, otherwise pass a `Hash`
-        def database_adapter_for(db_config, *arguments)
-          klass = class_for_adapter(db_config.adapter)
-          converted = klass.respond_to?(:using_database_configurations?) && klass.using_database_configurations?
-
-          config = converted ? db_config : db_config.configuration_hash
-          klass.new(config, *arguments)
-        end
-
-        def class_for_adapter(adapter)
-          _key, task = @tasks.reverse_each.detect { |pattern, _task| adapter[pattern] }
-          unless task
-            raise DatabaseNotSupported, "Rake tasks not supported by '#{adapter}' adapter"
-          end
-          task.is_a?(String) ? task.constantize : task
-        end
-
-        def each_current_configuration(environment, name = nil)
-          environments = [environment]
-          environments << "test" if environment == "development" && !ENV["SKIP_TEST_DATABASE"] && !ENV["DATABASE_URL"]
-
-          environments.each do |env|
-            configs_for(env_name: env).each do |db_config|
-              next if name && name != db_config.name
-
-              yield db_config
-            end
-          end
-        end
-
-        def each_local_configuration
-          configs_for.each do |db_config|
-            next unless db_config.database
-
-            if local_database?(db_config)
-              yield db_config
-            else
-              $stderr.puts "This task only modifies local databases. #{db_config.database} is on a remote host."
-            end
+            yield db_config
           end
         end
+      end
 
-        def local_database?(db_config)
-          host = db_config.host
-          host.blank? || LOCAL_HOSTS.include?(host)
-        end
+      def each_local_configuration
+        configs_for.each do |db_config|
+          next unless db_config.database
 
-        def schema_sha1(file)
-          OpenSSL::Digest::SHA1.hexdigest(File.read(file))
-        end
-
-        def structure_dump_flags_for(adapter)
-          if structure_dump_flags.is_a?(Hash)
-            structure_dump_flags[adapter.to_sym]
+          if local_database?(db_config)
+            yield db_config
           else
-            structure_dump_flags
+            $stderr.puts "This task only modifies local databases. #{db_config.database} is on a remote host."
           end
         end
+      end
 
-        def structure_load_flags_for(adapter)
-          if structure_load_flags.is_a?(Hash)
-            structure_load_flags[adapter.to_sym]
-          else
-            structure_load_flags
-          end
+      def local_database?(db_config)
+        host = db_config.host
+        host.blank? || LOCAL_HOSTS.include?(host)
+      end
+
+      def schema_sha1(file)
+        OpenSSL::Digest::SHA1.hexdigest(File.read(file))
+      end
+
+      def structure_dump_flags_for(adapter)
+        if structure_dump_flags.is_a?(Hash)
+          structure_dump_flags[adapter.to_sym]
+        else
+          structure_dump_flags
         end
+      end
+
+      def structure_load_flags_for(adapter)
+        if structure_load_flags.is_a?(Hash)
+          structure_load_flags[adapter.to_sym]
+        else
+          structure_load_flags
+        end
+      end
     end
   end
 end

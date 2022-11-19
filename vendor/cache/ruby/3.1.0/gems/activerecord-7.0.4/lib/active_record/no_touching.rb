@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # = Active Record No Touching
   module NoTouching
@@ -38,9 +36,9 @@ module ActiveRecord
       end
 
       private
-        def klasses
-          ActiveSupport::IsolatedExecutionState[:active_record_no_touching_classes] ||= []
-        end
+      def klasses
+        ActiveSupport::IsolatedExecutionState[:active_record_no_touching_classes] ||= []
+      end
     end
 
     # Returns +true+ if the class has +no_touching+ set, +false+ otherwise.

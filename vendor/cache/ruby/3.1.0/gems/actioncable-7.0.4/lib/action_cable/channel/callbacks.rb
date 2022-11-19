@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 require "active_support/callbacks"
 
 module ActionCable
   module Channel
     module Callbacks
-      extend  ActiveSupport::Concern
+      extend ActiveSupport::Concern
       include ActiveSupport::Callbacks
 
       included do

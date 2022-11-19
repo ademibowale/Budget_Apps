@@ -87,7 +87,7 @@ module ChildProcessSpecHelper
   end
 
   def with_env(hash)
-    hash.each { |k,v| ENV[k] = v }
+    hash.each { |k, v| ENV[k] = v }
     begin
       yield
     ensure
@@ -159,7 +159,7 @@ module ChildProcessSpecHelper
 
   def random_free_port
     server = TCPServer.new('127.0.0.1', 0)
-    port   = server.addr[1]
+    port = server.addr[1]
     server.close
 
     port
@@ -177,7 +177,7 @@ module ChildProcessSpecHelper
   end
 
   def wait_until(timeout = 10, &blk)
-    end_time       = Time.now + timeout
+    end_time = Time.now + timeout
     last_exception = nil
 
     until Time.now >= end_time
@@ -261,10 +261,10 @@ RSpec.configure do |c|
   }
 
   if ChildProcess.jruby? && ChildProcess.new("true").instance_of?(ChildProcess::JRuby::Process)
-    c.filter_run_excluding :process_builder => false
+    c.filter_run_excluding process_builder: false
   end
 
   if ChildProcess.linux? && ChildProcess.posix_spawn?
-    c.filter_run_excluding :posix_spawn_on_linux => false
+    c.filter_run_excluding posix_spawn_on_linux: false
   end
 end

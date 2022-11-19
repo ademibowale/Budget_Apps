@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Associations
     class Preloader
@@ -117,30 +115,30 @@ module ActiveRecord
         end
 
         private
-          def build_children(children)
-            Array.wrap(children).flat_map { |association|
-              Array(association).flat_map { |parent, child|
-                Branch.new(
-                  parent: self,
-                  association: parent,
-                  children: child,
-                  associate_by_default: associate_by_default,
-                  scope: scope
-                )
-              }
+        def build_children(children)
+          Array.wrap(children).flat_map { |association|
+            Array(association).flat_map { |parent, child|
+              Branch.new(
+                parent: self,
+                association: parent,
+                children: child,
+                associate_by_default: associate_by_default,
+                scope: scope
+              )
             }
-          end
+          }
+        end
 
-          # Returns a class containing the logic needed to load preload the data
-          # and attach it to a relation. The class returned implements a `run` method
-          # that accepts a preloader.
-          def preloader_for(reflection)
-            if reflection.options[:through]
-              ThroughAssociation
-            else
-              Association
-            end
+        # Returns a class containing the logic needed to load preload the data
+        # and attach it to a relation. The class returned implements a `run` method
+        # that accepts a preloader.
+        def preloader_for(reflection)
+          if reflection.options[:through]
+            ThroughAssociation
+          else
+            Association
           end
+        end
       end
     end
   end

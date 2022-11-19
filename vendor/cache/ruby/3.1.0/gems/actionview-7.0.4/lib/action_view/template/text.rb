@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView # :nodoc:
   # = Action View Text Template
   class Template # :nodoc:

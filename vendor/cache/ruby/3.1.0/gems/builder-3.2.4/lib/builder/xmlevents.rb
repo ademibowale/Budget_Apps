@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 #--
 # Copyright 2004 by Jim Weirich (jim@weirichhouse.org).
 # All rights reserved.
@@ -51,7 +49,7 @@ module Builder
       @target.text(text)
     end
 
-    def _start_tag(sym, attrs, end_too=false)
+    def _start_tag(sym, attrs, end_too = false)
       @target.start_tag(sym, attrs)
       _end_tag(sym) if end_too
     end

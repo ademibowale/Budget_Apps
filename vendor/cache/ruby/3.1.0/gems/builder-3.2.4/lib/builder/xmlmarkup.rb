@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
 #--
 # Copyright 2004, 2005 by Jim Weirich (jim@weirichhouse.org).
 # All rights reserved.
@@ -187,7 +186,7 @@ module Builder
     #    values), then give the value as a Symbol.  This allows much
     #    finer control over escaping attribute values.
     #
-    def initialize(options={})
+    def initialize(options = {})
       indent = options[:indent] || 0
       margin = options[:margin] || 0
       @quote = (options[:quote] == :single) ? "'" : '"'
@@ -245,12 +244,12 @@ module Builder
     # Note: If the encoding is setup to "UTF-8" and the value of
     # $KCODE is "UTF8", then builder will emit UTF-8 encoded strings
     # rather than the entity encoding normally used.
-    def instruct!(directive_tag=:xml, attrs={})
+    def instruct!(directive_tag = :xml, attrs = {})
       _ensure_no_block ::Kernel::block_given?
       if directive_tag == :xml
-        a = { :version=>"1.0", :encoding=>"UTF-8" }
+        a = { version: "1.0", encoding: "UTF-8" }
         attrs = a.merge attrs
-	@encoding = attrs[:encoding].downcase
+  @encoding = attrs[:encoding].downcase
       end
       _special(
         "<?#{directive_tag}",
@@ -288,7 +287,7 @@ module Builder
     end
 
     # Insert special instruction.
-    def _special(open, close, data=nil, attrs=nil, order=[])
+    def _special(open, close, data = nil, attrs = nil, order = [])
       _indent
       @target << open
       @target << data if data
@@ -299,7 +298,7 @@ module Builder
 
     # Start an XML tag.  If <tt>end_too</tt> is true, then the start
     # tag is also the end tag (e.g.  <br/>
-    def _start_tag(sym, attrs, end_too=false)
+    def _start_tag(sym, attrs, end_too = false)
       @target << "<#{sym}"
       _insert_attributes(attrs)
       @target << "/" if end_too
@@ -312,7 +311,7 @@ module Builder
     end
 
     # Insert the attributes (given in the hash).
-    def _insert_attributes(attrs, order=[])
+    def _insert_attributes(attrs, order = [])
       return if attrs.nil?
       order.each do |k|
         v = attrs[k]

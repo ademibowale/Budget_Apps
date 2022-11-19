@@ -205,6 +205,6 @@ end # ChildProcess
 
 require 'jruby' if ChildProcess.jruby?
 
-require 'childprocess/unix'    if ChildProcess.unix?
+require 'childprocess/unix' if ChildProcess.unix?
 require 'childprocess/windows' if ChildProcess.windows?
-require 'childprocess/jruby'   if ChildProcess.jruby?
+require 'childprocess/jruby' if ChildProcess.jruby?

@@ -1,18 +1,16 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers # :nodoc:
     module JavaScriptHelper
       JS_ESCAPE_MAP = {
-        "\\"    => "\\\\",
-        "</"    => '<\/',
-        "\r\n"  => '\n',
-        "\n"    => '\n',
-        "\r"    => '\n',
-        '"'     => '\\"',
-        "'"     => "\\'",
-        "`"     => "\\`",
-        "$"     => "\\$"
+        "\\" => "\\\\",
+        "</" => '<\/',
+        "\r\n" => '\n',
+        "\n" => '\n',
+        "\r" => '\n',
+        '"' => '\\"',
+        "'" => "\\'",
+        "`" => "\\`",
+        "$" => "\\$"
       }
 
       JS_ESCAPE_MAP[(+"\342\200\250").force_encoding(Encoding::UTF_8).encode!] = "&#x2028;"

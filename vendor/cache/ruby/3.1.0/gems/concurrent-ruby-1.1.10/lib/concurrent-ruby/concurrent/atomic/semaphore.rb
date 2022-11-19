@@ -101,7 +101,7 @@ module Concurrent
                               JavaSemaphore
                             else
                               MutexSemaphore
-                            end
+  end
   private_constant :SemaphoreImplementation
 
   # @!macro semaphore

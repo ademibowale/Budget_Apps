@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative "async"
 
 module ActionCable
@@ -32,9 +30,9 @@ module ActionCable
       end
 
       private
-        def channels_data
-          @channels_data ||= {}
-        end
+      def channels_data
+        @channels_data ||= {}
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara::SpecHelper.spec '#within_window', requires: [:windows] do
   before do
     @window = @session.current_window

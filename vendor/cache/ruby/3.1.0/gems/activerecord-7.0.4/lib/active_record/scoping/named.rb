@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # = Active Record \Named \Scopes
   module Scoping
@@ -189,9 +187,9 @@ module ActiveRecord
         end
 
         private
-          def singleton_method_added(name)
-            generate_relation_method(name) if Kernel.respond_to?(name) && !ActiveRecord::Relation.method_defined?(name)
-          end
+        def singleton_method_added(name)
+          generate_relation_method(name) if Kernel.respond_to?(name) && !ActiveRecord::Relation.method_defined?(name)
+        end
       end
     end
   end

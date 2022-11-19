@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "abstract_controller"
 require "action_dispatch"
 require "action_controller/metal/strong_parameters"
@@ -54,7 +52,7 @@ module ActionController
     autoload :ApiRendering
   end
 
-  autoload :TestCase,           "action_controller/test_case"
+  autoload :TestCase, "action_controller/test_case"
   autoload :TemplateAssertions, "action_controller/test_case"
 end
 

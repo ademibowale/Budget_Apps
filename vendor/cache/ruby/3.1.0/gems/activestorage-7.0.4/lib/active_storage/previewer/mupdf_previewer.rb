@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Previewer::MuPDFPreviewer < Previewer
     class << self
@@ -29,8 +27,8 @@ module ActiveStorage
     end
 
     private
-      def draw_first_page_from(file, &block)
-        draw self.class.mutool_path, "draw", "-F", "png", "-o", "-", file.path, "1", &block
-      end
+    def draw_first_page_from(file, &block)
+      draw self.class.mutool_path, "draw", "-F", "png", "-o", "-", file.path, "1", &block
+    end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/hash/indifferent_access"
 
 module ActionCable
@@ -14,9 +12,9 @@ module ActionCable
 
       def execute_command(data)
         case data["command"]
-        when "subscribe"   then add data
+        when "subscribe" then add data
         when "unsubscribe" then remove data
-        when "message"     then perform_action data
+        when "message" then perform_action data
         else
           logger.error "Received unrecognized command in #{data.inspect}"
         end
@@ -65,16 +63,16 @@ module ActionCable
       end
 
       private
-        attr_reader :connection, :subscriptions
-        delegate :logger, to: :connection
+      attr_reader :connection, :subscriptions
+      delegate :logger, to: :connection
 
-        def find(data)
-          if subscription = subscriptions[data["identifier"]]
-            subscription
-          else
-            raise "Unable to find subscription with identifier: #{data['identifier']}"
-          end
+      def find(data)
+        if subscription = subscriptions[data["identifier"]]
+          subscription
+        else
+          raise "Unable to find subscription with identifier: #{data['identifier']}"
         end
+      end
     end
   end
 end

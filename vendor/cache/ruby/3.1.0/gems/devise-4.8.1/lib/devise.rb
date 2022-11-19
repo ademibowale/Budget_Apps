@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/dependencies'
@@ -9,24 +7,24 @@ require 'securerandom'
 require 'responders'
 
 module Devise
-  autoload :Delegator,          'devise/delegator'
-  autoload :Encryptor,          'devise/encryptor'
-  autoload :FailureApp,         'devise/failure_app'
-  autoload :OmniAuth,           'devise/omniauth'
-  autoload :ParameterFilter,    'devise/parameter_filter'
+  autoload :Delegator, 'devise/delegator'
+  autoload :Encryptor, 'devise/encryptor'
+  autoload :FailureApp, 'devise/failure_app'
+  autoload :OmniAuth, 'devise/omniauth'
+  autoload :ParameterFilter, 'devise/parameter_filter'
   autoload :ParameterSanitizer, 'devise/parameter_sanitizer'
-  autoload :TestHelpers,        'devise/test_helpers'
-  autoload :TimeInflector,      'devise/time_inflector'
-  autoload :TokenGenerator,     'devise/token_generator'
-  autoload :SecretKeyFinder,    'devise/secret_key_finder'
+  autoload :TestHelpers, 'devise/test_helpers'
+  autoload :TimeInflector, 'devise/time_inflector'
+  autoload :TokenGenerator, 'devise/token_generator'
+  autoload :SecretKeyFinder, 'devise/secret_key_finder'
 
   module Controllers
-    autoload :Helpers,        'devise/controllers/helpers'
-    autoload :Rememberable,   'devise/controllers/rememberable'
-    autoload :ScopedViews,    'devise/controllers/scoped_views'
-    autoload :SignInOut,      'devise/controllers/sign_in_out'
-    autoload :StoreLocation,  'devise/controllers/store_location'
-    autoload :UrlHelpers,     'devise/controllers/url_helpers'
+    autoload :Helpers, 'devise/controllers/helpers'
+    autoload :Rememberable, 'devise/controllers/rememberable'
+    autoload :ScopedViews, 'devise/controllers/scoped_views'
+    autoload :SignInOut, 'devise/controllers/sign_in_out'
+    autoload :StoreLocation, 'devise/controllers/store_location'
+    autoload :UrlHelpers, 'devise/controllers/url_helpers'
   end
 
   module Hooks
@@ -38,21 +36,21 @@ module Devise
   end
 
   module Strategies
-    autoload :Base,            'devise/strategies/base'
+    autoload :Base, 'devise/strategies/base'
     autoload :Authenticatable, 'devise/strategies/authenticatable'
   end
 
   module Test
-    autoload :ControllerHelpers,  'devise/test/controller_helpers'
+    autoload :ControllerHelpers, 'devise/test/controller_helpers'
     autoload :IntegrationHelpers, 'devise/test/integration_helpers'
   end
 
   # Constants which holds devise configuration for extensions. Those should
   # not be modified by the "end user" (this is why they are constants).
-  ALL         = []
+  ALL = []
   CONTROLLERS = {}
-  ROUTES      = {}
-  STRATEGIES  = {}
+  ROUTES = {}
+  STRATEGIES = {}
   URL_HELPERS = {}
 
   # Strategies that do not require user input.
@@ -474,7 +472,7 @@ module Devise
   # See lib/devise/rails/routes.rb - ActionDispatch::Routing::RouteSet#finalize_with_devise!
   def self.configure_warden! #:nodoc:
     @@warden_configured ||= begin
-      warden_config.failure_app   = Devise::Delegator.new
+      warden_config.failure_app = Devise::Delegator.new
       warden_config.default_scope = Devise.default_scope
       warden_config.intercept_401 = false
 

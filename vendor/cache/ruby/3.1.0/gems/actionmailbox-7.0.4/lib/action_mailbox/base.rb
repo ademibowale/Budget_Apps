@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/rescuable"
 
 require "action_mailbox/callbacks"
@@ -96,7 +94,6 @@ module ActionMailbox
       inbound_email.delivered? || inbound_email.bounced?
     end
 
-
     # Enqueues the given +message+ for delivery and changes the inbound email's status to +:bounced+.
     def bounce_with(message)
       inbound_email.bounced!
@@ -104,14 +101,14 @@ module ActionMailbox
     end
 
     private
-      def track_status_of_inbound_email
-        inbound_email.processing!
-        yield
-        inbound_email.delivered! unless inbound_email.bounced?
-      rescue
-        inbound_email.failed!
-        raise
-      end
+    def track_status_of_inbound_email
+      inbound_email.processing!
+      yield
+      inbound_email.delivered! unless inbound_email.bounced?
+    rescue
+      inbound_email.failed!
+      raise
+    end
   end
 end
 

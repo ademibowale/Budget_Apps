@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters # :nodoc:
     module Deduplicable
@@ -21,9 +19,9 @@ module ActiveRecord
       alias :-@ :deduplicate
 
       private
-        def deduplicated
-          freeze
-        end
+      def deduplicated
+        freeze
+      end
     end
   end
 end

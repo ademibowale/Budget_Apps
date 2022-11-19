@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # This is a thread locals registry for Active Record. For example:
   #

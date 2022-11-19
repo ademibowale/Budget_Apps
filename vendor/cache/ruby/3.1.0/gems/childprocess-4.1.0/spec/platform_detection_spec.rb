@@ -30,13 +30,13 @@ describe ChildProcess do
       end
 
       [
-        { host_cpu: 'i386',    expected_arch: 'i386'    },
-        { host_cpu: 'i486',    expected_arch: 'i386'    },
-        { host_cpu: 'i586',    expected_arch: 'i386'    },
-        { host_cpu: 'i686',    expected_arch: 'i386'    },
-        { host_cpu: 'amd64',   expected_arch: 'x86_64'  },
-        { host_cpu: 'x86_64',  expected_arch: 'x86_64'  },
-        { host_cpu: 'ppc',     expected_arch: 'powerpc' },
+        { host_cpu: 'i386', expected_arch: 'i386' },
+        { host_cpu: 'i486', expected_arch: 'i386' },
+        { host_cpu: 'i586', expected_arch: 'i386' },
+        { host_cpu: 'i686', expected_arch: 'i386' },
+        { host_cpu: 'amd64', expected_arch: 'x86_64' },
+        { host_cpu: 'x86_64', expected_arch: 'x86_64' },
+        { host_cpu: 'ppc', expected_arch: 'powerpc' },
         { host_cpu: 'powerpc', expected_arch: 'powerpc' },
         { host_cpu: 'unknown', expected_arch: 'unknown' },
       ].each do |args|
@@ -51,7 +51,7 @@ describe ChildProcess do
       end
 
       context "when host_cpu is 'i686' " do
-        shared_examples 'expected_arch_on_macosx_i686' do |is_64, expected_arch|
+        shared_context 'expected_arch_on_macosx_i686' do |is_64, expected_arch|
           context "when Ruby is #{is_64 ? 64 : 32}-bit" do
             before :each do
               allow(described_class).
@@ -64,17 +64,17 @@ describe ChildProcess do
         end
 
         [
-          { is_64: true,  expected_arch: 'x86_64' },
-          { is_64: false, expected_arch: 'i386'   }
+          { is_64: true, expected_arch: 'x86_64' },
+          { is_64: false, expected_arch: 'i386' }
         ].each do |args|
           include_context 'expected_arch_on_macosx_i686', args.values
         end
       end
 
       [
-        { host_cpu: 'amd64',   expected_arch: 'x86_64'  },
-        { host_cpu: 'x86_64',  expected_arch: 'x86_64'  },
-        { host_cpu: 'ppc',     expected_arch: 'powerpc' },
+        { host_cpu: 'amd64', expected_arch: 'x86_64' },
+        { host_cpu: 'x86_64', expected_arch: 'x86_64' },
+        { host_cpu: 'ppc', expected_arch: 'powerpc' },
         { host_cpu: 'powerpc', expected_arch: 'powerpc' },
         { host_cpu: 'unknown', expected_arch: 'unknown' },
       ].each do |args|

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'objspace'
 require 'pp'
 
@@ -25,7 +23,7 @@ module DEBUGGER__
     end
 
     def skip_config_skip_path?(path)
-      (skip_paths = CONFIG[:skip_path]) && skip_paths.any?{|skip_path| path.match?(skip_path)}
+      (skip_paths = CONFIG[:skip_path]) && skip_paths.any? { |skip_path| path.match?(skip_path) }
     end
 
     def skip_internal_path?(path)
@@ -63,7 +61,7 @@ module DEBUGGER__
       end.join(", ")
     end
 
-    def default_frame_formatter frame
+    def default_frame_formatter(frame)
       call_identifier_str =
         case frame.frame_type
         when :block
@@ -100,7 +98,7 @@ module DEBUGGER__
       result
     end
 
-    def initialize id, q_evt, q_cmd, thr = Thread.current
+    def initialize(id, q_evt, q_cmd, thr = Thread.current)
       @is_management = false
       @id = id
       @thread = thr
@@ -135,7 +133,7 @@ module DEBUGGER__
       @is_management = true
     end
 
-    def set_mode mode
+    def set_mode(mode)
       debug_mode(@mode, mode)
       # STDERR.puts "#{@mode} => #{mode} @ #{caller.inspect}"
       # pp caller
@@ -185,7 +183,7 @@ module DEBUGGER__
       str
     end
 
-    def puts str = ''
+    def puts(str = '')
       if @recorder&.replaying?
         prefix = colorize_dim("[replay] ")
       end
@@ -193,13 +191,13 @@ module DEBUGGER__
       when nil
         @output << "\n"
       when Array
-        str.each{|s| puts s}
+        str.each { |s| puts s }
       else
         @output << "#{prefix}#{str.chomp}\n"
       end
     end
 
-    def << req
+    def <<(req)
       debug_cmd(req)
       @q_cmd << req
     end
@@ -210,7 +208,7 @@ module DEBUGGER__
       { location: current_frame.location_str, line: current_frame.location.lineno }
     end
 
-    def event! ev, *args
+    def event!(ev, *args)
       debug_event(ev, args)
       @q_evt << [self, @output, ev, generate_info, *args]
       @output = []
@@ -218,7 +216,7 @@ module DEBUGGER__
 
     ## events
 
-    def wait_reply event_arg
+    def wait_reply(event_arg)
       return if management?
 
       set_mode :waiting
@@ -227,23 +225,23 @@ module DEBUGGER__
       wait_next_action
     end
 
-    def on_load iseq, eval_src
+    def on_load(iseq, eval_src)
       wait_reply [:load, iseq, eval_src]
     end
 
-    def on_init name
+    def on_init(name)
       wait_reply [:init, name]
     end
 
-    def on_trace trace_id, msg
+    def on_trace(trace_id, msg)
       wait_reply [:trace, trace_id, msg]
     end
 
-    def on_breakpoint tp, bp
+    def on_breakpoint(tp, bp)
       suspend tp.event, tp, bp: bp
     end
 
-    def on_trap sig
+    def on_trap(sig)
       if waiting?
         # raise Interrupt
       else
@@ -255,7 +253,7 @@ module DEBUGGER__
       suspend :pause
     end
 
-    def suspend event, tp = nil, bp: nil, sig: nil, postmortem_frames: nil, replay_frames: nil, postmortem_exc: nil
+    def suspend(event, tp = nil, bp: nil, sig: nil, postmortem_frames: nil, replay_frames: nil, postmortem_exc: nil)
       return if management?
       debug_suspend(event)
 
@@ -318,19 +316,19 @@ module DEBUGGER__
     ## control all
 
     begin
-      TracePoint.new(:raise){}.enable(target_thread: Thread.current)
+      TracePoint.new(:raise) {}.enable(target_thread: Thread.current)
       SUPPORT_TARGET_THREAD = true
     rescue ArgumentError
       SUPPORT_TARGET_THREAD = false
     end
 
-    def step_tp iter, events = [:line, :b_return, :return]
+    def step_tp(iter, events = [:line, :b_return, :return])
       @step_tp.disable if @step_tp
 
       thread = Thread.current
 
       if SUPPORT_TARGET_THREAD
-        @step_tp = TracePoint.new(*events){|tp|
+        @step_tp = TracePoint.new(*events) { |tp|
           next if SESSION.break_at? tp.path, tp.lineno
           next if !yield(tp.event)
           next if tp.path.start_with?(__dir__)
@@ -345,7 +343,7 @@ module DEBUGGER__
         }
         @step_tp.enable(target_thread: thread)
       else
-        @step_tp = TracePoint.new(*events){|tp|
+        @step_tp = TracePoint.new(*events) { |tp|
           next if thread != Thread.current
           next if SESSION.break_at? tp.path, tp.lineno
           next if !yield(tp.event)
@@ -384,7 +382,7 @@ module DEBUGGER__
       end
     end
 
-    def frame_eval_core src, b
+    def frame_eval_core(src, b)
       saved_target_frames = @target_frames
       saved_current_frame_index = @current_frame_index
 
@@ -408,10 +406,10 @@ module DEBUGGER__
 
     SPECIAL_LOCAL_VARS = [
       [:raised_exception, "_raised"],
-      [:return_value,     "_return"],
+      [:return_value, "_return"],
     ]
 
-    def frame_eval src, re_raise: false
+    def frame_eval(src, re_raise: false)
       @success_last_eval = false
 
       b = current_frame.eval_binding
@@ -449,7 +447,7 @@ module DEBUGGER__
 
         lines = file_lines.map.with_index do |e, i|
           cur = i == frame_line ? '=>' : '  '
-          line = colorize_dim('%4d|' % (i+1))
+          line = colorize_dim('%4d|' % (i + 1))
           "#{cur}#{line} #{e}"
         end
 
@@ -462,7 +460,7 @@ module DEBUGGER__
               start_line = [end_line - max_lines, 0].max
             end
           else
-            start_line = [frame_line - max_lines/2, 0].max
+            start_line = [frame_line - max_lines / 2, 0].max
           end
         end
 
@@ -491,7 +489,7 @@ module DEBUGGER__
             frame.show_line = end_line
           end
 
-          puts "[#{start_line+1}, #{end_line}] in #{frame.pretty_path}" if !update_line && max_lines != 1
+          puts "[#{start_line + 1}, #{end_line}] in #{frame.pretty_path}" if !update_line && max_lines != 1
           puts lines[start_line...end_line]
         else
           puts "# No sourcefile available for #{frame.path}"
@@ -522,7 +520,7 @@ module DEBUGGER__
       end
 
       if vars = frame&.local_variables
-        vars.each{|var, val|
+        vars.each { |var, val|
           locals << [var, val]
         }
       end
@@ -532,7 +530,7 @@ module DEBUGGER__
 
     ## cmd: show
 
-    def special_local_variables frame
+    def special_local_variables(frame)
       SPECIAL_LOCAL_VARS.each do |mid, name|
         next unless frame&.send("has_#{mid}")
         name = name.sub('_', '%') if frame.eval_binding.local_variable_defined?(name)
@@ -540,22 +538,22 @@ module DEBUGGER__
       end
     end
 
-    def show_locals pat
+    def show_locals(pat)
       collect_locals(current_frame).each do |var, val|
         puts_variable_info(var, val, pat)
       end
     end
 
-    def show_ivars pat
+    def show_ivars(pat)
       if s = current_frame&.self
-        M_INSTANCE_VARIABLES.bind_call(s).sort.each{|iv|
+        M_INSTANCE_VARIABLES.bind_call(s).sort.each { |iv|
           value = M_INSTANCE_VARIABLE_GET.bind_call(s, iv)
           puts_variable_info iv, value, pat
         }
       end
     end
 
-    def show_consts pat, only_self: false
+    def show_consts(pat, only_self: false)
       if s = current_frame&.self
         cs = {}
         if M_KIND_OF_P.bind_call(s, Module)
@@ -566,16 +564,16 @@ module DEBUGGER__
         end
 
         unless only_self
-          s.ancestors.each{|c| break if c == Object; cs[c] = :ancestors}
+          s.ancestors.each { |c| break if c == Object; cs[c] = :ancestors }
           if b = current_frame&.binding
-            b.eval('::Module.nesting').each{|c| cs[c] = :nesting unless cs.has_key? c}
+            b.eval('::Module.nesting').each { |c| cs[c] = :nesting unless cs.has_key? c }
           end
         end
 
         names = {}
 
-        cs.each{|c, _|
-          c.constants(false).sort.each{|name|
+        cs.each { |c, _|
+          c.constants(false).sort.each { |name|
             next if names.has_key? name
             names[name] = nil
             value = c.const_get(name)
@@ -586,8 +584,8 @@ module DEBUGGER__
     end
 
     SKIP_GLOBAL_LIST = %i[$= $KCODE $-K $SAFE].freeze
-    def show_globals pat
-      global_variables.sort.each{|name|
+    def show_globals(pat)
+      global_variables.sort.each { |name|
         next if SKIP_GLOBAL_LIST.include? name
 
         value = eval(name.to_s)
@@ -595,7 +593,7 @@ module DEBUGGER__
       }
     end
 
-    def puts_variable_info label, obj, pat
+    def puts_variable_info(label, obj, pat)
       return if pat && pat !~ label
 
       begin
@@ -611,7 +609,7 @@ module DEBUGGER__
         maximum_value_width = w - "#{label} = ".length
         valstr = truncate(inspected, width: maximum_value_width)
       else
-        valstr = colored_inspect(obj, width: 2 ** 30)
+        valstr = colored_inspect(obj, width: 2**30)
         valstr = inspected if valstr.lines.size > 1
       end
 
@@ -622,15 +620,15 @@ module DEBUGGER__
 
     def truncate(string, width:)
       if string.start_with?("#<")
-        string[0 .. (width-5)] + '...>'
+        string[0 .. (width - 5)] + '...>'
       else
-        string[0 .. (width-4)] + '...'
+        string[0 .. (width - 4)] + '...'
       end
     end
 
     ### cmd: show edit
 
-    def show_by_editor path = nil
+    def show_by_editor(path = nil)
       unless path
         if current_frame
           path = current_frame.path
@@ -654,10 +652,10 @@ module DEBUGGER__
 
     ### cmd: show frames
 
-    def show_frames max = nil, pattern = nil
+    def show_frames(max = nil, pattern = nil)
       if @target_frames && (max ||= @target_frames.size) > 0
         frames = []
-        @target_frames.each_with_index{|f, i|
+        @target_frames.each_with_index { |f, i|
           # we need to use FrameInfo#matchable_location because #location_str is for display
           # and it may change based on configs (e.g. use_short_path)
           next if pattern && !(f.name.match?(pattern) || f.matchable_location.match?(pattern))
@@ -668,7 +666,7 @@ module DEBUGGER__
         }
 
         size = frames.size
-        max.times{|i|
+        max.times { |i|
           break unless frames[i]
           index, frame = frames[i]
           puts frame_str(index, frame: frame)
@@ -677,7 +675,7 @@ module DEBUGGER__
       end
     end
 
-    def show_frame i=0
+    def show_frame(i = 0)
       puts frame_str(i)
     end
 
@@ -690,7 +688,7 @@ module DEBUGGER__
 
     ### cmd: show outline
 
-    def show_outline expr
+    def show_outline(expr)
       begin
         obj = frame_eval(expr, re_raise: true)
       rescue Exception
@@ -738,7 +736,7 @@ module DEBUGGER__
     ## cmd: breakpoint
 
     # TODO: support non-ASCII Constant name
-    def constant_name? name
+    def constant_name?(name)
       case name
       when /\A::\b/
         constant_name? $~.post_match
@@ -754,7 +752,7 @@ module DEBUGGER__
       end
     end
 
-    def make_breakpoint args
+    def make_breakpoint(args)
       case args.first
       when :method
         klass_name, op, method_name, cond, cmd, path = args[1..]
@@ -848,7 +846,7 @@ module DEBUGGER__
 
             if frame.iseq
               frame.iseq.traceable_lines_norec(lines = {})
-              next_line = lines.keys.bsearch{|e| e > line}
+              next_line = lines.keys.bsearch { |e| e > line }
               if !next_line && (last_line = frame.iseq.last_line) > line
                 next_line = last_line
               end
@@ -909,7 +907,7 @@ module DEBUGGER__
           case eval_type
           when :p
             result = frame_eval(eval_src)
-            puts "=> " + color_pp(result, 2 ** 30)
+            puts "=> " + color_pp(result, 2**30)
             if alloc_path = ObjectSpace.allocation_sourcefile(result)
               puts "allocated at #{alloc_path}:#{ObjectSpace.allocation_sourceline(result)}"
             end
@@ -930,8 +928,8 @@ module DEBUGGER__
             end
           when :display, :try_display
             failed_results = []
-            eval_src.each_with_index{|src, i|
-              result = frame_eval(src){|e|
+            eval_src.each_with_index { |src, i|
+              result = frame_eval(src) { |e|
                 failed_results << [i, e.message]
                 "<error: #{e.message}>"
               }
@@ -994,7 +992,7 @@ module DEBUGGER__
           when :default
             pat = args.shift
             show_locals pat
-            show_ivars  pat
+            show_ivars pat
             show_consts pat, only_self: true
 
           when :locals
@@ -1110,20 +1108,20 @@ module DEBUGGER__
     end
 
     def debug_event(ev, args)
-      DEBUGGER__.debug{
+      DEBUGGER__.debug {
         args = args.map { |arg| DEBUGGER__.safe_inspect(arg) }
         "#{inspect} sends Event { type: #{ev.inspect}, args: #{args} } to Session"
       }
     end
 
     def debug_mode(old_mode, new_mode)
-      DEBUGGER__.debug{
+      DEBUGGER__.debug {
         "#{inspect} changes mode (#{old_mode} -> #{new_mode})"
       }
     end
 
     def debug_cmd(cmds)
-      DEBUGGER__.debug{
+      DEBUGGER__.debug {
         cmd, *args = *cmds
         args = args.map { |arg| DEBUGGER__.safe_inspect(arg) }
         "#{inspect} receives Cmd { type: #{cmd.inspect}, args: #{args} } from Session"
@@ -1131,7 +1129,7 @@ module DEBUGGER__
     end
 
     def debug_suspend(event)
-      DEBUGGER__.debug{
+      DEBUGGER__.debug {
         "#{inspect} is suspended for #{event.inspect}"
       }
     end
@@ -1148,7 +1146,7 @@ module DEBUGGER__
         @backup_frames = nil
         thread = Thread.current
 
-        @tp_recorder ||= TracePoint.new(:line){|tp|
+        @tp_recorder ||= TracePoint.new(:line) { |tp|
           next unless Thread.current == thread
           # can't be replaced by skip_location
           next if skip_internal_path?(tp.path)
@@ -1156,10 +1154,10 @@ module DEBUGGER__
           next if skip_location?(loc)
 
           frames = DEBUGGER__.capture_frames(__dir__)
-          frames.each{|frame|
+          frames.each { |frame|
             if b = frame.binding
               frame.binding = nil
-              frame._local_variables = b.local_variables.map{|name|
+              frame._local_variables = b.local_variables.map { |name|
                 [name, b.local_variable_get(name)]
               }.to_h
               frame._callee = b.eval('__callee__')
@@ -1227,7 +1225,7 @@ module DEBUGGER__
       def current_position
         puts "INDEX: #{@index}"
         li = log_index
-        @log.each_with_index{|frame, i|
+        @log.each_with_index { |frame, i|
           loc = frame.first&.location
           prefix = i == li ? "=> " : '   '
           puts "#{prefix} #{loc}"

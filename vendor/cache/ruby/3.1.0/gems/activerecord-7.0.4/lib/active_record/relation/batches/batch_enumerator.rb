@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Batches
     class BatchEnumerator
       include Enumerable
 
       def initialize(of: 1000, start: nil, finish: nil, relation:) # :nodoc:
-        @of       = of
+        @of = of
         @relation = relation
         @start = start
         @finish = finish

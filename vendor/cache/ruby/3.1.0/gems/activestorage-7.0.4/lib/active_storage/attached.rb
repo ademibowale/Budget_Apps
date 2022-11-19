@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/delegation"
 
 module ActiveStorage
@@ -13,9 +11,9 @@ module ActiveStorage
     end
 
     private
-      def change
-        record.attachment_changes[name]
-      end
+    def change
+      record.attachment_changes[name]
+    end
   end
 end
 

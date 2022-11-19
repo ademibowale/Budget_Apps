@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attribute_accessors"
 
 module ActionDispatch
@@ -168,31 +166,31 @@ module ActionDispatch
       end
 
       private
-        # We use normal content negotiation unless you include */* in your list,
-        # in which case we assume you're a browser and send HTML.
-        BROWSER_LIKE_ACCEPTS = /,\s*\*\/\*|\*\/\*\s*,/
+      # We use normal content negotiation unless you include */* in your list,
+      # in which case we assume you're a browser and send HTML.
+      BROWSER_LIKE_ACCEPTS = /,\s*\*\/\*|\*\/\*\s*,/
 
-        def params_readable? # :doc:
-          parameters[:format]
-        rescue *RESCUABLE_MIME_FORMAT_ERRORS
-          false
-        end
+      def params_readable? # :doc:
+        parameters[:format]
+      rescue *RESCUABLE_MIME_FORMAT_ERRORS
+        false
+      end
 
-        def valid_accept_header # :doc:
-          (xhr? && (accept.present? || content_mime_type)) ||
-            (accept.present? && !accept.match?(BROWSER_LIKE_ACCEPTS))
-        end
+      def valid_accept_header # :doc:
+        (xhr? && (accept.present? || content_mime_type)) ||
+          (accept.present? && !accept.match?(BROWSER_LIKE_ACCEPTS))
+      end
 
-        def use_accept_header # :doc:
-          !self.class.ignore_accept_header
-        end
+      def use_accept_header # :doc:
+        !self.class.ignore_accept_header
+      end
 
-        def format_from_path_extension # :doc:
-          path = get_header("action_dispatch.original_path") || get_header("PATH_INFO")
-          if match = path && path.match(/\.(\w+)\z/)
-            Mime[match.captures.first]
-          end
+      def format_from_path_extension # :doc:
+        path = get_header("action_dispatch.original_path") || get_header("PATH_INFO")
+        if match = path && path.match(/\.(\w+)\z/)
+          Mime[match.captures.first]
         end
+      end
     end
   end
 end

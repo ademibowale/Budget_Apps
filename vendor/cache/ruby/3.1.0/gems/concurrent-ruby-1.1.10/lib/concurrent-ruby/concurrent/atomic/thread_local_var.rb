@@ -36,7 +36,6 @@ module Concurrent
   #   @yield the operation to be performed with the bound variable
   #   @return [Object] the value
 
-
   ###################################################################
 
   # @!macro thread_local_var_public_api
@@ -62,7 +61,7 @@ module Concurrent
                                    JavaThreadLocalVar
                                  else
                                    RubyThreadLocalVar
-                                 end
+  end
   private_constant :ThreadLocalVarImplementation
 
   # @!macro thread_local_var

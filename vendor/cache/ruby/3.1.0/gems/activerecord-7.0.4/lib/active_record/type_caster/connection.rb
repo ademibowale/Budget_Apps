@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module TypeCaster
     class Connection # :nodoc:
@@ -27,7 +25,7 @@ module ActiveRecord
       delegate :connection, to: :@klass, private: true
 
       private
-        attr_reader :table_name
+      attr_reader :table_name
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "tmpdir"
 
 module ActionMailer
@@ -18,19 +16,19 @@ module ActionMailer
       class_attribute :delivery_method, default: :smtp
 
       add_delivery_method :smtp, Mail::SMTP,
-        address:              "localhost",
-        port:                 25,
-        domain:               "localhost.localdomain",
-        user_name:            nil,
-        password:             nil,
-        authentication:       nil,
+        address: "localhost",
+        port: 25,
+        domain: "localhost.localdomain",
+        user_name: nil,
+        password: nil,
+        authentication: nil,
         enable_starttls_auto: true
 
       add_delivery_method :file, Mail::FileDelivery,
         location: defined?(Rails.root) ? "#{Rails.root}/tmp/mails" : "#{Dir.tmpdir}/mails"
 
       add_delivery_method :sendmail, Mail::Sendmail,
-        location:  "/usr/sbin/sendmail",
+        location: "/usr/sbin/sendmail",
         arguments: "-i"
 
       add_delivery_method :test, Mail::TestMailer
@@ -70,7 +68,7 @@ module ActionMailer
           mail.delivery_method(method)
         end
 
-        mail.perform_deliveries    = perform_deliveries
+        mail.perform_deliveries = perform_deliveries
         mail.raise_delivery_errors = raise_delivery_errors
       end
     end

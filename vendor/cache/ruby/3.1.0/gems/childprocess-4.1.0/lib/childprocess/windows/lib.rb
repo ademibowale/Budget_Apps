@@ -1,43 +1,43 @@
 module ChildProcess
   module Windows
-    FORMAT_MESSAGE_FROM_SYSTEM            = 0x00001000
-    FORMAT_MESSAGE_ARGUMENT_ARRAY         = 0x00002000
+    FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000
+    FORMAT_MESSAGE_ARGUMENT_ARRAY = 0x00002000
 
-    PROCESS_ALL_ACCESS                    = 0x1F0FFF
-    PROCESS_QUERY_INFORMATION             = 0x0400
-    PROCESS_VM_READ                       = 0x0010
-    PROCESS_STILL_ACTIVE                  = 259
+    PROCESS_ALL_ACCESS = 0x1F0FFF
+    PROCESS_QUERY_INFORMATION = 0x0400
+    PROCESS_VM_READ = 0x0010
+    PROCESS_STILL_ACTIVE = 259
 
-    INFINITE                              = 0xFFFFFFFF
+    INFINITE = 0xFFFFFFFF
 
-    WIN_SIGINT                            = 2
-    WIN_SIGBREAK                          = 3
-    WIN_SIGKILL                           = 9
+    WIN_SIGINT = 2
+    WIN_SIGBREAK = 3
+    WIN_SIGKILL = 9
 
-    CTRL_C_EVENT                          = 0
-    CTRL_BREAK_EVENT                      = 1
+    CTRL_C_EVENT = 0
+    CTRL_BREAK_EVENT = 1
 
-    CREATE_BREAKAWAY_FROM_JOB             = 0x01000000
-    DETACHED_PROCESS                      = 0x00000008
+    CREATE_BREAKAWAY_FROM_JOB = 0x01000000
+    DETACHED_PROCESS = 0x00000008
 
-    STARTF_USESTDHANDLES                  = 0x00000100
-    INVALID_HANDLE_VALUE                  = -1
-    HANDLE_FLAG_INHERIT                   = 0x00000001
+    STARTF_USESTDHANDLES = 0x00000100
+    INVALID_HANDLE_VALUE = -1
+    HANDLE_FLAG_INHERIT = 0x00000001
 
-    DUPLICATE_SAME_ACCESS                 = 0x00000002
-    CREATE_UNICODE_ENVIRONMENT            = 0x00000400
+    DUPLICATE_SAME_ACCESS = 0x00000002
+    CREATE_UNICODE_ENVIRONMENT = 0x00000400
 
-    JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE    = 0x2000
-    JOB_OBJECT_LIMIT_BREAKAWAY_OK         = 0x00000800
+    JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x2000
+    JOB_OBJECT_LIMIT_BREAKAWAY_OK = 0x00000800
     JOB_OBJECT_EXTENDED_LIMIT_INFORMATION = 9
-    JOB_OBJECT_BASIC_LIMIT_INFORMATION    = 2
+    JOB_OBJECT_BASIC_LIMIT_INFORMATION = 2
 
     module Lib
       enum :wait_status, [
-        :wait_object_0,  0,
-        :wait_timeout,   0x102,
+        :wait_object_0, 0,
+        :wait_timeout, 0x102,
         :wait_abandoned, 0x80,
-        :wait_failed,    0xFFFFFFFF
+        :wait_failed, 0xFFFFFFFF
       ]
 
       #
@@ -88,7 +88,6 @@ module ChildProcess
         :ulong,
         :pointer], :ulong
 
-
       attach_function :close_handle, :CloseHandle, [:pointer], :bool
 
       #
@@ -137,7 +136,7 @@ module ChildProcess
       # );
       #
 
-      attach_function :wait_for_single_object, :WaitForSingleObject, [:pointer, :ulong], :wait_status, :blocking => true
+      attach_function :wait_for_single_object, :WaitForSingleObject, [:pointer, :ulong], :wait_status, blocking: true
 
       #
       # BOOL WINAPI GetExitCodeProcess(
@@ -339,7 +338,7 @@ module ChildProcess
         end
 
         def duplicate_handle(handle)
-          dup  = FFI::MemoryPointer.new(:pointer)
+          dup = FFI::MemoryPointer.new(:pointer)
           proc = current_process
 
           ok = Lib._duplicate_handle(

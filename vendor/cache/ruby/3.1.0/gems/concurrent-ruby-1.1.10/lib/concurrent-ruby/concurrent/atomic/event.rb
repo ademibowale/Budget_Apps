@@ -68,8 +68,8 @@ module Concurrent
     def reset
       synchronize do
         if @set
-          @set       = false
-          @iteration +=1
+          @set = false
+          @iteration += 1
         end
         true
       end
@@ -102,7 +102,7 @@ module Concurrent
     end
 
     def ns_initialize
-      @set       = false
+      @set = false
       @iteration = 0
     end
   end

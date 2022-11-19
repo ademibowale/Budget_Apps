@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support"
 require "active_support/i18n_railtie"
 
@@ -38,14 +36,14 @@ module ActiveSupport
 
     initializer "active_support.reset_execution_context" do |app|
       app.reloader.before_class_unload { ActiveSupport::ExecutionContext.clear }
-      app.executor.to_run              { ActiveSupport::ExecutionContext.clear }
-      app.executor.to_complete         { ActiveSupport::ExecutionContext.clear }
+      app.executor.to_run { ActiveSupport::ExecutionContext.clear }
+      app.executor.to_complete { ActiveSupport::ExecutionContext.clear }
     end
 
     initializer "active_support.reset_all_current_attributes_instances" do |app|
       app.reloader.before_class_unload { ActiveSupport::CurrentAttributes.clear_all }
-      app.executor.to_run              { ActiveSupport::CurrentAttributes.reset_all }
-      app.executor.to_complete         { ActiveSupport::CurrentAttributes.reset_all }
+      app.executor.to_run { ActiveSupport::CurrentAttributes.reset_all }
+      app.executor.to_complete { ActiveSupport::CurrentAttributes.reset_all }
 
       ActiveSupport.on_load(:active_support_test_case) do
         if app.config.active_support.executor_around_test_case

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/log_subscriber"
 require "active_support/logger"
 require "active_support/notifications"
@@ -36,7 +34,7 @@ module ActiveSupport
     # used in logging, like info, debug, warn, and so on.
     module TestHelper
       def setup # :nodoc:
-        @logger   = MockLogger.new
+        @logger = MockLogger.new
         @notifier = ActiveSupport::Notifications::Fanout.new
 
         ActiveSupport::LogSubscriber.colorize_logging = false

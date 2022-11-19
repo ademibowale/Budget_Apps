@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/concern"
 require "active_support/core_ext/class/attribute"
 require "active_support/core_ext/string/inflections"
@@ -119,44 +117,44 @@ module ActiveSupport
       end
 
       private
-        def find_rescue_handler(exception)
-          if exception
-            # Handlers are in order of declaration but the most recently declared
-            # is the highest priority match, so we search for matching handlers
-            # in reverse.
-            _, handler = rescue_handlers.reverse_each.detect do |class_or_name, _|
-              if klass = constantize_rescue_handler_class(class_or_name)
-                klass === exception
-              end
+      def find_rescue_handler(exception)
+        if exception
+          # Handlers are in order of declaration but the most recently declared
+          # is the highest priority match, so we search for matching handlers
+          # in reverse.
+          _, handler = rescue_handlers.reverse_each.detect do |class_or_name, _|
+            if klass = constantize_rescue_handler_class(class_or_name)
+              klass === exception
             end
-
-            handler
           end
-        end
 
-        def constantize_rescue_handler_class(class_or_name)
-          case class_or_name
-          when String, Symbol
-            begin
-              # Try a lexical lookup first since we support
-              #
-              #     class Super
-              #       rescue_from 'Error', with: …
-              #     end
-              #
-              #     class Sub
-              #       class Error < StandardError; end
-              #     end
-              #
-              # so an Error raised in Sub will hit the 'Error' handler.
-              const_get class_or_name
-            rescue NameError
-              class_or_name.safe_constantize
-            end
-          else
-            class_or_name
-          end
+          handler
         end
+      end
+
+      def constantize_rescue_handler_class(class_or_name)
+        case class_or_name
+        when String, Symbol
+          begin
+            # Try a lexical lookup first since we support
+            #
+            #     class Super
+            #       rescue_from 'Error', with: …
+            #     end
+            #
+            #     class Sub
+            #       class Error < StandardError; end
+            #     end
+            #
+            # so an Error raised in Sub will hit the 'Error' handler.
+            const_get class_or_name
+          rescue NameError
+            class_or_name.safe_constantize
+          end
+        else
+          class_or_name
+        end
+      end
     end
 
     # Delegates to the class method, but uses the instance as the subject for

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveModel
   module Validations
     class ConfirmationValidator < EachValidator # :nodoc:
@@ -18,23 +16,23 @@ module ActiveModel
       end
 
       private
-        def setup!(klass)
-          klass.attr_reader(*attributes.filter_map do |attribute|
-            :"#{attribute}_confirmation" unless klass.method_defined?(:"#{attribute}_confirmation")
-          end)
+      def setup!(klass)
+        klass.attr_reader(*attributes.filter_map do |attribute|
+          :"#{attribute}_confirmation" unless klass.method_defined?(:"#{attribute}_confirmation")
+        end)
 
-          klass.attr_writer(*attributes.filter_map do |attribute|
-            :"#{attribute}_confirmation" unless klass.method_defined?(:"#{attribute}_confirmation=")
-          end)
-        end
+        klass.attr_writer(*attributes.filter_map do |attribute|
+          :"#{attribute}_confirmation" unless klass.method_defined?(:"#{attribute}_confirmation=")
+        end)
+      end
 
-        def confirmation_value_equal?(record, attribute, value, confirmed)
-          if !options[:case_sensitive] && value.is_a?(String)
-            value.casecmp(confirmed) == 0
-          else
-            value == confirmed
-          end
+      def confirmation_value_equal?(record, attribute, value, confirmed)
+        if !options[:case_sensitive] && value.is_a?(String)
+          value.casecmp(confirmed) == 0
+        else
+          value == confirmed
         end
+      end
     end
 
     module HelperMethods

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/dependencies"
 require "active_support/core_ext/name_error"
 
@@ -26,7 +24,7 @@ module AbstractController
     class MissingHelperError < LoadError
       def initialize(error, path)
         @error = error
-        @path  = "helpers/#{path}.rb"
+        @path = "helpers/#{path}.rb"
         set_backtrace error.backtrace
 
         if /^#{path}(\.rb)?$/.match?(error.path)
@@ -189,23 +187,23 @@ module AbstractController
       end
 
       private
-        def define_helpers_module(klass, helpers = nil)
-          # In some tests inherited is called explicitly. In that case, just
-          # return the module from the first time it was defined
-          return klass.const_get(:HelperMethods) if klass.const_defined?(:HelperMethods, false)
+      def define_helpers_module(klass, helpers = nil)
+        # In some tests inherited is called explicitly. In that case, just
+        # return the module from the first time it was defined
+        return klass.const_get(:HelperMethods) if klass.const_defined?(:HelperMethods, false)
 
-          mod = Module.new
-          klass.const_set(:HelperMethods, mod)
-          mod.include(helpers) if helpers
-          mod
-        end
+        mod = Module.new
+        klass.const_set(:HelperMethods, mod)
+        mod.include(helpers) if helpers
+        mod
+      end
 
-        def default_helper_module!
-          helper_prefix = name.delete_suffix("Controller")
-          helper(helper_prefix)
-        rescue NameError => e
-          raise unless e.missing_name?("#{helper_prefix}Helper")
-        end
+      def default_helper_module!
+        helper_prefix = name.delete_suffix("Controller")
+        helper(helper_prefix)
+      rescue NameError => e
+        raise unless e.missing_name?("#{helper_prefix}Helper")
+      end
     end
   end
 end

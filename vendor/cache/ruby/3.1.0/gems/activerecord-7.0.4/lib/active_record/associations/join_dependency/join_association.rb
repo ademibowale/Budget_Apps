@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/associations/join_dependency/join_part"
 require "active_support/core_ext/array/extract"
 
@@ -88,15 +86,15 @@ module ActiveRecord
         end
 
         private
-          def append_constraints(join, constraints)
-            if join.is_a?(Arel::Nodes::StringJoin)
-              join_string = Arel::Nodes::And.new(constraints.unshift join.left)
-              join.left = Arel.sql(base_klass.connection.visitor.compile(join_string))
-            else
-              right = join.right
-              right.expr = Arel::Nodes::And.new(constraints.unshift right.expr)
-            end
+        def append_constraints(join, constraints)
+          if join.is_a?(Arel::Nodes::StringJoin)
+            join_string = Arel::Nodes::And.new(constraints.unshift join.left)
+            join.left = Arel.sql(base_klass.connection.visitor.compile(join_string))
+          else
+            right = join.right
+            right.expr = Arel::Nodes::And.new(constraints.unshift right.expr)
           end
+        end
       end
     end
   end

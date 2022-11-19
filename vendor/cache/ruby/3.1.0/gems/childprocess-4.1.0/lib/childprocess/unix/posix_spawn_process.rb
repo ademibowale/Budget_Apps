@@ -11,7 +11,7 @@ module ChildProcess
       def launch_process
         pid_ptr = FFI::MemoryPointer.new(:pid_t)
         actions = Lib::FileActions.new
-        attrs   = Lib::Attrs.new
+        attrs = Lib::Attrs.new
 
         if io.stdout
           actions.add_dup fileno_for(io.stdout), fileno_for(STDOUT)

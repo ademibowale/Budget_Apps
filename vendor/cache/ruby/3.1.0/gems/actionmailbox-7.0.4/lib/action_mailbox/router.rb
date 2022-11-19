@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionMailbox
   # Encapsulates the routes that live on the ApplicationMailbox and performs the actual routing when
   # an inbound_email is received.
@@ -35,7 +33,7 @@ module ActionMailbox
     end
 
     private
-      attr_reader :routes
+    attr_reader :routes
   end
 end
 

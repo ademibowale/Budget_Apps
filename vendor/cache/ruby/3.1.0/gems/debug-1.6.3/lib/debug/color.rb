@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 begin
   require 'irb/color'
 
@@ -24,16 +22,16 @@ module DEBUGGER__
       end
 
       if defined? SUPPORT_COLORABLE_OPTION
-        def irb_colorize str, color
+        def irb_colorize(str, color)
           IRB::Color.colorize str, color, colorable: true
         end
       else
-        def irb_colorize str, color
+        def irb_colorize(str, color)
           IRB::Color.colorize str, color
         end
       end
 
-      def colorize str, color
+      def colorize(str, color)
         if !CONFIG[:no_color]
           irb_colorize str, color
         else
@@ -41,13 +39,13 @@ module DEBUGGER__
         end
       end
     else
-      def colorize str, color
+      def colorize(str, color)
         str
       end
     end
 
     if defined? IRB::ColorPrinter.pp
-      def color_pp obj, width
+      def color_pp(obj, width)
         with_inspection_error_guard do
           if !CONFIG[:no_color]
             IRB::ColorPrinter.pp(obj, "".dup, width)
@@ -57,14 +55,14 @@ module DEBUGGER__
         end
       end
     else
-      def color_pp obj, width
+      def color_pp(obj, width)
         with_inspection_error_guard do
           obj.pretty_inspect
         end
       end
     end
 
-    def colored_inspect obj, width: SESSION.width, no_color: false
+    def colored_inspect(obj, width: SESSION.width, no_color: false)
       with_inspection_error_guard do
         if !no_color
           color_pp obj, width
@@ -76,16 +74,16 @@ module DEBUGGER__
 
     if defined? IRB::Color.colorize_code
       if defined? SUPPORT_COLORABLE_OPTION
-        def colorize_code code
+        def colorize_code(code)
           IRB::Color.colorize_code(code, colorable: true)
         end
       else
-        def colorize_code code
+        def colorize_code(code)
           IRB::Color.colorize_code(code)
         end
       end
     else
-      def colorize_code code
+      def colorize_code(code)
         code
       end
     end

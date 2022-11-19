@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionController
   module Testing
     # Behavior specific to functional tests

@@ -76,4 +76,3 @@ module Concurrent
   # @!visibility private
   extend Utility::NativeExtensionLoader
 end
-

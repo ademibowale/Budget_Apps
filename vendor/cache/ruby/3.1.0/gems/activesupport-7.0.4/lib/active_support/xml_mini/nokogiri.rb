@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 begin
   require "nokogiri"
 rescue LoadError => e
@@ -50,8 +48,8 @@ module ActiveSupport
           # Insert node hash into parent hash correctly.
           case hash[name]
           when Array then hash[name] << node_hash
-          when Hash  then hash[name] = [hash[name], node_hash]
-          when nil   then hash[name] = node_hash
+          when Hash then hash[name] = [hash[name], node_hash]
+          when nil then hash[name] = node_hash
           end
 
           # Handle child elements

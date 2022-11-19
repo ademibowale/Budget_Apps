@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Proxy files through application. This avoids having a redirect and makes files easier to cache.
 #
 # WARNING: All Active Storage controllers are publicly accessible by default. The

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Serves files stored with the disk service in the same way that the cloud services do.
 # This means using expiring, signed URLs that are meant for immediate access, not permanent linking.
 # Always go through the BlobsController, or your own authenticated controller, rather than directly
@@ -35,21 +33,21 @@ class ActiveStorage::DiskController < ActiveStorage::BaseController
   end
 
   private
-    def named_disk_service(name)
-      ActiveStorage::Blob.services.fetch(name) do
-        ActiveStorage::Blob.service
-      end
+  def named_disk_service(name)
+    ActiveStorage::Blob.services.fetch(name) do
+      ActiveStorage::Blob.service
     end
+  end
 
-    def decode_verified_key
-      ActiveStorage.verifier.verified(params[:encoded_key], purpose: :blob_key)
-    end
+  def decode_verified_key
+    ActiveStorage.verifier.verified(params[:encoded_key], purpose: :blob_key)
+  end
 
-    def decode_verified_token
-      ActiveStorage.verifier.verified(params[:encoded_token], purpose: :blob_token)
-    end
+  def decode_verified_token
+    ActiveStorage.verifier.verified(params[:encoded_token], purpose: :blob_token)
+  end
 
-    def acceptable_content?(token)
-      token[:content_type] == request.content_mime_type && token[:content_length] == request.content_length
-    end
+  def acceptable_content?(token)
+    token[:content_type] == request.content_mime_type && token[:content_length] == request.content_length
+  end
 end

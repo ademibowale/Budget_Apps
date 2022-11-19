@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/attribute_accessors"
 require "action_dispatch/http/filter_redirect"
 require "action_dispatch/http/cache"
@@ -66,7 +64,7 @@ module ActionDispatch # :nodoc:
     # Get headers for this response.
     attr_reader :header
 
-    alias_method :headers,  :header
+    alias_method :headers, :header
 
     delegate :[], :[]=, to: :@header
 
@@ -78,8 +76,8 @@ module ActionDispatch # :nodoc:
     end
 
     CONTENT_TYPE = "Content-Type"
-    SET_COOKIE   = "Set-Cookie"
-    LOCATION     = "Location"
+    SET_COOKIE = "Set-Cookie"
+    LOCATION = "Location"
     NO_CONTENT_CODES = [100, 101, 102, 103, 204, 205, 304]
 
     cattr_accessor :default_charset, default: "utf-8"
@@ -97,8 +95,8 @@ module ActionDispatch # :nodoc:
     class Buffer # :nodoc:
       def initialize(response, buf)
         @response = response
-        @buf      = buf
-        @closed   = false
+        @buf = buf
+        @closed = false
         @str_body = nil
       end
 
@@ -141,9 +139,9 @@ module ActionDispatch # :nodoc:
       end
 
       private
-        def each_chunk(&block)
-          @buf.each(&block)
-        end
+      def each_chunk(&block)
+        @buf.each(&block)
+      end
     end
 
     def self.create(status = 200, header = {}, body = [], default_headers: self.default_headers)
@@ -165,20 +163,28 @@ module ActionDispatch # :nodoc:
 
       self.body, self.status = body, status
 
-      @cv           = new_cond
-      @committed    = false
-      @sending      = false
-      @sent         = false
+      @cv = new_cond
+      @committed = false
+      @sending = false
+      @sent = false
 
       prepare_cache_control!
 
       yield self if block_given?
     end
 
-    def has_header?(key);   headers.key? key;   end
-    def get_header(key);    headers[key];       end
-    def set_header(key, v); headers[key] = v;   end
-    def delete_header(key); headers.delete key; end
+    def has_header?(key)
+      headers.key? key
+    end
+    def get_header(key)
+      headers[key]
+    end
+    def set_header(key, v)
+      headers[key] = v
+    end
+    def delete_header(key)
+      headers.delete key
+    end
 
     def await_commit
       synchronize do
@@ -213,9 +219,15 @@ module ActionDispatch # :nodoc:
       end
     end
 
-    def sending?;   synchronize { @sending };   end
-    def committed?; synchronize { @committed }; end
-    def sent?;      synchronize { @sent };      end
+    def sending?
+      synchronize { @sending }
+    end
+    def committed?
+      synchronize { @committed }
+    end
+    def sent?
+      synchronize { @sent }
+    end
 
     # Sets the HTTP status code.
     def status=(status)

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Collectors
     class Composite
@@ -33,7 +31,7 @@ module Arel # :nodoc: all
       end
 
       private
-        attr_reader :left, :right
+      attr_reader :left, :right
     end
   end
 end

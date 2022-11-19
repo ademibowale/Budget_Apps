@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/inflector/methods"
 require "active_support/dependencies"
 
@@ -10,11 +8,13 @@ module ActionDispatch
 
       def initialize(klass, args, block)
         @klass = klass
-        @args  = args
+        @args = args
         @block = block
       end
 
-      def name; klass.name; end
+      def name
+        klass.name
+      end
 
       def ==(middleware)
         case middleware
@@ -169,20 +169,20 @@ module ActionDispatch
     end
 
     private
-      def assert_index(index, where)
-        i = index.is_a?(Integer) ? index : index_of(index)
-        raise "No such middleware to insert #{where}: #{index.inspect}" unless i
-        i
-      end
+    def assert_index(index, where)
+      i = index.is_a?(Integer) ? index : index_of(index)
+      raise "No such middleware to insert #{where}: #{index.inspect}" unless i
+      i
+    end
 
-      def build_middleware(klass, args, block)
-        Middleware.new(klass, args, block)
-      end
+    def build_middleware(klass, args, block)
+      Middleware.new(klass, args, block)
+    end
 
-      def index_of(klass)
-        middlewares.index do |m|
-          m.name == klass.name
-        end
+    def index_of(klass)
+      middlewares.index do |m|
+        m.name == klass.name
       end
+    end
   end
 end

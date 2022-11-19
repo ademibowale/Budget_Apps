@@ -81,7 +81,7 @@ module Concurrent
     # @!visibility private
     GLOBAL_MONOTONIC_CLOCK = class_definition.new
     private_constant :GLOBAL_MONOTONIC_CLOCK
-    
+
     def monotonic_time(unit = :float_second)
       GLOBAL_MONOTONIC_CLOCK.get_time(unit)
     end

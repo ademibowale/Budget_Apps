@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "singleton"
 
 module Mime
@@ -32,9 +30,9 @@ module Mime
     end
   end
 
-  SET              = Mimes.new
+  SET = Mimes.new
   EXTENSION_LOOKUP = {}
-  LOOKUP           = {}
+  LOOKUP = {}
 
   class << self
     def [](type)
@@ -98,11 +96,11 @@ module Mime
           text_xml = list[text_xml_idx]
 
           app_xml.q = [text_xml.q, app_xml.q].max # Set the q value to the max of the two.
-          if app_xml_idx > text_xml_idx  # Make sure app_xml is ahead of text_xml in the list.
+          if app_xml_idx > text_xml_idx # Make sure app_xml is ahead of text_xml in the list.
             list[app_xml_idx], list[text_xml_idx] = text_xml, app_xml
             app_xml_idx, text_xml_idx = text_xml_idx, app_xml_idx
           end
-          list.delete_at(text_xml_idx)  # Delete text_xml from the list.
+          list.delete_at(text_xml_idx) # Delete text_xml from the list.
         elsif text_xml_idx
           list[text_xml_idx].name = Mime[:xml].to_s
         end
@@ -273,9 +271,9 @@ module Mime
 
     def eql?(other)
       super || (self.class == other.class &&
-                @string    == other.string &&
-                @synonyms  == other.synonyms &&
-                @symbol    == other.symbol)
+                @string == other.string &&
+                @synonyms == other.synonyms &&
+                @symbol == other.symbol)
     end
 
     def =~(mime_type)
@@ -294,26 +292,28 @@ module Mime
       (symbol == :html) || /html/.match?(@string)
     end
 
-    def all?; false; end
+    def all?
+      false
+    end
 
     protected
-      attr_reader :string, :synonyms
+    attr_reader :string, :synonyms
 
     private
-      def to_ary; end
-      def to_a; end
+    def to_ary; end
+    def to_a; end
 
-      def method_missing(method, *args)
-        if method.end_with?("?")
-          method[0..-2].downcase.to_sym == to_sym
-        else
-          super
-        end
+    def method_missing(method, *args)
+      if method.end_with?("?")
+        method[0..-2].downcase.to_sym == to_sym
+      else
+        super
       end
+    end
 
-      def respond_to_missing?(method, include_private = false)
-        method.end_with?("?") || super
-      end
+    def respond_to_missing?(method, include_private = false)
+      method.end_with?("?") || super
+    end
   end
 
   class AllType < Type
@@ -323,8 +323,12 @@ module Mime
       super "*/*", nil
     end
 
-    def all?; true; end
-    def html?; true; end
+    def all?
+      true
+    end
+    def html?
+      true
+    end
   end
 
   # ALL isn't a real MIME type, so we don't register it for lookup with the
@@ -346,13 +350,13 @@ module Mime
     def ref; end
 
     private
-      def respond_to_missing?(method, _)
-        method.end_with?("?")
-      end
+    def respond_to_missing?(method, _)
+      method.end_with?("?")
+    end
 
-      def method_missing(method, *args)
-        false if method.end_with?("?")
-      end
+    def method_missing(method, *args)
+      false if method.end_with?("?")
+    end
   end
 end
 

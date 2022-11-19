@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 require "active_support/callbacks"
 
 module ActionMailbox
   # Defines the callbacks related to processing.
   module Callbacks
-    extend  ActiveSupport::Concern
+    extend ActiveSupport::Concern
     include ActiveSupport::Callbacks
 
     TERMINATOR = ->(mailbox, chain) do

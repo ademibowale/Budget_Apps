@@ -8,7 +8,7 @@ module Concurrent
     # @!visibility private
     class ProcessorCounter
       def initialize
-        @processor_count          = Delay.new { compute_processor_count }
+        @processor_count = Delay.new { compute_processor_count }
         @physical_processor_count = Delay.new { compute_physical_processor_count }
       end
 
@@ -90,12 +90,12 @@ module Concurrent
                 IO.popen("/usr/sbin/sysctl -n hw.physicalcpu", &:read).to_i
               when /linux/
                 cores = {} # unique physical ID / core ID combinations
-                phy   = 0
-                IO.read("/proc/cpuinfo").scan(/^physical id.*|^core id.*/) do |ln|
+                phy = 0
+                File.read("/proc/cpuinfo").scan(/^physical id.*|^core id.*/) do |ln|
                   if ln.start_with?("physical")
                     phy = ln[/\d+/]
                   elsif ln.start_with?("core")
-                    cid        = phy + ":" + ln[/\d+/]
+                    cid = phy + ":" + ln[/\d+/]
                     cores[cid] = true if not cores[cid]
                   end
                 end
@@ -107,11 +107,11 @@ module Concurrent
                 result_set.to_enum.collect(&:NumberOfCores).reduce(:+)
               else
                 processor_count
-              end
+        end
         # fall back to logical count if physical info is invalid
         ppc > 0 ? ppc : processor_count
       rescue
-        return 1
+        1
       end
     end
   end

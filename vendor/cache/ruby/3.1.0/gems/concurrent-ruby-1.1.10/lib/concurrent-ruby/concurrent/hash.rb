@@ -49,7 +49,7 @@ module Concurrent
                        else
                          warn 'Possibly unsupported Ruby implementation'
                          ::Hash
-                       end
+  end
   private_constant :HashImplementation
 
   # @!macro concurrent_hash

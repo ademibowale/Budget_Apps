@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/log_subscriber"
 
 module ActiveStorage
@@ -43,21 +41,21 @@ module ActiveStorage
     end
 
     private
-      def info(event, colored_message)
-        super log_prefix_for_service(event) + colored_message
-      end
+    def info(event, colored_message)
+      super log_prefix_for_service(event) + colored_message
+    end
 
-      def debug(event, colored_message)
-        super log_prefix_for_service(event) + colored_message
-      end
+    def debug(event, colored_message)
+      super log_prefix_for_service(event) + colored_message
+    end
 
-      def log_prefix_for_service(event)
-        color "  #{event.payload[:service]} Storage (#{event.duration.round(1)}ms) ", CYAN
-      end
+    def log_prefix_for_service(event)
+      color "  #{event.payload[:service]} Storage (#{event.duration.round(1)}ms) ", CYAN
+    end
 
-      def key_in(event)
-        event.payload[:key]
-      end
+    def key_in(event)
+      event.payload[:key]
+    end
   end
 end
 

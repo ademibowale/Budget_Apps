@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/string/output_safety"
 
 module ActionView
@@ -48,7 +46,7 @@ module ActionView
       value = ERB::Util.h(value) unless value.html_safe?
       @block.call(value)
     end
-    alias :concat  :<<
+    alias :concat :<<
     alias :append= :<<
 
     def safe_concat(value)

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class Migration
     module Compatibility # :nodoc: all
@@ -77,12 +75,12 @@ module ActiveRecord
         end
 
         private
-          def compatible_table_definition(t)
-            class << t
-              prepend TableDefinition
-            end
-            t
+        def compatible_table_definition(t)
+          class << t
+            prepend TableDefinition
           end
+          t
+        end
       end
 
       class V6_0 < V6_1
@@ -140,12 +138,12 @@ module ActiveRecord
         alias :add_belongs_to :add_reference
 
         private
-          def compatible_table_definition(t)
-            class << t
-              prepend TableDefinition
-            end
-            super
+        def compatible_table_definition(t)
+          class << t
+            prepend TableDefinition
           end
+          super
+        end
       end
 
       class V5_2 < V6_0
@@ -205,20 +203,20 @@ module ActiveRecord
         end
 
         private
-          def compatible_table_definition(t)
-            class << t
-              prepend TableDefinition
-            end
-            super
+        def compatible_table_definition(t)
+          class << t
+            prepend TableDefinition
           end
+          super
+        end
 
-          def command_recorder
-            recorder = super
-            class << recorder
-              prepend CommandRecorder
-            end
-            recorder
+        def command_recorder
+          recorder = super
+          class << recorder
+            prepend CommandRecorder
           end
+          recorder
+        end
       end
 
       class V5_1 < V5_2
@@ -299,12 +297,12 @@ module ActiveRecord
         alias :add_belongs_to :add_reference
 
         private
-          def compatible_table_definition(t)
-            class << t
-              prepend TableDefinition
-            end
-            super
+        def compatible_table_definition(t)
+          class << t
+            prepend TableDefinition
           end
+          super
+        end
       end
 
       class V4_2 < V5_0
@@ -349,31 +347,31 @@ module ActiveRecord
         end
 
         private
-          def compatible_table_definition(t)
-            class << t
-              prepend TableDefinition
-            end
-            super
+        def compatible_table_definition(t)
+          class << t
+            prepend TableDefinition
           end
+          super
+        end
 
-          def index_name_for_remove(table_name, column_name, options)
-            index_name = connection.index_name(table_name, column_name || options)
+        def index_name_for_remove(table_name, column_name, options)
+          index_name = connection.index_name(table_name, column_name || options)
 
-            unless connection.index_name_exists?(table_name, index_name)
-              if options.key?(:name)
-                options_without_column = options.except(:column)
-                index_name_without_column = connection.index_name(table_name, options_without_column)
+          unless connection.index_name_exists?(table_name, index_name)
+            if options.key?(:name)
+              options_without_column = options.except(:column)
+              index_name_without_column = connection.index_name(table_name, options_without_column)
 
-                if connection.index_name_exists?(table_name, index_name_without_column)
-                  return index_name_without_column
-                end
+              if connection.index_name_exists?(table_name, index_name_without_column)
+                return index_name_without_column
               end
-
-              raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' does not exist"
             end
 
-            index_name
+            raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' does not exist"
           end
+
+          index_name
+        end
       end
     end
   end

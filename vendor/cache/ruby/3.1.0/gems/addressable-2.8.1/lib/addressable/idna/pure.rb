@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #--
 # Copyright (C) Bob Aman
 #
@@ -16,7 +14,6 @@
 #    limitations under the License.
 #++
 
-
 module Addressable
   module IDNA
     # This module is loosely based on idn_actionmailer by Mick Staugaard,
@@ -31,7 +28,6 @@ module Addressable
     # http://github.com/staugaard/idn_actionmailer
     # http://www.yoshidam.net/Ruby.html#unicode
     # http://rubyforge.org/frs/?group_id=2550
-
 
     UNICODE_TABLE = File.expand_path(
       File.join(File.dirname(__FILE__), '../../..', 'data/unicode.data')
@@ -118,7 +114,7 @@ module Addressable
       unpacked = input.unpack("U*")
       unpacked =
         unicode_compose(unicode_sort_canonical(unicode_decompose(unpacked)))
-      return unpacked.pack("U*")
+      unpacked.pack("U*")
     end
 
     ##
@@ -132,7 +128,7 @@ module Addressable
       input = input.to_s unless input.is_a?(String)
       unpacked = input.unpack("U*")
       unpacked.map! { |codepoint| lookup_unicode_lowercase(codepoint) }
-      return unpacked.pack("U*")
+      unpacked.pack("U*")
     end
     private_class_method :unicode_downcase
 
@@ -157,7 +153,7 @@ module Addressable
         end
       end
       unpacked_result << starter
-      return unpacked_result
+      unpacked_result
     end
     private_class_method :unicode_compose
 
@@ -172,7 +168,7 @@ module Addressable
           ch_one < HANGUL_SBASE + HANGUL_SCOUNT &&
           (ch_one - HANGUL_SBASE) % HANGUL_TCOUNT == 0 &&
           ch_two >= HANGUL_TBASE && ch_two < HANGUL_TBASE + HANGUL_TCOUNT
-           # Hangul LV + T
+        # Hangul LV + T
         return ch_one + (ch_two - HANGUL_TBASE)
       end
 
@@ -181,7 +177,7 @@ module Addressable
       ucs4_to_utf8(ch_one, p)
       ucs4_to_utf8(ch_two, p)
 
-      return lookup_unicode_composition(p)
+      lookup_unicode_composition(p)
     end
     private_class_method :unicode_compose_pair
 
@@ -225,19 +221,19 @@ module Addressable
       return unpacked if length < 2
 
       while i < length
-        last = unpacked[i-1]
+        last = unpacked[i - 1]
         ch = unpacked[i]
         last_cc = lookup_unicode_combining_class(last)
         cc = lookup_unicode_combining_class(ch)
         if cc != 0 && last_cc != 0 && last_cc > cc
           unpacked[i] = last
-          unpacked[i-1] = ch
+          unpacked[i - 1] = ch
           i -= 1 if i > 1
         else
           i += 1
         end
       end
-      return unpacked
+      unpacked
     end
     private_class_method :unicode_sort_canonical
 
@@ -258,12 +254,12 @@ module Addressable
           end
         end
       end
-      return unpacked_result
+      unpacked_result
     end
     private_class_method :unicode_decompose
 
     def self.unicode_decompose_hangul(codepoint)
-      sindex = codepoint - HANGUL_SBASE;
+      sindex = codepoint - HANGUL_SBASE
       if sindex < 0 || sindex >= HANGUL_SCOUNT
         l = codepoint
         v = t = nil
@@ -275,7 +271,7 @@ module Addressable
       if t == HANGUL_TBASE
         t = nil
       end
-      return l, v, t
+      [l, v, t]
     end
     private_class_method :unicode_decompose_hangul
 
@@ -303,16 +299,16 @@ module Addressable
     private_class_method :lookup_unicode_lowercase
 
     def self.lookup_unicode_composition(unpacked)
-      return COMPOSITION_TABLE[unpacked]
+      COMPOSITION_TABLE[unpacked]
     end
     private_class_method :lookup_unicode_composition
 
-    HANGUL_SBASE =  0xac00
-    HANGUL_LBASE =  0x1100
+    HANGUL_SBASE = 0xac00
+    HANGUL_LBASE = 0x1100
     HANGUL_LCOUNT = 19
-    HANGUL_VBASE =  0x1161
+    HANGUL_VBASE = 0x1161
     HANGUL_VCOUNT = 21
-    HANGUL_TBASE =  0x11a7
+    HANGUL_TBASE = 0x11a7
     HANGUL_TCOUNT = 28
     HANGUL_NCOUNT = HANGUL_VCOUNT * HANGUL_TCOUNT # 588
     HANGUL_SCOUNT = HANGUL_LCOUNT * HANGUL_NCOUNT # 11172
@@ -544,7 +540,7 @@ module Addressable
           raise PunycodeBadInput, "Input is invalid."
         end
         output[out] = input[j]
-        out+=1
+        out += 1
       end
 
       # Main decoding loop:  Start just after the last delimiter if any
@@ -567,7 +563,7 @@ module Addressable
             raise PunycodeBadInput, "Input is invalid."
           end
           digit = punycode_decode_digit(input[in_])
-          in_+=1
+          in_ += 1
           if digit >= PUNYCODE_BASE
             raise PunycodeBadInput, "Input is invalid."
           end

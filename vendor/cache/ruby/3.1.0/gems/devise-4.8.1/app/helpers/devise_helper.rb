@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module DeviseHelper
   # Retain this method for backwards compatibility, deprecated in favor of modifying the
   # devise/shared/error_messages partial.

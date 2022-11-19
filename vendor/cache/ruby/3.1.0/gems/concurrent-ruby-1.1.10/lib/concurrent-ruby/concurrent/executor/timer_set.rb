@@ -48,8 +48,8 @@ module Concurrent
     def post(delay, *args, &task)
       raise ArgumentError.new('no block given') unless block_given?
       return false unless running?
-      opts = { executor:  @task_executor,
-               args:      args,
+      opts = { executor: @task_executor,
+               args: args,
                timer_set: self }
       task = ScheduledTask.execute(delay, opts, &task) # may raise exception
       task.unscheduled? ? false : task
@@ -72,11 +72,11 @@ module Concurrent
     # @param [Hash] opts the options to create the object with.
     # @!visibility private
     def ns_initialize(opts)
-      @queue              = Collection::NonConcurrentPriorityQueue.new(order: :min)
-      @task_executor      = Options.executor_from_options(opts) || Concurrent.global_io_executor
-      @timer_executor     = SingleThreadExecutor.new
-      @condition          = Event.new
-      @ruby_pid           = $$ # detects if Ruby has forked
+      @queue = Collection::NonConcurrentPriorityQueue.new(order: :min)
+      @task_executor = Options.executor_from_options(opts) || Concurrent.global_io_executor
+      @timer_executor = SingleThreadExecutor.new
+      @condition = Event.new
+      @ruby_pid = $$ # detects if Ruby has forked
     end
 
     # Post the task to the internal queue.
@@ -145,7 +145,7 @@ module Concurrent
         task = synchronize { @condition.reset; @queue.peek }
         break unless task
 
-        now  = Concurrent.monotonic_time
+        now = Concurrent.monotonic_time
         diff = task.schedule_time - now
 
         if diff <= 0

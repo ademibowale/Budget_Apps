@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #--
 # Copyright (C) Bob Aman
 #
@@ -16,14 +14,13 @@
 #    limitations under the License.
 #++
 
-
 # Used to prevent the class/module from being loaded more than once
 if !defined?(Addressable::VERSION)
   module Addressable
     module VERSION
       MAJOR = 2
       MINOR = 8
-      TINY  = 1
+      TINY = 1
 
       STRING = [MAJOR, MINOR, TINY].join('.')
     end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/insert_all"
 
 module ActiveRecord
@@ -530,31 +528,31 @@ module ActiveRecord
       end
 
       private
-        # Given a class, an attributes hash, +instantiate_instance_of+ returns a
-        # new instance of the class. Accepts only keys as strings.
-        def instantiate_instance_of(klass, attributes, column_types = {}, &block)
-          attributes = klass.attributes_builder.build_from_database(attributes, column_types)
-          klass.allocate.init_with_attributes(attributes, &block)
-        end
+      # Given a class, an attributes hash, +instantiate_instance_of+ returns a
+      # new instance of the class. Accepts only keys as strings.
+      def instantiate_instance_of(klass, attributes, column_types = {}, &block)
+        attributes = klass.attributes_builder.build_from_database(attributes, column_types)
+        klass.allocate.init_with_attributes(attributes, &block)
+      end
 
-        # Called by +instantiate+ to decide which class to use for a new
-        # record instance.
-        #
-        # See +ActiveRecord::Inheritance#discriminate_class_for_record+ for
-        # the single-table inheritance discriminator.
-        def discriminate_class_for_record(record)
-          self
-        end
+      # Called by +instantiate+ to decide which class to use for a new
+      # record instance.
+      #
+      # See +ActiveRecord::Inheritance#discriminate_class_for_record+ for
+      # the single-table inheritance discriminator.
+      def discriminate_class_for_record(record)
+        self
+      end
 
-        # Called by +_update_record+ and +_delete_record+
-        # to build `where` clause from default scopes.
-        # Skips empty scopes.
-        def build_default_constraint
-          return unless default_scopes?(all_queries: true)
+      # Called by +_update_record+ and +_delete_record+
+      # to build `where` clause from default scopes.
+      # Skips empty scopes.
+      def build_default_constraint
+        return unless default_scopes?(all_queries: true)
 
-          default_where_clause = default_scoped(all_queries: true).where_clause
-          default_where_clause.ast unless default_where_clause.empty?
-        end
+        default_where_clause = default_scoped(all_queries: true).where_clause
+        default_where_clause.ast unless default_where_clause.empty?
+      end
     end
 
     # Returns true if this object hasn't been saved yet -- that is, a record

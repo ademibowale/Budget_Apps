@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "devise/hooks/lockable"
 
 module Devise
@@ -22,7 +20,7 @@ module Devise
     #   * +unlock_keys+: the keys you want to use when locking and unlocking an account
     #
     module Lockable
-      extend  ActiveSupport::Concern
+      extend ActiveSupport::Concern
 
       delegate :lock_strategy_enabled?, :unlock_strategy_enabled?, to: "self.class"
 
@@ -39,7 +37,7 @@ module Devise
       # * +opts+: Hash options if you don't want to send email
       #   when you lock access, you could pass the next hash
       #   `{ send_instructions: false } as option`.
-      def lock_access!(opts = { })
+      def lock_access!(opts = {})
         self.locked_at = Time.now.utc
 
         if unlock_strategy_enabled?(:email) && opts.fetch(:send_instructions, true)
@@ -53,7 +51,7 @@ module Devise
       def unlock_access!
         self.locked_at = nil
         self.failed_attempts = 0 if respond_to?(:failed_attempts=)
-        self.unlock_token = nil  if respond_to?(:unlock_token=)
+        self.unlock_token = nil if respond_to?(:unlock_token=)
         save(validate: false)
       end
 
@@ -140,33 +138,33 @@ module Devise
 
       protected
 
-        def attempts_exceeded?
-          self.failed_attempts >= self.class.maximum_attempts
-        end
+      def attempts_exceeded?
+        self.failed_attempts >= self.class.maximum_attempts
+      end
 
-        def last_attempt?
-          self.failed_attempts == self.class.maximum_attempts - 1
-        end
+      def last_attempt?
+        self.failed_attempts == self.class.maximum_attempts - 1
+      end
 
-        # Tells if the lock is expired if :time unlock strategy is active
-        def lock_expired?
-          if unlock_strategy_enabled?(:time)
-            locked_at && locked_at < self.class.unlock_in.ago
-          else
-            false
-          end
+      # Tells if the lock is expired if :time unlock strategy is active
+      def lock_expired?
+        if unlock_strategy_enabled?(:time)
+          locked_at && locked_at < self.class.unlock_in.ago
+        else
+          false
         end
+      end
 
-        # Checks whether the record is locked or not, yielding to the block
-        # if it's locked, otherwise adds an error to email.
-        def if_access_locked
-          if access_locked?
-            yield
-          else
-            self.errors.add(Devise.unlock_keys.first, :not_locked)
-            false
-          end
+      # Checks whether the record is locked or not, yielding to the block
+      # if it's locked, otherwise adds an error to email.
+      def if_access_locked
+        if access_locked?
+          yield
+        else
+          self.errors.add(Devise.unlock_keys.first, :not_locked)
+          false
         end
+      end
 
       module ClassMethods
         # List of strategies that are enabled/supported if :both is used.
@@ -188,7 +186,7 @@ module Devise
         # Options must have the unlock_token
         def unlock_access_by_token(unlock_token)
           original_token = unlock_token
-          unlock_token   = Devise.token_generator.digest(self, :unlock_token, unlock_token)
+          unlock_token = Devise.token_generator.digest(self, :unlock_token, unlock_token)
 
           lockable = find_or_initialize_with_error_by(:unlock_token, unlock_token)
           lockable.unlock_access! if lockable.persisted?

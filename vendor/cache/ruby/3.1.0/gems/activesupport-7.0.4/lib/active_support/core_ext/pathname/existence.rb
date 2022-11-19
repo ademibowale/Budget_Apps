@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Pathname
   # Returns the receiver if the named file exists otherwise returns +nil+.
   # <tt>pathname.existence</tt> is equivalent to

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class Binary < Arel::Nodes::NodeExpression
@@ -7,13 +5,13 @@ module Arel # :nodoc: all
 
       def initialize(left, right)
         super()
-        @left  = left
+        @left = left
         @right = right
       end
 
       def initialize_copy(other)
         super
-        @left  = @left.clone if @left
+        @left = @left.clone if @left
         @right = @right.clone if @right
       end
 

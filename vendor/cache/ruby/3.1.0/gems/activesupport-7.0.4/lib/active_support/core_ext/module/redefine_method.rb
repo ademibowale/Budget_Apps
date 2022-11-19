@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Module
   # Marks the named method as intended to be redefined, if it exists.
   # Suppresses the Ruby method redefinition warning. Prefer

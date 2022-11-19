@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative("bootsnap/version")
 require_relative("bootsnap/bundler")
 require_relative("bootsnap/load_path_cache")

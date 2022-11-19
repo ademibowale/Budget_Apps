@@ -13,7 +13,7 @@ module ChildProcess
 
       def self.msvcrt_name
         host_part = RbConfig::CONFIG['host_os'].split("_")[1]
-        manifest  = File.join(RbConfig::CONFIG['bindir'], 'ruby.exe.manifest')
+        manifest = File.join(RbConfig::CONFIG['bindir'], 'ruby.exe.manifest')
 
         if host_part && host_part.to_i > 80 && File.exists?(manifest)
           "msvcr#{host_part}"
@@ -24,7 +24,6 @@ module ChildProcess
 
       ffi_lib "kernel32", msvcrt_name
       ffi_convention :stdcall
-
 
     end # Library
   end # Windows

@@ -31,6 +31,6 @@ module Concurrent
                  TruffleRubyAttrVolatile
                else
                  MriAttrVolatile
-               end
+    end
   end
 end

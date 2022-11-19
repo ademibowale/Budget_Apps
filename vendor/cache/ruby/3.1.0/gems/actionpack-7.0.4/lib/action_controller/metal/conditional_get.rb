@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/object/try"
 require "active_support/core_ext/integer/time"
 
@@ -318,8 +316,8 @@ module ActionController
     end
 
     private
-      def combine_etags(validator, options)
-        [validator, *etaggers.map { |etagger| instance_exec(options, &etagger) }].compact
-      end
+    def combine_etags(validator, options)
+      [validator, *etaggers.map { |etagger| instance_exec(options, &etagger) }].compact
+    end
   end
 end

@@ -25,7 +25,7 @@ module ChildProcess
         log(ex.class => ex.message)
         false
       ensure
-        log(:exit_code => @exit_code)
+        log(exit_code: @exit_code)
       end
 
       def stop(timeout = nil)
@@ -50,8 +50,8 @@ module ChildProcess
       # what Java SDK is being used; here, we look it up once at load, then
       # define the method once to avoid runtime overhead.
       normalised_java_version_major = java.lang.System.get_property("java.version")
-                                                      .slice(/^(1\.)?([0-9]+)/, 2)
-                                                      .to_i
+        .slice(/^(1\.)?([0-9]+)/, 2)
+        .to_i
       if normalised_java_version_major >= 9
 
         # On modern Javas, we can simply delegate through to `Process#pid`,

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   # Reads a YAML configuration file, evaluating any ERB, then
   # parsing the resulting YAML.
@@ -23,7 +21,7 @@ module ActiveSupport
       if YAML.respond_to?(:unsafe_load)
         YAML.unsafe_load(source, **options) || {}
       else
-        YAML.load(source, **options) || {}
+        YAML.safe_load(source, **options) || {}
       end
     rescue Psych::SyntaxError => error
       raise "YAML syntax error occurred while parsing #{@content_path}. " \
@@ -32,20 +30,20 @@ module ActiveSupport
     end
 
     private
-      def read(content_path)
-        require "yaml"
-        require "erb"
+    def read(content_path)
+      require "yaml"
+      require "erb"
 
-        File.read(content_path).tap do |content|
-          if content.include?("\u00A0")
-            warn "#{content_path} contains invisible non-breaking spaces, you may want to remove those"
-          end
+      File.read(content_path).tap do |content|
+        if content.include?("\u00A0")
+          warn "#{content_path} contains invisible non-breaking spaces, you may want to remove those"
         end
       end
+    end
 
-      def render(context)
-        erb = ERB.new(@content).tap { |e| e.filename = @content_path }
-        context ? erb.result(context) : erb.result
-      end
+    def render(context)
+      erb = ERB.new(@content).tap { |e| e.filename = @content_path }
+      context ? erb.result(context) : erb.result
+    end
   end
 end

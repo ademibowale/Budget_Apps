@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Attached::Changes::DetachOne # :nodoc:
     attr_reader :name, :record, :attachment
@@ -16,9 +14,9 @@ module ActiveStorage
     end
 
     private
-      def reset
-        record.attachment_changes.delete(name)
-        record.public_send("#{name}_attachment=", nil)
-      end
+    def reset
+      record.attachment_changes.delete(name)
+      record.public_send("#{name}_attachment=", nil)
+    end
   end
 end

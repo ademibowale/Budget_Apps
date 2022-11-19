@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 namespace :metrics do
   task :lines do
     lines, codelines, total_lines, total_codelines = 0, 0, 0, 0
@@ -13,7 +11,7 @@ namespace :metrics do
       end
       puts "L: #{sprintf("%4d", lines)}, " +
         "LOC #{sprintf("%4d", codelines)} | #{file_name}"
-      total_lines     += lines
+      total_lines += lines
       total_codelines += codelines
 
       lines, codelines = 0, 0

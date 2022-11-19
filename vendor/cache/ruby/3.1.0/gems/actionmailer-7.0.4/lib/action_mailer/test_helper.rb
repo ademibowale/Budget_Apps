@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_job"
 
 module ActionMailer
@@ -152,10 +150,10 @@ module ActionMailer
     end
 
     private
-      def delivery_job_filter(job)
-        job_class = job.is_a?(Hash) ? job.fetch(:job) : job.class
+    def delivery_job_filter(job)
+      job_class = job.is_a?(Hash) ? job.fetch(:job) : job.class
 
-        Base.descendants.map(&:delivery_job).include?(job_class)
-      end
+      Base.descendants.map(&:delivery_job).include?(job_class)
+    end
   end
 end

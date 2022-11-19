@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rspec/expectations'
 require 'webdrivers' if ENV.fetch('CI', nil) || ENV.fetch('WEBDRIVERS', nil)
 require 'selenium_statistics'

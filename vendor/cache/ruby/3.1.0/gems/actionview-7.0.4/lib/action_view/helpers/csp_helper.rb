@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   # = Action View CSP Helper
   module Helpers # :nodoc:

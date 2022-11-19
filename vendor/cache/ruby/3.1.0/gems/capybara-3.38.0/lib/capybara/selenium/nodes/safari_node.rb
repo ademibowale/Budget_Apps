@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # require 'capybara/selenium/extensions/html5_drag'
 require 'capybara/selenium/extensions/modifier_keys_stack'
 
@@ -44,10 +42,10 @@ class Capybara::Selenium::SafariNode < Capybara::Selenium::Node
 
     vis_text = driver.execute_script('return arguments[0].innerText', self)
     vis_text.squeeze(' ')
-            .gsub(/[\ \n]*\n[\ \n]*/, "\n")
-            .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
-            .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
-            .tr("\u00a0", ' ')
+      .gsub(/[\ \n]*\n[\ \n]*/, "\n")
+      .gsub(/\A[[:space:]&&[^\u00a0]]+/, '')
+      .gsub(/[[:space:]&&[^\u00a0]]+\z/, '')
+      .tr("\u00a0", ' ')
   end
 
   def disabled?

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers
     module Tags # :nodoc:
@@ -29,13 +27,13 @@ module ActionView
         end
 
         private
-          # Grouped choices look like this:
-          #
-          #   [nil, []]
-          #   { nil => [] }
-          def grouped_choices?
-            !@choices.blank? && @choices.first.respond_to?(:last) && Array === @choices.first.last
-          end
+        # Grouped choices look like this:
+        #
+        #   [nil, []]
+        #   { nil => [] }
+        def grouped_choices?
+          !@choices.blank? && @choices.first.respond_to?(:last) && Array === @choices.first.last
+        end
       end
     end
   end

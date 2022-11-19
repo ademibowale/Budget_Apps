@@ -26,7 +26,7 @@ module Concurrent
 
         if block
           observer = block
-          func     = :call
+          func = :call
         end
 
         synchronize do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Validations
     class AssociatedValidator < ActiveModel::EachValidator # :nodoc:
@@ -10,9 +8,9 @@ module ActiveRecord
       end
 
       private
-        def valid_object?(record)
-          (record.respond_to?(:marked_for_destruction?) && record.marked_for_destruction?) || record.valid?
-        end
+      def valid_object?(record)
+        (record.respond_to?(:marked_for_destruction?) && record.marked_for_destruction?) || record.valid?
+      end
     end
 
     module ClassMethods

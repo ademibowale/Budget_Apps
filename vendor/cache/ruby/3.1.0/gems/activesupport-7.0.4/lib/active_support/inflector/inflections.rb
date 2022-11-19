@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "concurrent/map"
 require "active_support/i18n"
 
@@ -55,9 +53,9 @@ module ActiveSupport
         end
 
         private
-          def to_regex(string)
-            /\b#{::Regexp.escape(string)}\Z/i
-          end
+        def to_regex(string)
+          /\b#{::Regexp.escape(string)}\Z/i
+        end
       end
 
       def self.instance(locale = :en)
@@ -186,14 +184,14 @@ module ActiveSupport
           singular(/(#{s0})#{srest}$/i, '\1' + srest)
           singular(/(#{p0})#{prest}$/i, '\1' + srest)
         else
-          plural(/#{s0.upcase}(?i)#{srest}$/,   p0.upcase   + prest)
+          plural(/#{s0.upcase}(?i)#{srest}$/, p0.upcase + prest)
           plural(/#{s0.downcase}(?i)#{srest}$/, p0.downcase + prest)
-          plural(/#{p0.upcase}(?i)#{prest}$/,   p0.upcase   + prest)
+          plural(/#{p0.upcase}(?i)#{prest}$/, p0.upcase + prest)
           plural(/#{p0.downcase}(?i)#{prest}$/, p0.downcase + prest)
 
-          singular(/#{s0.upcase}(?i)#{srest}$/,   s0.upcase   + srest)
+          singular(/#{s0.upcase}(?i)#{srest}$/, s0.upcase + srest)
           singular(/#{s0.downcase}(?i)#{srest}$/, s0.downcase + srest)
-          singular(/#{p0.upcase}(?i)#{prest}$/,   s0.upcase   + srest)
+          singular(/#{p0.upcase}(?i)#{prest}$/, s0.upcase + srest)
           singular(/#{p0.downcase}(?i)#{prest}$/, s0.downcase + srest)
         end
       end
@@ -245,11 +243,11 @@ module ActiveSupport
       end
 
       private
-        def define_acronym_regex_patterns
-          @acronym_regex             = @acronyms.empty? ? /(?=a)b/ : /#{@acronyms.values.join("|")}/
-          @acronyms_camelize_regex   = /^(?:#{@acronym_regex}(?=\b|[A-Z_])|\w)/
-          @acronyms_underscore_regex = /(?:(?<=([A-Za-z\d]))|\b)(#{@acronym_regex})(?=\b|[^a-z])/
-        end
+      def define_acronym_regex_patterns
+        @acronym_regex = @acronyms.empty? ? /(?=a)b/ : /#{@acronyms.values.join("|")}/
+        @acronyms_camelize_regex = /^(?:#{@acronym_regex}(?=\b|[A-Z_])|\w)/
+        @acronyms_underscore_regex = /(?:(?<=([A-Za-z\d]))|\b)(#{@acronym_regex})(?=\b|[^a-z])/
+      end
     end
 
     # Yields a singleton instance of Inflector::Inflections so you can specify

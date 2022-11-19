@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   module Multibyte
     module Unicode
@@ -62,9 +60,9 @@ module ActiveSupport
       end
 
       private
-        def recode_windows1252_chars(string)
-          string.encode(Encoding::UTF_8, Encoding::Windows_1252, invalid: :replace, undef: :replace)
-        end
+      def recode_windows1252_chars(string)
+        string.encode(Encoding::UTF_8, Encoding::Windows_1252, invalid: :replace, undef: :replace)
+      end
     end
   end
 end

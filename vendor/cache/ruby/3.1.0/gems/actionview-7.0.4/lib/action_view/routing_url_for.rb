@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_dispatch/routing/polymorphic_routes"
 
 module ActionView
@@ -127,23 +125,23 @@ module ActionView
     end
 
     private
-      def _routes_context
-        controller
-      end
+    def _routes_context
+      controller
+    end
 
-      def optimize_routes_generation?
-        controller.respond_to?(:optimize_routes_generation?, true) ?
-          controller.optimize_routes_generation? : super
-      end
+    def optimize_routes_generation?
+      controller.respond_to?(:optimize_routes_generation?, true) ?
+        controller.optimize_routes_generation? : super
+    end
 
-      def _generate_paths_by_default
-        true
-      end
+    def _generate_paths_by_default
+      true
+    end
 
-      def ensure_only_path_option(options)
-        unless options.key?(:only_path)
-          options[:only_path] = _generate_paths_by_default unless options[:host]
-        end
+    def ensure_only_path_option(options)
+      unless options.key?(:only_path)
+        options[:only_path] = _generate_paths_by_default unless options[:host]
       end
+    end
   end
 end

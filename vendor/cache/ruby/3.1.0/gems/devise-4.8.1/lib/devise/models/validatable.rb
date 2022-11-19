@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Devise
   module Models
     # Validatable creates all needed validations for a user email and password.
@@ -28,18 +26,18 @@ module Devise
         assert_validations_api!(base)
 
         base.class_eval do
-          validates_presence_of   :email, if: :email_required?
+          validates_presence_of :email, if: :email_required?
           if Devise.activerecord51?
             validates_uniqueness_of :email, allow_blank: true, case_sensitive: true, if: :will_save_change_to_email?
-            validates_format_of     :email, with: email_regexp, allow_blank: true, if: :will_save_change_to_email?
+            validates_format_of :email, with: email_regexp, allow_blank: true, if: :will_save_change_to_email?
           else
             validates_uniqueness_of :email, allow_blank: true, if: :email_changed?
-            validates_format_of     :email, with: email_regexp, allow_blank: true, if: :email_changed?
+            validates_format_of :email, with: email_regexp, allow_blank: true, if: :email_changed?
           end
 
-          validates_presence_of     :password, if: :password_required?
+          validates_presence_of :password, if: :password_required?
           validates_confirmation_of :password, if: :password_required?
-          validates_length_of       :password, within: password_length, allow_blank: true
+          validates_length_of :password, within: password_length, allow_blank: true
         end
       end
 

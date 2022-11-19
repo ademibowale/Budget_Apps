@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/delegation"
 
 module ActiveStorage
@@ -49,7 +47,6 @@ module ActiveStorage
       perform_across_services :delete_prefixed, prefix
     end
 
-
     # Copy the file at the +key+ from the primary service to each of the mirrors where it doesn't already exist.
     def mirror(key, checksum:)
       instrument :mirror, key: key, checksum: checksum do
@@ -65,15 +62,15 @@ module ActiveStorage
     end
 
     private
-      def each_service(&block)
-        [ primary, *mirrors ].each(&block)
-      end
+    def each_service(&block)
+      [ primary, *mirrors ].each(&block)
+    end
 
-      def perform_across_services(method, *args)
-        # FIXME: Convert to be threaded
-        each_service.collect do |service|
-          service.public_send method, *args
-        end
+    def perform_across_services(method, *args)
+      # FIXME: Convert to be threaded
+      each_service.collect do |service|
+        service.public_send method, *args
       end
+    end
   end
 end

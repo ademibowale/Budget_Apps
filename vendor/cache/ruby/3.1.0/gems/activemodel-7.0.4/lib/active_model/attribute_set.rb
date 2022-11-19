@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/enumerable"
 require "active_support/core_ext/object/deep_dup"
 require "active_model/attribute_set/builder"
@@ -99,11 +97,11 @@ module ActiveModel
     end
 
     protected
-      attr_reader :attributes
+    attr_reader :attributes
 
     private
-      def default_attribute(name)
-        Attribute.null(name)
-      end
+    def default_attribute(name)
+      Attribute.null(name)
+    end
   end
 end

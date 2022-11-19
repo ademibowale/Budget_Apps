@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module DEBUGGER__
   FrameInfo = Struct.new(:location, :self, :binding, :iseq, :class, :frame_depth,
-                          :has_return_value,     :return_value,
+                          :has_return_value, :return_value,
                           :has_raised_exception, :raised_exception,
                           :show_line,
                           :_local_variables, :_callee, # for recorder
@@ -27,7 +25,7 @@ module DEBUGGER__
       location.absolute_path
     end
 
-    def self.pretty_path path
+    def self.pretty_path(path)
       return '#<none>' unless path
       use_short_path = CONFIG[:use_short_path]
 
@@ -35,8 +33,8 @@ module DEBUGGER__
       when use_short_path && path.start_with?(dir = RbConfig::CONFIG["rubylibdir"] + '/')
         path.sub(dir, '$(rubylibdir)/')
       when use_short_path && Gem.path.any? do |gp|
-          path.start_with?(dir = gp + '/gems/')
-        end
+             path.start_with?(dir = gp + '/gems/')
+           end
         path.sub(dir, '$(Gem)/')
       when HOME && path.start_with?(HOME)
         path.sub(HOME, '~/')
@@ -141,7 +139,7 @@ module DEBUGGER__
       if lvars = self._local_variables
         lvars
       elsif b = self.binding
-        b.local_variables.map{|var|
+        b.local_variables.map { |var|
           [var, b.local_variable_get(var)]
         }.to_h
       end
@@ -149,7 +147,7 @@ module DEBUGGER__
 
     def parameters_info
       vars = iseq.parameters_symbols
-      vars.map{|var|
+      vars.map { |var|
         begin
           { name: var, value: DEBUGGER__.safe_inspect(local_variable_get(var), short: true) }
         rescue NameError, TypeError
@@ -158,13 +156,13 @@ module DEBUGGER__
       }.compact
     end
 
-    private def get_singleton_class obj
+    private def get_singleton_class(obj)
       obj.singleton_class # TODO: don't use it
     rescue TypeError
       nil
     end
 
-    private def local_variable_get var
+    private def local_variable_get(var)
       local_variables[var]
     end
 

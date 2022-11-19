@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara.add_selector(:select, locator_type: [String, Symbol]) do
   label 'select box'
 

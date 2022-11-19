@@ -28,7 +28,7 @@ module Concurrent
       #       end
       #     end
       #   end
-      # 
+      #
       # @!visibility private
       module CheapLockable
         private

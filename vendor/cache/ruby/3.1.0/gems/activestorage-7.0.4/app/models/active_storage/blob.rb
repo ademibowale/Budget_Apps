@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # A blob is a record that contains the metadata about a file and a key for where that file resides on the service.
 # Blobs can be created in two ways:
 #
@@ -215,7 +213,7 @@ class ActiveStorage::Blob < ActiveStorage::Record
   # URL behind a redirect also allows you to change services without updating all URLs.
   def url(expires_in: ActiveStorage.service_urls_expire_in, disposition: :inline, filename: nil, **options)
     service.url key, expires_in: expires_in, filename: ActiveStorage::Filename.wrap(filename || self.filename),
-      content_type: content_type_for_serving, disposition: forced_disposition_for_serving || disposition, **options
+                     content_type: content_type_for_serving, disposition: forced_disposition_for_serving || disposition, **options
   end
 
   # Returns a URL that can be used to directly upload a file for this blob on the service. This URL is intended to be
@@ -239,7 +237,6 @@ class ActiveStorage::Blob < ActiveStorage::Record
     end
   end
 
-
   # Uploads the +io+ to the service on the +key+ for this blob. Blobs are intended to be immutable, so you shouldn't be
   # using this method after a file has already been uploaded to fit with a blob. If you want to create a derivative blob,
   # you should instead simply create a new blob based on the old one.
@@ -258,10 +255,10 @@ class ActiveStorage::Blob < ActiveStorage::Record
   end
 
   def unfurl(io, identify: true) # :nodoc:
-    self.checksum     = compute_checksum_in_chunks(io)
+    self.checksum = compute_checksum_in_chunks(io)
     self.content_type = extract_content_type(io) if content_type.nil? || identify
-    self.byte_size    = io.size
-    self.identified   = true
+    self.byte_size = io.size
+    self.identified = true
   end
 
   def upload_without_unfurling(io) # :nodoc:
@@ -366,45 +363,45 @@ class ActiveStorage::Blob < ActiveStorage::Record
   INVALID_VARIABLE_CONTENT_TYPES_TO_SERVE_AS_BINARY_DEPRECATED_IN_RAILS_7 = ["text/javascript"]
 
   private
-    def compute_checksum_in_chunks(io)
-      OpenSSL::Digest::MD5.new.tap do |checksum|
-        while chunk = io.read(5.megabytes)
-          checksum << chunk
-        end
-
-        io.rewind
-      end.base64digest
-    end
-
-    def extract_content_type(io)
-      Marcel::MimeType.for io, name: filename.to_s, declared_type: content_type
-    end
-
-    def forcibly_serve_as_binary?
-      ActiveStorage.content_types_to_serve_as_binary.include?(content_type)
-    end
-
-    def allowed_inline?
-      ActiveStorage.content_types_allowed_inline.include?(content_type)
-    end
-
-    def web_image?
-      ActiveStorage.web_image_content_types.include?(content_type)
-    end
-
-    def service_metadata
-      if forcibly_serve_as_binary?
-        { content_type: ActiveStorage.binary_content_type, disposition: :attachment, filename: filename, custom_metadata: custom_metadata }
-      elsif !allowed_inline?
-        { content_type: content_type, disposition: :attachment, filename: filename, custom_metadata: custom_metadata }
-      else
-        { content_type: content_type, custom_metadata: custom_metadata }
+  def compute_checksum_in_chunks(io)
+    OpenSSL::Digest::MD5.new.tap do |checksum|
+      while chunk = io.read(5.megabytes)
+        checksum << chunk
       end
-    end
 
-    def update_service_metadata
-      service.update_metadata key, **service_metadata if service_metadata.any?
+      io.rewind
+    end.base64digest
+  end
+
+  def extract_content_type(io)
+    Marcel::MimeType.for io, name: filename.to_s, declared_type: content_type
+  end
+
+  def forcibly_serve_as_binary?
+    ActiveStorage.content_types_to_serve_as_binary.include?(content_type)
+  end
+
+  def allowed_inline?
+    ActiveStorage.content_types_allowed_inline.include?(content_type)
+  end
+
+  def web_image?
+    ActiveStorage.web_image_content_types.include?(content_type)
+  end
+
+  def service_metadata
+    if forcibly_serve_as_binary?
+      { content_type: ActiveStorage.binary_content_type, disposition: :attachment, filename: filename, custom_metadata: custom_metadata }
+    elsif !allowed_inline?
+      { content_type: content_type, disposition: :attachment, filename: filename, custom_metadata: custom_metadata }
+    else
+      { content_type: content_type, custom_metadata: custom_metadata }
     end
+  end
+
+  def update_service_metadata
+    service.update_metadata key, **service_metadata if service_metadata.any?
+  end
 end
 
 ActiveSupport.run_load_hooks :active_storage_blob, ActiveStorage::Blob

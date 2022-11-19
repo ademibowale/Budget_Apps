@@ -15,7 +15,7 @@ module Concurrent
             class_eval <<-RUBY, __FILE__, __LINE__ + 1
               def #{name}
                 full_memory_barrier
-                #{ivar}                  
+                #{ivar}#{'                  '}
               end
 
               def #{name}=(value)

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rails-dom-testing"
 require "action_dispatch/testing/assertions/response"
 require "action_dispatch/testing/assertions/routing"

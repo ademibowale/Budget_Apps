@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'json'
 require 'digest/sha1'
 require 'base64'
@@ -13,7 +11,7 @@ module DEBUGGER__
     SHOW_PROTOCOL = ENV['RUBY_DEBUG_CDP_SHOW_PROTOCOL'] == '1'
 
     class << self
-      def setup_chrome addr
+      def setup_chrome(addr)
         return if CONFIG[:chrome_path] == ''
 
         port, path, pid = run_new_chrome
@@ -31,26 +29,26 @@ module DEBUGGER__
           res = ws_client.extract_data
           case
           when res['id'] == 1 && target_info = res.dig('result', 'targetInfos')
-            page = target_info.find{|t| t['type'] == 'page'}
+            page = target_info.find { |t| t['type'] == 'page' }
             ws_client.send id: 2, method: 'Target.attachToTarget',
-                          params: {
+                           params: {
                             targetId: page['targetId'],
                             flatten: true
                           }
           when res['id'] == 2
             s_id = res.dig('result', 'sessionId')
             ws_client.send sessionId: s_id, id: 3,
-                          method: 'Page.enable'
+                           method: 'Page.enable'
           when res['id'] == 3
             s_id = res['sessionId']
             ws_client.send sessionId: s_id, id: 4,
-                          method: 'Page.getFrameTree'
+                           method: 'Page.getFrameTree'
           when res['id'] == 4
             s_id = res['sessionId']
             f_id = res.dig('result', 'frameTree', 'frame', 'id')
             ws_client.send sessionId: s_id, id: 5,
-                          method: 'Page.navigate',
-                          params: {
+                           method: 'Page.navigate',
+                           params: {
                             url: "devtools://devtools/bundled/inspector.html?v8only=true&panel=sources&ws=#{addr}/#{SecureRandom.uuid}",
                             frameId: f_id
                           }
@@ -93,7 +91,7 @@ module DEBUGGER__
         end
         stderr.close
 
-        at_exit{
+        at_exit {
           CONFIG[:skip_path] = [//] # skip all
           FileUtils.rm_rf dir
         }
@@ -110,29 +108,29 @@ module DEBUGGER__
           @b = ''.b
         end
 
-        def << obj
+        def <<(obj)
           case obj
           when String
             @b << obj.b
           when Enumerable
-            obj.each{|e| self << e}
+            obj.each { |e| self << e }
           end
         end
 
-        def char bytes
+        def char(bytes)
           @b << bytes
         end
 
-        def ulonglong bytes
+        def ulonglong(bytes)
           @b << [bytes].pack('Q>')
         end
 
-        def uint16 bytes
+        def uint16(bytes)
           @b << [bytes].pack('n*')
         end
       end
 
-      def show_protocol dir, msg
+      def show_protocol(dir, msg)
         if DEBUGGER__::UI_CDP::SHOW_PROTOCOL
           $stderr.puts "\#[#{dir}] #{msg}"
         end
@@ -142,11 +140,11 @@ module DEBUGGER__
     class WebSocketClient
       include WebSocketUtils
 
-      def initialize s
+      def initialize(s)
         @sock = s
       end
 
-      def handshake port, path
+      def handshake(port, path)
         key = SecureRandom.hex(11)
         req = "GET #{path} HTTP/1.1\r\nHost: 127.0.0.1:#{port}\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: #{key}==\r\n\r\n"
         show_protocol :>, req
@@ -162,7 +160,7 @@ module DEBUGGER__
         end
       end
 
-      def send **msg
+      def send(**msg)
         msg = JSON.generate(msg)
         show_protocol :>, msg
         frame = Frame.new
@@ -175,11 +173,11 @@ module DEBUGGER__
         if bytesize < 126
           payload_len = bytesize
           frame.char mask + payload_len
-        elsif bytesize < 2 ** 16
+        elsif bytesize < 2**16
           payload_len = 0b01111110
           frame.char mask + payload_len
           frame.uint16 bytesize
-        elsif bytesize < 2 ** 64
+        elsif bytesize < 2**64
           payload_len = 0b01111111
           frame.char mask + payload_len
           frame.ulonglong bytesize
@@ -187,7 +185,7 @@ module DEBUGGER__
           raise 'Bytesize is too big.'
         end
 
-        masking_key = 4.times.map{
+        masking_key = 4.times.map {
           key = rand(1..255)
           frame.char key
           key
@@ -227,7 +225,7 @@ module DEBUGGER__
     class WebSocketServer
       include WebSocketUtils
 
-      def initialize s
+      def initialize(s)
         @sock = s
       end
 
@@ -245,7 +243,7 @@ module DEBUGGER__
         end
       end
 
-      def send **msg
+      def send(**msg)
         msg = JSON.generate(msg)
         show_protocol :<, msg
         frame = Frame.new
@@ -258,11 +256,11 @@ module DEBUGGER__
         if bytesize < 126
           payload_len = bytesize
           frame.char mask + payload_len
-        elsif bytesize < 2 ** 16
+        elsif bytesize < 2**16
           payload_len = 0b01111110
           frame.char mask + payload_len
           frame.uint16 bytesize
-        elsif bytesize < 2 ** 64
+        elsif bytesize < 2**64
           payload_len = 0b01111111
           frame.char mask + payload_len
           frame.ulonglong bytesize
@@ -305,7 +303,7 @@ module DEBUGGER__
       end
     end
 
-    def send_response req, **res
+    def send_response(req, **res)
       if res.empty?
         @ws_server.send id: req['id'], result: {}
       else
@@ -313,11 +311,11 @@ module DEBUGGER__
       end
     end
 
-    def send_fail_response req, **res
+    def send_fail_response(req, **res)
       @ws_server.send id: req['id'], error: res
     end
 
-    def send_event method, **params
+    def send_event(method, **params)
       if params.empty?
         @ws_server.send method: method, params: {}
       else
@@ -424,7 +422,7 @@ module DEBUGGER__
             cond = req.dig('params', 'condition')
             src = get_source_code path
             end_line = src.lines.count
-            line = end_line  if line > end_line
+            line = end_line if line > end_line
             b_id = "1:#{line}:#{regexp}"
             if cond != ''
               SESSION.add_line_breakpoint(path, line + 1, cond: cond)
@@ -487,16 +485,16 @@ module DEBUGGER__
       @q_msg << 'continue'
     end
 
-    def del_bp bps, k
+    def del_bp(bps, k)
       return bps unless idx = bps[k]
 
       bps.delete k
-      bps.each_key{|i| bps[i] -= 1 if bps[i] > idx}
+      bps.each_key { |i| bps[i] -= 1 if bps[i] > idx }
       @q_msg << "del #{idx}"
       bps
     end
 
-    def get_source_code path
+    def get_source_code(path)
       return @src_map[path] if @src_map[path]
 
       src = File.read(path)
@@ -504,8 +502,8 @@ module DEBUGGER__
       src
     end
 
-    def activate_bp bps
-      bps.each_key{|k|
+    def activate_bp(bps)
+      bps.each_key { |k|
         if k.match /^\d+:(\d+):(.*)/
           line = $1
           path = $2
@@ -528,21 +526,21 @@ module DEBUGGER__
 
     ## Called by the SESSION thread
 
-    def readline prompt
+    def readline(prompt)
       return 'c' unless @q_msg
 
       @q_msg.pop || 'kill!'
     end
 
-    def respond req, **result
+    def respond(req, **result)
       send_response req, **result
     end
 
-    def respond_fail req, **result
+    def respond_fail(req, **result)
       send_fail_response req, **result
     end
 
-    def fire_event event, **result
+    def fire_event(event, **result)
       if result.empty?
         send_event event
       else
@@ -550,26 +548,26 @@ module DEBUGGER__
       end
     end
 
-    def sock skip: false
+    def sock(skip: false)
       yield $stderr
     end
 
-    def puts result
+    def puts(result)
       # STDERR.puts "puts: #{result}"
       # send_event 'output', category: 'stderr', output: "PUTS!!: " + result.to_s
     end
   end
 
   class Session
-    def fail_response req, **result
+    def fail_response(req, **result)
       @ui.respond_fail req, **result
-      return :retry
+      :retry
     end
 
     INVALID_PARAMS = -32602
     INTERNAL_ERROR = -32603
 
-    def process_protocol_request req
+    def process_protocol_request(req)
       case req['method']
       when 'Debugger.stepOver', 'Debugger.stepInto', 'Debugger.stepOut', 'Debugger.resume', 'Debugger.enable'
         request_tc [:cdp, :backtrace, req]
@@ -597,7 +595,7 @@ module DEBUGGER__
           when 'script', 'global'
             # TODO: Support script and global types
             @ui.respond req, result: []
-            return :retry
+            :retry
           else
             raise "Unknown type: #{ref.inspect}"
           end
@@ -615,13 +613,13 @@ module DEBUGGER__
                         code: INVALID_PARAMS,
                         message: "'scriptId' is an invalid"
         end
-        return :retry
+        :retry
       when 'Debugger.getPossibleBreakpoints'
         s_id = req.dig('params', 'start', 'scriptId')
         if src = @src_map[s_id]
           lineno = req.dig('params', 'start', 'lineNumber')
           end_line = src.lines.count
-          lineno = end_line  if lineno > end_line
+          lineno = end_line if lineno > end_line
           @ui.respond req,
                       locations: [{
                         scriptId: s_id,
@@ -632,7 +630,7 @@ module DEBUGGER__
                         code: INVALID_PARAMS,
                         message: "'scriptId' is an invalid"
         end
-        return :retry
+        :retry
       when 'Debugger.setBreakpointByUrl'
         path = req.dig('params', 'scriptId')
         if s_id = @scr_id_map[path]
@@ -649,11 +647,11 @@ module DEBUGGER__
                         code: INTERNAL_ERROR,
                         message: 'The target script is not found...'
         end
-        return :retry
+        :retry
       end
     end
 
-    def cdp_event args
+    def cdp_event(args)
       type, req, result = args
 
       case type
@@ -687,7 +685,7 @@ module DEBUGGER__
                           executionContextId: 1,
                           hash: src.hash.inspect
 
-          frame[:scopeChain].each {|s|
+          frame[:scopeChain].each { |s|
             oid = s.dig(:object, :objectId)
             @obj_map[oid] = [s[:type], frame_id]
           }
@@ -718,7 +716,7 @@ module DEBUGGER__
                             executionContextId: 1,
                             hash: src.hash.inspect
           if exc = result.dig(:response, :exceptionDetails)
-            exc[:stackTrace][:callFrames].each{|frame|
+            exc[:stackTrace][:callFrames].each { |frame|
               if frame[:url].empty?
                 frame[:scriptId] = s_id
               else
@@ -732,7 +730,7 @@ module DEBUGGER__
             }
           end
           rs = result.dig(:response, :result)
-          [rs].each{|obj|
+          [rs].each { |obj|
             if oid = obj[:objectId]
               @obj_map[oid] = ['properties']
             end
@@ -752,15 +750,15 @@ module DEBUGGER__
           end
         end
       when :scope
-        result.each{|obj|
+        result.each { |obj|
           if oid = obj.dig(:value, :objectId)
             @obj_map[oid] = ['properties']
           end
         }
         @ui.respond req, result: result
       when :properties
-        result.each_value{|v|
-          v.each{|obj|
+        result.each_value { |v|
+          v.each { |obj|
             if oid = obj.dig(:value, :objectId)
               @obj_map[oid] = ['properties']
             end
@@ -772,7 +770,7 @@ module DEBUGGER__
   end
 
   class ThreadClient
-    def process_cdp args
+    def process_cdp(args)
       type = args.shift
       req = args.shift
 
@@ -781,7 +779,7 @@ module DEBUGGER__
         exception = nil
         result = {
           reason: 'other',
-          callFrames: @target_frames.map.with_index{|frame, i|
+          callFrames: @target_frames.map.with_index { |frame, i|
             exception = frame.raised_exception if frame == current_frame && frame.has_raised_exception
 
             path = frame.realpath || frame.path
@@ -847,7 +845,7 @@ module DEBUGGER__
 
         if frame && (b = frame.eval_binding)
           special_local_variables frame do |name, var|
-            b.local_variable_set(name, var) if /\%/ !~name
+            b.local_variable_set(name, var) if /\%/ !~ name
           end
 
           result = nil
@@ -857,7 +855,7 @@ module DEBUGGER__
             case expr
             # Chrome doesn't read instance variables
             when /\A\$\S/
-              global_variables.each{|gvar|
+              global_variables.each { |gvar|
                 if gvar.to_s == expr
                   result = eval(gvar.to_s)
                   break false
@@ -886,7 +884,7 @@ module DEBUGGER__
               result = current_frame.binding.eval(expr.to_s, '(DEBUG CONSOLE)')
             rescue Exception => e
               result = e
-              b = result.backtrace.map{|e| "    #{e}\n"}
+              b = result.backtrace.map { |e| "    #{e}\n" }
               frames = [
                 {
                   columnNumber: 0,
@@ -932,7 +930,7 @@ module DEBUGGER__
         fid = args.shift
         frame = @target_frames[fid]
         if b = frame.binding
-          vars = b.local_variables.map{|name|
+          vars = b.local_variables.map { |name|
             v = b.local_variable_get(name)
             variable(name, v)
           }
@@ -941,7 +939,7 @@ module DEBUGGER__
           end
           vars.unshift variable('%self', b.receiver)
         elsif lvars = frame.local_variables
-          vars = lvars.map{|var, val|
+          vars = lvars.map { |var, val|
             variable(var, val)
           }
         else
@@ -959,15 +957,15 @@ module DEBUGGER__
         if obj = @obj_map[oid]
           case obj
           when Array
-            result = obj.map.with_index{|o, i|
+            result = obj.map.with_index { |o, i|
               variable i.to_s, o
             }
           when Hash
-            result = obj.map{|k, v|
+            result = obj.map { |k, v|
               variable(k, v)
             }
           when Struct
-            result = obj.members.map{|m|
+            result = obj.members.map { |m|
               variable(m, obj[m])
             }
           when String
@@ -976,7 +974,7 @@ module DEBUGGER__
               internalProperty('#encoding', obj.encoding)
             ]
           when Class, Module
-            result = obj.instance_variables.map{|iv|
+            result = obj.instance_variables.map { |iv|
               variable(iv, obj.instance_variable_get(iv))
             }
             prop = [internalProperty('%ancestors', obj.ancestors[1..])]
@@ -987,7 +985,7 @@ module DEBUGGER__
             ]
           end
 
-          result += obj.instance_variables.map{|iv|
+          result += obj.instance_variables.map { |iv|
             variable(iv, obj.instance_variable_get(iv))
           }
           prop += [internalProperty('#class', obj.class)]
@@ -996,10 +994,10 @@ module DEBUGGER__
       end
     end
 
-    def search_const b, expr
+    def search_const(b, expr)
       cs = expr.delete_prefix('::').split('::')
-      [Object, *b.eval('::Module.nesting')].reverse_each{|mod|
-        if cs.all?{|c|
+      [Object, *b.eval('::Module.nesting')].reverse_each { |mod|
+        if cs.all? { |c|
              if mod.const_defined?(c)
                mod = mod.const_get(c)
              else
@@ -1013,19 +1011,19 @@ module DEBUGGER__
       false
     end
 
-    def evaluate_result r
+    def evaluate_result(r)
       v = variable nil, r
       v[:value]
     end
 
-    def internalProperty name, obj
+    def internalProperty(name, obj)
       v = variable name, obj
       v.delete :configurable
       v.delete :enumerable
       v
     end
 
-    def propertyDescriptor_ name, obj, type, description: nil, subtype: nil
+    def propertyDescriptor_(name, obj, type, description: nil, subtype: nil)
       description = DEBUGGER__.safe_inspect(obj, short: true) if description.nil?
       oid = rand.to_s
       @obj_map[oid] = obj
@@ -1038,7 +1036,7 @@ module DEBUGGER__
           objectId: oid
         },
         configurable: true, # TODO: Change these parts because
-        enumerable: true    #       they are not necessarily `true`.
+        enumerable: true #       they are not necessarily `true`.
       }
 
       if type == 'object'
@@ -1050,13 +1048,13 @@ module DEBUGGER__
       prop
     end
 
-    def preview_ value, hash, overflow
+    def preview_(value, hash, overflow)
       {
         type: value[:type],
         subtype: value[:subtype],
         description: value[:description],
         overflow: overflow,
-        properties: hash.map{|k, v|
+        properties: hash.map { |k, v|
           pd = propertyDescriptor k, v
           {
             name: pd[:name],
@@ -1067,19 +1065,19 @@ module DEBUGGER__
       }
     end
 
-    def variable name, obj
+    def variable(name, obj)
       pd = propertyDescriptor name, obj
       case obj
       when Array
         pd[:value][:preview] = preview name, obj
-        obj.each_with_index{|item, idx|
+        obj.each_with_index { |item, idx|
           if valuePreview = preview(idx.to_s, item)
             pd[:value][:preview][:properties][idx][:valuePreview] = valuePreview
           end
         }
       when Hash
         pd[:value][:preview] = preview name, obj
-        obj.each_with_index{|item, idx|
+        obj.each_with_index { |item, idx|
           key, val = item
           if valuePreview = preview(key, val)
             pd[:value][:preview][:properties][idx][:valuePreview] = valuePreview
@@ -1089,7 +1087,7 @@ module DEBUGGER__
       pd
     end
 
-    def preview name, obj
+    def preview(name, obj)
       case obj
       when Array
         pd = propertyDescriptor name, obj
@@ -1098,7 +1096,7 @@ module DEBUGGER__
           obj = obj[0..99]
           overflow = true
         end
-        hash = obj.each_with_index.to_h{|o, i| [i.to_s, o]}
+        hash = obj.each_with_index.to_h { |o, i| [i.to_s, o] }
         preview_ pd[:value], hash, overflow
       when Hash
         pd = propertyDescriptor name, obj
@@ -1113,7 +1111,7 @@ module DEBUGGER__
       end
     end
 
-    def propertyDescriptor name, obj
+    def propertyDescriptor(name, obj)
       case obj
       when Array
         propertyDescriptor_ name, obj, 'object', subtype: 'array'

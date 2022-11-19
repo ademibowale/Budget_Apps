@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   module Nodes
     class InsertStatement < Arel::Nodes::Node
@@ -8,16 +6,16 @@ module Arel # :nodoc: all
       def initialize(relation = nil)
         super()
         @relation = relation
-        @columns  = []
-        @values   = nil
-        @select   = nil
+        @columns = []
+        @values = nil
+        @select = nil
       end
 
       def initialize_copy(other)
         super
         @columns = @columns.clone
-        @values =  @values.clone if @values
-        @select =  @select.clone if @select
+        @values = @values.clone if @values
+        @select = @select.clone if @select
       end
 
       def hash

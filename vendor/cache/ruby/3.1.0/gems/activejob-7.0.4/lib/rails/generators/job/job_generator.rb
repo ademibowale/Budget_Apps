@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rails/generators/named_base"
 
 module Rails # :nodoc:
@@ -28,17 +26,17 @@ module Rails # :nodoc:
       end
 
       private
-        def file_name
-          @_file_name ||= super.sub(/_job\z/i, "")
-        end
+      def file_name
+        @_file_name ||= super.sub(/_job\z/i, "")
+      end
 
-        def application_job_file_name
-          @application_job_file_name ||= if mountable_engine?
-            "app/jobs/#{namespaced_path}/application_job.rb"
-          else
-            "app/jobs/application_job.rb"
-          end
+      def application_job_file_name
+        @application_job_file_name ||= if mountable_engine?
+          "app/jobs/#{namespaced_path}/application_job.rb"
+        else
+          "app/jobs/application_job.rb"
         end
+      end
     end
   end
 end

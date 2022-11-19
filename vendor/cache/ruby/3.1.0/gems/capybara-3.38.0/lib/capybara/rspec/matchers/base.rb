@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/rspec/matchers/compound'
 require 'capybara/rspec/matchers/count_sugar'
 require 'capybara/rspec/matchers/spatial_sugar'

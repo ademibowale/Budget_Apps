@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'forwardable'
 
 module Capybara
@@ -53,16 +51,16 @@ module Capybara
     def [](*args)
       idx, length = args
       max_idx = case idx
-      when Integer
-        if idx.negative?
-          nil
-        else
-          length.nil? ? idx : idx + length - 1
-        end
-      when Range
-        # idx.max is broken with beginless ranges
-        # idx.end && idx.max # endless range will have end == nil
-        max = idx.end
+                when Integer
+                  if idx.negative?
+                    nil
+                  else
+                    length.nil? ? idx : idx + length - 1
+                  end
+                when Range
+                  # idx.max is broken with beginless ranges
+                  # idx.end && idx.max # endless range will have end == nil
+                  max = idx.end
         max = nil if max&.negative?
         max -= 1 if max && idx.exclude_end?
         max

@@ -9,19 +9,19 @@ include Rake::DSL if defined?(::Rake::DSL)
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.ruby_opts  = "-I lib:spec -w"
-  spec.pattern    = 'spec/**/*_spec.rb'
+  spec.ruby_opts = "-I lib:spec -w"
+  spec.pattern = 'spec/**/*_spec.rb'
 end
 
 desc 'Run specs for rcov'
 RSpec::Core::RakeTask.new(:rcov) do |spec|
   spec.ruby_opts = "-I lib:spec"
-  spec.pattern   = 'spec/**/*_spec.rb'
-  spec.rcov      = true
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
   spec.rcov_opts = %w[--exclude spec,ruby-debug,/Library/Ruby,.gem --include lib/childprocess]
 end
 
-task :default => :spec
+task default: :spec
 
 begin
   require 'yard'
@@ -38,11 +38,11 @@ task :clean do
 end
 
 desc 'Create jar to bundle in selenium-webdriver'
-task :jar => [:clean, :build] do
+task jar: [:clean, :build] do
   tmpdir = Dir.mktmpdir("childprocess-jar")
   gem_to_package = Dir['pkg/*.gem'].first
   gem_name = File.basename(gem_to_package, ".gem")
-  p :gem_to_package => gem_to_package, :gem_name => gem_name
+  p gem_to_package: gem_to_package, gem_name: gem_name
 
   sh "gem install -i #{tmpdir} #{gem_to_package} --ignore-dependencies --no-rdoc --no-ri"
   sh "jar cf childprocess.jar -C #{tmpdir}/gems/#{gem_name}/lib ."
@@ -55,7 +55,7 @@ task :env do
 end
 
 desc 'Calculate size of posix_spawn structs for the current platform'
-task :generate => :env do
+task generate: :env do
   require 'childprocess/tools/generator'
   ChildProcess::Tools::Generator.generate
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/security_utils"
 require "active_support/messages/rotator"
 
@@ -44,8 +42,8 @@ module ActiveSupport
     end
 
     private
-      def build_rotation(previous_value, _options)
-        self.class.new(previous_value)
-      end
+    def build_rotation(previous_value, _options)
+      self.class.new(previous_value)
+    end
   end
 end

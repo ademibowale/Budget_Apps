@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Capybara::RackTest::Form < Capybara::RackTest::Node
   # This only needs to inherit from Rack::Test::UploadedFile because Rack::Test checks for
   # the class specifically when determining whether to construct the request as multipart.
@@ -11,11 +9,21 @@ class Capybara::RackTest::Form < Capybara::RackTest::Node
       @empty_file.close
     end
 
-    def original_filename; ''; end
-    def content_type; 'application/octet-stream'; end
-    def path; @empty_file.path; end
-    def size; 0; end
-    def read; ''; end
+    def original_filename
+      ''
+    end
+    def content_type
+      'application/octet-stream'
+    end
+    def path
+      @empty_file.path
+    end
+    def size
+      0
+    end
+    def read
+      ''
+    end
     def append_to(_); end
     def set_encoding(_); end # rubocop:disable Naming/AccessorMethodName
   end
@@ -95,12 +103,12 @@ private
     return if name.empty?
 
     value = case field['type']
-    when 'radio', 'checkbox'
-      return unless field['checked']
+            when 'radio', 'checkbox'
+              return unless field['checked']
 
       Capybara::RackTest::Node.new(driver, field).value.to_s
-    when 'file'
-      return if value.empty? && params.keys.include?(name) && Rack::Test::VERSION.to_f >= 2.0 # rubocop:disable Performance/InefficientHashSearch
+            when 'file'
+              return if value.empty? && params.keys.include?(name) && Rack::Test::VERSION.to_f >= 2.0 # rubocop:disable Performance/InefficientHashSearch
 
       if multipart?
         file_to_upload(value)
@@ -108,7 +116,7 @@ private
         File.basename(value)
       end
     else
-      value
+              value
     end
     # merge_param!(params, name, value)
     params[name] = value

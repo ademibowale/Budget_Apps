@@ -509,7 +509,7 @@ module Concurrent
           promise.wait
           promise
         end
-        unless completed.empty? || completed.send(method){|promise| promise.fulfilled? }
+        unless completed.empty? || completed.send(method) { |promise| promise.fulfilled? }
           raise PromiseExecutionError
         end
       end
@@ -555,7 +555,7 @@ module Concurrent
       end
 
       children_to_notify.each { |child| notify_child(child) }
-      observers.notify_and_delete_observers{ [Time.now, self.value, reason] }
+      observers.notify_and_delete_observers { [Time.now, self.value, reason] }
     end
 
     # @!visibility private

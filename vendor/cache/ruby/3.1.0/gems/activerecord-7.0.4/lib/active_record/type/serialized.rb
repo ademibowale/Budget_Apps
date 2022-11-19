@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Type
     class Serialized < DelegateClass(ActiveModel::Type::Value) # :nodoc:
@@ -56,19 +54,19 @@ module ActiveRecord
       end
 
       private
-        def default_value?(value)
-          value == coder.load(nil)
-        end
+      def default_value?(value)
+        value == coder.load(nil)
+      end
 
-        def encoded(value)
-          return if default_value?(value)
-          payload = coder.dump(value)
-          if payload && binary? && payload.encoding != Encoding::BINARY
-            payload = payload.dup if payload.frozen?
-            payload.force_encoding(Encoding::BINARY)
-          end
-          payload
+      def encoded(value)
+        return if default_value?(value)
+        payload = coder.dump(value)
+        if payload && binary? && payload.encoding != Encoding::BINARY
+          payload = payload.dup if payload.frozen?
+          payload.force_encoding(Encoding::BINARY)
         end
+        payload
+      end
     end
   end
 end

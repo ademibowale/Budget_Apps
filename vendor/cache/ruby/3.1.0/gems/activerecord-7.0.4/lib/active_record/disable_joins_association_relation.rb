@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class DisableJoinsAssociationRelation < Relation # :nodoc:
     attr_reader :ids, :key

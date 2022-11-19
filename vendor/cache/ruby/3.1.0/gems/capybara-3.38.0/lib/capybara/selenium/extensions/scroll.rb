@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Capybara
   module Selenium
     module Scroll
@@ -31,14 +29,14 @@ module Capybara
 
       def scroll_element_to_location(element, location)
         scroll_opts = case location
-        when :top
-          'true'
-        when :bottom
-          'false'
-        when :center
-          "{behavior: 'instant', block: 'center'}"
+                      when :top
+                        'true'
+                      when :bottom
+                        'false'
+                      when :center
+                        "{behavior: 'instant', block: 'center'}"
         else
-          raise ArgumentError, "Invalid scroll_to location: #{location}"
+                        raise ArgumentError, "Invalid scroll_to location: #{location}"
         end
         driver.execute_script <<~JS, element
           arguments[0].scrollIntoView(#{scroll_opts})

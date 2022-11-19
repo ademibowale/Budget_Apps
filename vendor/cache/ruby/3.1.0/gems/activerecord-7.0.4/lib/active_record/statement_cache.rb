@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   # Statement cache is used to cache a single statement in order to avoid creating the AST again.
   # Initializing the cache is done by passing the statement in the create block:
@@ -107,7 +105,9 @@ module ActiveRecord
     end
 
     class Params # :nodoc:
-      def bind; Substitute.new; end
+      def bind
+        Substitute.new
+      end
     end
 
     class BindMap # :nodoc:
@@ -159,6 +159,6 @@ module ActiveRecord
     end
 
     private
-      attr_reader :query_builder, :bind_map, :klass
+    attr_reader :query_builder, :bind_map, :klass
   end
 end

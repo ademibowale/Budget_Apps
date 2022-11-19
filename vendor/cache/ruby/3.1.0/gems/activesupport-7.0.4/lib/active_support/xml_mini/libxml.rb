@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "libxml"
 require "active_support/core_ext/object/blank"
 require "stringio"
@@ -46,8 +44,8 @@ module LibXML # :nodoc:
         # Insert node hash into parent hash correctly.
         case hash[name]
         when Array then hash[name] << node_hash
-        when Hash  then hash[name] = [hash[name], node_hash]
-        when nil   then hash[name] = node_hash
+        when Hash then hash[name] = [hash[name], node_hash]
+        when nil then hash[name] = node_hash
         end
 
         # Handle child elements

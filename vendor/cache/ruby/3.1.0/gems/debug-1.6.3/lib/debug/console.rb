@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 module DEBUGGER__
   class Console
     begin
@@ -30,7 +29,7 @@ module DEBUGGER__
         prepend m
       end if SIGWINCH_SUPPORTED
 
-      def parse_input buff, commands
+      def parse_input(buff, commands)
         c, rest = get_command buff
         case
         when commands.keys.include?(c)
@@ -42,7 +41,7 @@ module DEBUGGER__
         end
       end
 
-      def readline_setup prompt
+      def readline_setup(prompt)
         load_history_if_not_loaded
         commands = DEBUGGER__.commands
 
@@ -58,19 +57,19 @@ module DEBUGGER__
           when nil, :command
             [prompt, prompt]
           when :ruby
-            [prompt.sub('rdbg'){colorize('ruby', [:RED])}] * 2
+            [prompt.sub('rdbg') { colorize('ruby', [:RED]) }] * 2
           end
         end
 
         Reline.completion_proc = -> given do
           buff = Reline.line_buffer
-          Reline.completion_append_character= ' '
+          Reline.completion_append_character = ' '
 
           if /\s/ =~ buff # second parameters
             given = File.expand_path(given + 'a').sub(/a\z/, '')
             files = Dir.glob(given + '*')
             if files.size == 1 && File.directory?(files.first)
-              Reline.completion_append_character= '/'
+              Reline.completion_append_character = '/'
             end
             files
           else
@@ -108,18 +107,18 @@ module DEBUGGER__
         Reline.prompt_proc = prev_prompt_proc
       end
 
-      private def get_command line
+      private def get_command(line)
         case line.chomp
         when /\A(\s*[a-z]+)(\s.*)?\z$/
-          return $1.strip, $2
+          [$1.strip, $2]
         else
           line.strip
         end
       end
 
-      def readline prompt
+      def readline(prompt)
         readline_setup prompt do
-          Reline.readmultiline(prompt, true){ true }
+          Reline.readmultiline(prompt, true) { true }
         end
       end
 
@@ -135,15 +134,15 @@ module DEBUGGER__
           load_history_if_not_loaded
           commands = DEBUGGER__.commands
 
-          Readline.completion_proc = proc{|given|
+          Readline.completion_proc = proc { |given|
             buff = Readline.line_buffer
-            Readline.completion_append_character= ' '
+            Readline.completion_append_character = ' '
 
             if /\s/ =~ buff # second parameters
               given = File.expand_path(given + 'a').sub(/a\z/, '')
               files = Dir.glob(given + '*')
               if files.size == 1 && File.directory?(files.first)
-                Readline.completion_append_character= '/'
+                Readline.completion_append_character = '/'
               end
               files
             else
@@ -152,7 +151,7 @@ module DEBUGGER__
           }
         end
 
-        def readline prompt
+        def readline(prompt)
           readline_setup
           Readline.readline(prompt, true)
         end
@@ -162,7 +161,7 @@ module DEBUGGER__
         end
 
       rescue LoadError
-        def readline prompt
+        def readline(prompt)
           print prompt
           gets
         end
@@ -187,7 +186,7 @@ module DEBUGGER__
 
     def read_history_file
       if history && File.exist?(path = history_file)
-        f = (['', 'DAI-', 'CHU-', 'SHO-'].map{|e| e+'KICHI'}+['KYO']).sample
+        f = (['', 'DAI-', 'CHU-', 'SHO-'].map { |e| e + 'KICHI' } + ['KYO']).sample
         ["#{FH}#{f}".dup] + File.readlines(path)
       else
         []
@@ -212,8 +211,8 @@ module DEBUGGER__
 
         if !added_records.empty? && !path.empty?
           orig_records = read_history_file
-          open(history_file, 'w'){|f|
-            (orig_records + added_records).last(max).each{|line|
+          open(history_file, 'w') { |f|
+            (orig_records + added_records).last(max).each { |line|
               if !line.start_with?(FH) && !line.strip.empty?
                 f.puts line.strip
               end
@@ -224,11 +223,10 @@ module DEBUGGER__
     end
 
     def load_history
-      read_history_file.count{|line|
+      read_history_file.count { |line|
         line.strip!
         history << line unless line.empty?
       }
     end
   end # class Console
 end
-

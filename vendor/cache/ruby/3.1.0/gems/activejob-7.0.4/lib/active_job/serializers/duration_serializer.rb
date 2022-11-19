@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveJob
   module Serializers
     class DurationSerializer < ObjectSerializer # :nodoc:
@@ -15,9 +13,9 @@ module ActiveJob
       end
 
       private
-        def klass
-          ActiveSupport::Duration
-        end
+      def klass
+        ActiveSupport::Duration
+      end
     end
   end
 end

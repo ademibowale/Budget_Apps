@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   class TableMetadata # :nodoc:
     delegate :join_primary_key, :join_foreign_key, :join_foreign_type, to: :reflection
@@ -76,6 +74,6 @@ module ActiveRecord
     attr_reader :arel_table
 
     private
-      attr_reader :klass, :reflection
+    attr_reader :klass, :reflection
   end
 end

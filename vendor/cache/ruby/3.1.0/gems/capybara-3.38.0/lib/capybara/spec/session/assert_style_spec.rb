@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Capybara::SpecHelper.spec '#assert_matches_style', requires: [:css] do
   it 'should not raise if the elements style contains the given properties' do
     @session.visit('/with_html')

@@ -12,8 +12,8 @@ if Concurrent.on_jruby?
       java_import 'java.lang.Runnable'
 
       FALLBACK_POLICY_CLASSES = {
-        abort:       java.util.concurrent.ThreadPoolExecutor::AbortPolicy,
-        discard:     java.util.concurrent.ThreadPoolExecutor::DiscardPolicy,
+        abort: java.util.concurrent.ThreadPoolExecutor::AbortPolicy,
+        discard: java.util.concurrent.ThreadPoolExecutor::DiscardPolicy,
         caller_runs: java.util.concurrent.ThreadPoolExecutor::CallerRunsPolicy
       }.freeze
       private_constant :FALLBACK_POLICY_CLASSES
@@ -93,7 +93,7 @@ if Concurrent.on_jruby?
       def newThread(runnable)
         thread = java.util.concurrent.Executors.defaultThreadFactory().newThread(runnable)
         thread.setDaemon(@daemonize)
-        return thread
+        thread
       end
     end
 

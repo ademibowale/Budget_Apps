@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_view/template/resolver"
 
 module ActionView # :nodoc:
@@ -23,15 +21,15 @@ module ActionView # :nodoc:
     end
 
     private
-      def template_glob(glob)
-        @hash.keys.filter_map do |path|
-          "/#{path}" if File.fnmatch(glob, path)
-        end
+    def template_glob(glob)
+      @hash.keys.filter_map do |path|
+        "/#{path}" if File.fnmatch(glob, path)
       end
+    end
 
-      def source_for_template(template)
-        @hash[template.from(1)]
-      end
+    def source_for_template(template)
+      @hash[template.from(1)]
+    end
   end
 
   class NullResolver < Resolver

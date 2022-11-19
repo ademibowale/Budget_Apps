@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'capybara/selenium/extensions/html5_drag'
 require 'capybara/selenium/extensions/file_input_click_emulation'
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveModel
   module Type
     class Registry # :nodoc:
@@ -32,7 +30,7 @@ module ActiveModel
       ruby2_keywords(:lookup)
 
       private
-        attr_reader :registrations
+      attr_reader :registrations
     end
   end
 end

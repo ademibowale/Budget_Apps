@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rails"
 require "action_controller/railtie"
 require "active_job/railtie"
@@ -84,13 +82,13 @@ module ActiveStorage
 
     initializer "active_storage.configs" do
       config.after_initialize do |app|
-        ActiveStorage.logger            = app.config.active_storage.logger || Rails.logger
+        ActiveStorage.logger = app.config.active_storage.logger || Rails.logger
         ActiveStorage.variant_processor = app.config.active_storage.variant_processor || :mini_magick
-        ActiveStorage.previewers        = app.config.active_storage.previewers || []
-        ActiveStorage.analyzers         = app.config.active_storage.analyzers || []
-        ActiveStorage.paths             = app.config.active_storage.paths || {}
-        ActiveStorage.routes_prefix     = app.config.active_storage.routes_prefix || "/rails/active_storage"
-        ActiveStorage.draw_routes       = app.config.active_storage.draw_routes != false
+        ActiveStorage.previewers = app.config.active_storage.previewers || []
+        ActiveStorage.analyzers = app.config.active_storage.analyzers || []
+        ActiveStorage.paths = app.config.active_storage.paths || {}
+        ActiveStorage.routes_prefix = app.config.active_storage.routes_prefix || "/rails/active_storage"
+        ActiveStorage.draw_routes = app.config.active_storage.draw_routes != false
         ActiveStorage.resolve_model_to_route = app.config.active_storage.resolve_model_to_route || :rails_storage_redirect
 
         ActiveStorage.supported_image_processing_methods += app.config.active_storage.supported_image_processing_methods || []

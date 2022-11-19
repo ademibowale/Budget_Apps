@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/module/redefine_method"
 require "active_support/core_ext/time/calculations"
 require "concurrent/map"
@@ -56,13 +54,13 @@ module ActiveSupport
       end
 
       private
-        # Restores the original object.method described by the Stub
-        def unstub_object(stub)
-          singleton_class = stub.object.singleton_class
-          singleton_class.silence_redefinition_of_method stub.method_name
-          singleton_class.alias_method stub.method_name, stub.original_method
-          singleton_class.undef_method stub.original_method
-        end
+      # Restores the original object.method described by the Stub
+      def unstub_object(stub)
+        singleton_class = stub.object.singleton_class
+        singleton_class.silence_redefinition_of_method stub.method_name
+        singleton_class.alias_method stub.method_name, stub.original_method
+        singleton_class.undef_method stub.original_method
+      end
     end
 
     # Contains helpers that help you test passage of time.
@@ -236,11 +234,11 @@ module ActiveSupport
       end
 
       private
-        def simple_stubs
-          @simple_stubs ||= SimpleStubs.new
-        end
+      def simple_stubs
+        @simple_stubs ||= SimpleStubs.new
+      end
 
-        attr_accessor :in_block
+      attr_accessor :in_block
     end
   end
 end

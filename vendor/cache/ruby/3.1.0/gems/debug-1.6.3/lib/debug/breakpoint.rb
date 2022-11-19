@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'color'
 
 module DEBUGGER__
@@ -8,7 +6,7 @@ module DEBUGGER__
 
     attr_reader :key
 
-    def initialize cond, command, path, do_enable: true
+    def initialize(cond, command, path, do_enable: true)
       @deleted = false
 
       @cond = cond
@@ -19,7 +17,7 @@ module DEBUGGER__
       enable if do_enable
     end
 
-    def safe_eval b, expr
+    def safe_eval(b, expr)
       b.eval(expr)
     rescue Exception => e
       puts "[EVAL ERROR]"
@@ -71,9 +69,9 @@ module DEBUGGER__
 
     def to_s
       s = ''.dup
-      s << " if: #{@cond}"        if defined?(@cond) && @cond
+      s << " if: #{@cond}" if defined?(@cond) && @cond
       s << " pre: #{@command[1]}" if defined?(@command) && @command && @command[1]
-      s << " do: #{@command[2]}"  if defined?(@command) && @command && @command[2]
+      s << " do: #{@command[2]}" if defined?(@command) && @command && @command[2]
       s
     end
 
@@ -105,11 +103,11 @@ module DEBUGGER__
 
   if RUBY_VERSION.to_f <= 2.7
     # workaround for https://bugs.ruby-lang.org/issues/17302
-    TracePoint.new(:line){}.enable{}
+    TracePoint.new(:line) {}.enable {}
   end
 
   class ISeqBreakpoint < Breakpoint
-    def initialize iseq, events, oneshot: false
+    def initialize(iseq, events, oneshot: false)
       @events = events
       @iseq = iseq
       @oneshot = oneshot
@@ -133,7 +131,7 @@ module DEBUGGER__
   class LineBreakpoint < Breakpoint
     attr_reader :path, :line, :iseq, :cond, :oneshot, :hook_call, :command
 
-    def self.copy bp, root_iseq
+    def self.copy(bp, root_iseq)
       nbp = LineBreakpoint.new bp.path, bp.line,
                                cond: bp.cond, oneshot: bp.oneshot, hook_call: bp.hook_call,
                                command: bp.command, skip_activate: true
@@ -141,7 +139,7 @@ module DEBUGGER__
       nbp
     end
 
-    def initialize path, line, cond: nil, oneshot: false, hook_call: true, command: nil, skip_activate: false
+    def initialize(path, line, cond: nil, oneshot: false, hook_call: true, command: nil, skip_activate: false)
       @line = line
       @oneshot = oneshot
       @hook_call = hook_call
@@ -184,7 +182,7 @@ module DEBUGGER__
       raise
     end
 
-    def activate iseq, event, line
+    def activate(iseq, event, line)
       @iseq = iseq
       @type = event
       @line = line
@@ -200,7 +198,7 @@ module DEBUGGER__
       end
     end
 
-    def activate_exact iseq, events, line
+    def activate_exact(iseq, events, line)
       case
       when events.include?(:RUBY_EVENT_CALL)
         # "def foo" line set bp on the beginning of method foo
@@ -224,7 +222,7 @@ module DEBUGGER__
 
     NearestISeq = Struct.new(:iseq, :line, :events)
 
-    def iterate_iseq root_iseq
+    def iterate_iseq(root_iseq)
       if root_iseq
         is = [root_iseq]
         while iseq = is.pop
@@ -244,14 +242,14 @@ module DEBUGGER__
       end
     end
 
-    def try_activate root_iseq = nil
+    def try_activate(root_iseq = nil)
       nearest = nil # NearestISeq
       iterate_iseq root_iseq do |iseq|
         iseq.traceable_lines_norec(line_events = {})
         lines = line_events.keys.sort
 
         if !lines.empty? && lines.last >= line
-          nline = lines.bsearch{|l| line <= l}
+          nline = lines.bsearch { |l| line <= l }
           events = line_events[nline]
 
           next if events == [:RUBY_EVENT_B_CALL]
@@ -298,7 +296,7 @@ module DEBUGGER__
   class CatchBreakpoint < Breakpoint
     attr_reader :last_exc
 
-    def initialize pat, cond: nil, command: nil, path: nil
+    def initialize(pat, cond: nil, command: nil, path: nil)
       @pat = pat.freeze
       @key = [:catch, @pat].freeze
       @last_exc = nil
@@ -307,7 +305,7 @@ module DEBUGGER__
     end
 
     def setup
-      @tp = TracePoint.new(:raise){|tp|
+      @tp = TracePoint.new(:raise) { |tp|
         exc = tp.raised_exception
         next if SystemExit === exc
         next if skip_path?(tp.path)
@@ -315,7 +313,7 @@ module DEBUGGER__
         next if !safe_eval(tp.binding, @cond) if @cond
         should_suspend = false
 
-        exc.class.ancestors.each{|cls|
+        exc.class.ancestors.each { |cls|
           if @pat === cls.name
             should_suspend = true
             @last_exc = exc
@@ -336,14 +334,14 @@ module DEBUGGER__
   end
 
   class CheckBreakpoint < Breakpoint
-    def initialize cond:, command: nil, path: nil
+    def initialize(cond:, command: nil, path: nil)
       @key = [:check, cond].freeze
 
       super(cond, command, path)
     end
 
     def setup
-      @tp = TracePoint.new(:line){|tp|
+      @tp = TracePoint.new(:line) { |tp|
         next if SESSION.in_subsession? # TODO: Ractor support
         next if ThreadClient.current.management?
         next if skip_path?(tp.path)
@@ -354,7 +352,7 @@ module DEBUGGER__
       }
     end
 
-    private def need_suspend? cond_result
+    private def need_suspend?(cond_result)
       map = ThreadClient.current.check_bp_fulfillment_map
       if cond_result
         if map[self]
@@ -375,7 +373,7 @@ module DEBUGGER__
   end
 
   class WatchIVarBreakpoint < Breakpoint
-    def initialize ivar, object, current, cond: nil, command: nil, path: nil
+    def initialize(ivar, object, current, cond: nil, command: nil, path: nil)
       @ivar = ivar.to_sym
       @object = object
       @key = [:watch, object.object_id, @ivar].freeze
@@ -404,7 +402,7 @@ module DEBUGGER__
     end
 
     def setup
-      @tp = TracePoint.new(:line, :return, :b_return){|tp|
+      @tp = TracePoint.new(:line, :return, :b_return) { |tp|
         watch_eval(tp)
       }
     end
@@ -423,7 +421,7 @@ module DEBUGGER__
   class MethodBreakpoint < Breakpoint
     attr_reader :sig_method_name, :method, :klass
 
-    def initialize b, klass_name, op, method_name, cond: nil, command: nil, path: nil
+    def initialize(b, klass_name, op, method_name, cond: nil, command: nil, path: nil)
       @sig_klass_name = klass_name
       @sig_op = op
       @sig_method_name = method_name
@@ -439,7 +437,7 @@ module DEBUGGER__
     end
 
     def setup
-      @tp = TracePoint.new(:call){|tp|
+      @tp = TracePoint.new(:call) { |tp|
         next if !safe_eval(tp.binding, @cond) if @cond
         next if @cond_class && !tp.self.kind_of?(@cond_class)
 
@@ -473,18 +471,18 @@ module DEBUGGER__
     end
 
     if RUBY_VERSION.to_f <= 2.6
-      def override klass
+      def override(klass)
         sig_method_name = @sig_method_name
-        klass.prepend Module.new{
+        klass.prepend Module.new {
           define_method(sig_method_name) do |*args, &block|
             super(*args, &block)
           end
         }
       end
     else
-      def override klass
+      def override(klass)
         sig_method_name = @sig_method_name
-        klass.prepend Module.new{
+        klass.prepend Module.new {
           define_method(sig_method_name) do |*args, **kw, &block|
             super(*args, **kw, &block)
           end
@@ -492,7 +490,7 @@ module DEBUGGER__
       end
     end
 
-    def try_enable added: false
+    def try_enable(added: false)
       eval_class_name
       search_method
 

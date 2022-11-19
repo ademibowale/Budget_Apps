@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/string/inflections"
 
 module ActiveSupport
@@ -105,81 +103,81 @@ module ActiveSupport
         end
 
         private
-          def read_serialized_entry(key, raw: false, **options)
-            if cache = local_cache
-              hit = true
-              entry = cache.fetch_entry(key) do
-                hit = false
-                super
-              end
-              options[:event][:store] = cache.class.name if hit && options[:event]
-              entry
-            else
+        def read_serialized_entry(key, raw: false, **options)
+          if cache = local_cache
+            hit = true
+            entry = cache.fetch_entry(key) do
+              hit = false
               super
             end
-          end
-
-          def read_multi_entries(keys, **options)
-            return super unless local_cache
-
-            local_entries = local_cache.read_multi_entries(keys)
-            local_entries.transform_values! do |payload|
-              deserialize_entry(payload).value
-            end
-            missed_keys = keys - local_entries.keys
-
-            if missed_keys.any?
-              local_entries.merge!(super(missed_keys, **options))
-            else
-              local_entries
-            end
-          end
-
-          def write_serialized_entry(key, payload, **)
-            if return_value = super
-              local_cache.write_entry(key, payload) if local_cache
-            else
-              local_cache.delete_entry(key) if local_cache
-            end
-            return_value
-          end
-
-          def delete_entry(key, **)
-            local_cache.delete_entry(key) if local_cache
+            options[:event][:store] = cache.class.name if hit && options[:event]
+            entry
+          else
             super
           end
+        end
 
-          def write_cache_value(name, value, **options)
-            name = normalize_key(name, options)
-            cache = local_cache
-            if value
-              cache.write_entry(name, serialize_entry(new_entry(value, **options), **options))
-            else
-              cache.delete_entry(name)
-            end
-          end
+        def read_multi_entries(keys, **options)
+          return super unless local_cache
 
-          def local_cache_key
-            @local_cache_key ||= "#{self.class.name.underscore}_local_cache_#{object_id}".gsub(/[\/-]/, "_").to_sym
+          local_entries = local_cache.read_multi_entries(keys)
+          local_entries.transform_values! do |payload|
+            deserialize_entry(payload).value
           end
+          missed_keys = keys - local_entries.keys
 
-          def local_cache
-            LocalCacheRegistry.cache_for(local_cache_key)
+          if missed_keys.any?
+            local_entries.merge!(super(missed_keys, **options))
+          else
+            local_entries
           end
+        end
 
-          def bypass_local_cache(&block)
-            use_temporary_local_cache(nil, &block)
+        def write_serialized_entry(key, payload, **)
+          if return_value = super
+            local_cache.write_entry(key, payload) if local_cache
+          else
+            local_cache.delete_entry(key) if local_cache
           end
+          return_value
+        end
 
-          def use_temporary_local_cache(temporary_cache)
-            save_cache = LocalCacheRegistry.cache_for(local_cache_key)
-            begin
-              LocalCacheRegistry.set_cache_for(local_cache_key, temporary_cache)
-              yield
-            ensure
-              LocalCacheRegistry.set_cache_for(local_cache_key, save_cache)
-            end
+        def delete_entry(key, **)
+          local_cache.delete_entry(key) if local_cache
+          super
+        end
+
+        def write_cache_value(name, value, **options)
+          name = normalize_key(name, options)
+          cache = local_cache
+          if value
+            cache.write_entry(name, serialize_entry(new_entry(value, **options), **options))
+          else
+            cache.delete_entry(name)
           end
+        end
+
+        def local_cache_key
+          @local_cache_key ||= "#{self.class.name.underscore}_local_cache_#{object_id}".gsub(/[\/-]/, "_").to_sym
+        end
+
+        def local_cache
+          LocalCacheRegistry.cache_for(local_cache_key)
+        end
+
+        def bypass_local_cache(&block)
+          use_temporary_local_cache(nil, &block)
+        end
+
+        def use_temporary_local_cache(temporary_cache)
+          save_cache = LocalCacheRegistry.cache_for(local_cache_key)
+          begin
+            LocalCacheRegistry.set_cache_for(local_cache_key, temporary_cache)
+            yield
+          ensure
+            LocalCacheRegistry.set_cache_for(local_cache_key, save_cache)
+          end
+        end
       end
     end
   end

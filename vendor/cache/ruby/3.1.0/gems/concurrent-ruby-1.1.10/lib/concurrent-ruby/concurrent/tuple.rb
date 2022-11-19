@@ -80,7 +80,7 @@ module Concurrent
     #
     # @yieldparam [Object] ref the `Concurrent::AtomicReference` object at the current index
     def each
-      @tuple.each {|ref| yield ref.get}
+      @tuple.each { |ref| yield ref.get }
     end
   end
 end

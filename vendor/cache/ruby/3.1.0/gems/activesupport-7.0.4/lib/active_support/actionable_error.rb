@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveSupport
   # Actionable errors lets you define actions to resolve an error.
   #

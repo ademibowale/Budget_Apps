@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # This is the concern mixed in Active Record models to make them encryptable. It adds the +encrypts+
@@ -45,7 +43,7 @@ module ActiveRecord
         def encrypts(*names, key_provider: nil, key: nil, deterministic: false, downcase: false, ignore_case: false, previous: [], **context_properties)
           self.encrypted_attributes ||= Set.new # not using :default because the instance would be shared across classes
           scheme = scheme_for key_provider: key_provider, key: key, deterministic: deterministic, downcase: downcase, \
-              ignore_case: ignore_case, previous: previous, **context_properties
+                              ignore_case: ignore_case, previous: previous, **context_properties
 
           names.each do |name|
             encrypt_attribute name, scheme
@@ -158,49 +156,49 @@ module ActiveRecord
       end
 
       private
-        ORIGINAL_ATTRIBUTE_PREFIX = "original_"
+      ORIGINAL_ATTRIBUTE_PREFIX = "original_"
 
-        def encrypt_attributes
-          validate_encryption_allowed
+      def encrypt_attributes
+        validate_encryption_allowed
 
-          update_columns build_encrypt_attribute_assignments
+        update_columns build_encrypt_attribute_assignments
+      end
+
+      def decrypt_attributes
+        validate_encryption_allowed
+
+        decrypt_attribute_assignments = build_decrypt_attribute_assignments
+        ActiveRecord::Encryption.without_encryption { update_columns decrypt_attribute_assignments }
+      end
+
+      def validate_encryption_allowed
+        raise ActiveRecord::Encryption::Errors::Configuration, "can't be modified because it is encrypted" if ActiveRecord::Encryption.context.frozen_encryption?
+      end
+
+      def has_encrypted_attributes?
+        self.class.encrypted_attributes.present?
+      end
+
+      def build_encrypt_attribute_assignments
+        Array(self.class.encrypted_attributes).index_with do |attribute_name|
+          self[attribute_name]
         end
+      end
 
-        def decrypt_attributes
-          validate_encryption_allowed
+      def build_decrypt_attribute_assignments
+        Array(self.class.encrypted_attributes).collect do |attribute_name|
+          type = type_for_attribute(attribute_name)
+          encrypted_value = ciphertext_for(attribute_name)
+          new_value = type.deserialize(encrypted_value)
+          [attribute_name, new_value]
+        end.to_h
+      end
 
-          decrypt_attribute_assignments = build_decrypt_attribute_assignments
-          ActiveRecord::Encryption.without_encryption { update_columns decrypt_attribute_assignments }
+      def cant_modify_encrypted_attributes_when_frozen
+        self.class&.encrypted_attributes.each do |attribute|
+          errors.add(attribute.to_sym, "can't be modified because it is encrypted") if changed_attributes.include?(attribute)
         end
-
-        def validate_encryption_allowed
-          raise ActiveRecord::Encryption::Errors::Configuration, "can't be modified because it is encrypted" if ActiveRecord::Encryption.context.frozen_encryption?
-        end
-
-        def has_encrypted_attributes?
-          self.class.encrypted_attributes.present?
-        end
-
-        def build_encrypt_attribute_assignments
-          Array(self.class.encrypted_attributes).index_with do |attribute_name|
-            self[attribute_name]
-          end
-        end
-
-        def build_decrypt_attribute_assignments
-          Array(self.class.encrypted_attributes).collect do |attribute_name|
-            type = type_for_attribute(attribute_name)
-            encrypted_value = ciphertext_for(attribute_name)
-            new_value = type.deserialize(encrypted_value)
-            [attribute_name, new_value]
-          end.to_h
-        end
-
-        def cant_modify_encrypted_attributes_when_frozen
-          self.class&.encrypted_attributes.each do |attribute|
-            errors.add(attribute.to_sym, "can't be modified because it is encrypted") if changed_attributes.include?(attribute)
-          end
-        end
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "action_dispatch/journey/visitors"
 
 module ActionDispatch
@@ -39,29 +37,29 @@ module ActionDispatch
       end
 
       private
-        attr_reader :symbols, :stars
+      attr_reader :symbols, :stars
 
-        def visit_tree(formatted)
-          tree.each do |node|
-            if node.symbol?
-              path_params << node.to_sym
-              names << node.name
-              symbols << node
-            elsif node.star?
-              stars << node
+      def visit_tree(formatted)
+        tree.each do |node|
+          if node.symbol?
+            path_params << node.to_sym
+            names << node.name
+            symbols << node
+          elsif node.star?
+            stars << node
 
-              if formatted != false
-                # Add a constraint for wildcard route to make it non-greedy and
-                # match the optional format part of the route by default.
-                wildcard_options[node.name.to_sym] ||= /.+?/m
-              end
-            end
-
-            if node.terminal?
-              terminals << node
+            if formatted != false
+              # Add a constraint for wildcard route to make it non-greedy and
+              # match the optional format part of the route by default.
+              wildcard_options[node.name.to_sym] ||= /.+?/m
             end
           end
+
+          if node.terminal?
+            terminals << node
+          end
         end
+      end
     end
 
     module Nodes # :nodoc:
@@ -99,22 +97,40 @@ module ActionDispatch
           raise NotImplementedError
         end
 
-        def symbol?; false; end
-        def literal?; false; end
-        def terminal?; false; end
-        def star?; false; end
-        def cat?; false; end
-        def group?; false; end
+        def symbol?
+          false
+        end
+        def literal?
+          false
+        end
+        def terminal?
+          false
+        end
+        def star?
+          false
+        end
+        def cat?
+          false
+        end
+        def group?
+          false
+        end
       end
 
       class Terminal < Node # :nodoc:
         alias :symbol :left
-        def terminal?; true; end
+        def terminal?
+          true
+        end
       end
 
       class Literal < Terminal # :nodoc:
-        def literal?; true; end
-        def type; :LITERAL; end
+        def literal?
+          true
+        end
+        def type
+          :LITERAL
+        end
       end
 
       class Dummy < Literal # :nodoc:
@@ -122,15 +138,21 @@ module ActionDispatch
           super
         end
 
-        def literal?; false; end
+        def literal?
+          false
+        end
       end
 
       class Slash < Terminal # :nodoc:
-        def type; :SLASH; end
+        def type
+          :SLASH
+        end
       end
 
       class Dot < Terminal # :nodoc:
-        def type; :DOT; end
+        def type
+          :DOT
+        end
       end
 
       class Symbol < Terminal # :nodoc:
@@ -146,17 +168,27 @@ module ActionDispatch
           @name = -left.tr("*:", "")
         end
 
-        def type; :SYMBOL; end
-        def symbol?; true; end
+        def type
+          :SYMBOL
+        end
+        def symbol?
+          true
+        end
       end
 
       class Unary < Node # :nodoc:
-        def children; [left] end
+        def children
+          [left]
+        end
       end
 
       class Group < Unary # :nodoc:
-        def type; :GROUP; end
-        def group?; true; end
+        def type
+          :GROUP
+        end
+        def group?
+          true
+        end
       end
 
       class Star < Unary # :nodoc:
@@ -169,8 +201,12 @@ module ActionDispatch
           @regexp = /.+?/m
         end
 
-        def star?; true; end
-        def type; :STAR; end
+        def star?
+          true
+        end
+        def type
+          :STAR
+        end
 
         def name
           left.name.tr "*:", ""
@@ -185,12 +221,18 @@ module ActionDispatch
           @right = right
         end
 
-        def children; [left, right] end
+        def children
+          [left, right]
+        end
       end
 
       class Cat < Binary # :nodoc:
-        def cat?; true; end
-        def type; :CAT; end
+        def cat?
+          true
+        end
+        def type
+          :CAT
+        end
       end
 
       class Or < Node # :nodoc:
@@ -200,7 +242,9 @@ module ActionDispatch
           @children = children
         end
 
-        def type; :OR; end
+        def type
+          :OR
+        end
       end
     end
   end

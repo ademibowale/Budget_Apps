@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_record/associations"
 
 module ActiveRecord::Associations::Builder # :nodoc:
@@ -12,7 +10,7 @@ module ActiveRecord::Associations::Builder # :nodoc:
 
     def self.define_callbacks(model, reflection)
       super
-      name    = reflection.name
+      name = reflection.name
       options = reflection.options
       CALLBACKS.each { |callback_name|
         define_callback(model, callback_name, name, options)

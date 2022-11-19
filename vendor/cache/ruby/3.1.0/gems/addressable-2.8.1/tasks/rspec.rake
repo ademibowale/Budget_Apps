@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rspec/core/rake_task"
 
 namespace :spec do
@@ -10,7 +8,7 @@ namespace :spec do
 
   namespace :simplecov do
     desc "Browse the code coverage report."
-    task :browse => "spec:simplecov" do
+    task browse: "spec:simplecov" do
       require "launchy"
       Launchy.open("coverage/index.html")
     end

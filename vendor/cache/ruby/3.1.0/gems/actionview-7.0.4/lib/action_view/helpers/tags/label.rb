@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActionView
   module Helpers
     module Tags # :nodoc:
@@ -75,9 +73,9 @@ module ActionView
         end
 
         private
-          def render_component(builder)
-            builder.translation
-          end
+        def render_component(builder)
+          builder.translation
+        end
       end
     end
   end

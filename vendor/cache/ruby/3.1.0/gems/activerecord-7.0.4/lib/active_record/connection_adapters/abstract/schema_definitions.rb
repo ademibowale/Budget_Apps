@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module ConnectionAdapters # :nodoc:
     # Abstract representation of an index definition on a table. Instances of
@@ -42,13 +40,13 @@ module ActiveRecord
       end
 
       private
-        def concise_options(options)
-          if columns.size == options.size && options.values.uniq.size == 1
-            options.values.first
-          else
-            options
-          end
+      def concise_options(options)
+        if columns.size == options.size && options.values.uniq.size == 1
+          options.values.first
+        else
+          options
         end
+      end
     end
 
     # Abstract representation of a column definition. Instances of this type
@@ -186,55 +184,55 @@ module ActiveRecord
       end
 
       private
-        attr_reader :name, :polymorphic, :index, :foreign_key, :type, :options
+      attr_reader :name, :polymorphic, :index, :foreign_key, :type, :options
 
-        def as_options(value)
-          value.is_a?(Hash) ? value : {}
+      def as_options(value)
+        value.is_a?(Hash) ? value : {}
+      end
+
+      def polymorphic_options
+        as_options(polymorphic).merge(options.slice(:null, :first, :after))
+      end
+
+      def polymorphic_index_name(table_name)
+        "index_#{table_name}_on_#{name}"
+      end
+
+      def index_options(table_name)
+        index_options = as_options(index)
+
+        # legacy reference index names are used on versions 6.0 and earlier
+        return index_options if options[:_uses_legacy_reference_index_name]
+
+        index_options[:name] ||= polymorphic_index_name(table_name) if polymorphic
+        index_options
+      end
+
+      def foreign_key_options
+        as_options(foreign_key).merge(column: column_name)
+      end
+
+      def columns
+        result = [[column_name, type, options]]
+        if polymorphic
+          result.unshift(["#{name}_type", :string, polymorphic_options])
         end
+        result
+      end
 
-        def polymorphic_options
-          as_options(polymorphic).merge(options.slice(:null, :first, :after))
+      def column_name
+        "#{name}_id"
+      end
+
+      def column_names
+        columns.map(&:first)
+      end
+
+      def foreign_table_name
+        foreign_key_options.fetch(:to_table) do
+          Base.pluralize_table_names ? name.to_s.pluralize : name
         end
-
-        def polymorphic_index_name(table_name)
-          "index_#{table_name}_on_#{name}"
-        end
-
-        def index_options(table_name)
-          index_options = as_options(index)
-
-          # legacy reference index names are used on versions 6.0 and earlier
-          return index_options if options[:_uses_legacy_reference_index_name]
-
-          index_options[:name] ||= polymorphic_index_name(table_name) if polymorphic
-          index_options
-        end
-
-        def foreign_key_options
-          as_options(foreign_key).merge(column: column_name)
-        end
-
-        def columns
-          result = [[column_name, type, options]]
-          if polymorphic
-            result.unshift(["#{name}_type", :string, polymorphic_options])
-          end
-          result
-        end
-
-        def column_name
-          "#{name}_id"
-        end
-
-        def column_names
-          columns.map(&:first)
-        end
-
-        def foreign_table_name
-          foreign_key_options.fetch(:to_table) do
-            Base.pluralize_table_names ? name.to_s.pluralize : name
-          end
-        end
+      end
     end
 
     module ColumnMethods
@@ -333,7 +331,9 @@ module ActiveRecord
       end
 
       # Returns an array of ColumnDefinition objects for the columns of the table.
-      def columns; @columns_hash.values; end
+      def columns
+        @columns_hash.values
+      end
 
       # Returns a ColumnDefinition for the column with name +name+.
       def [](name)
@@ -510,21 +510,21 @@ module ActiveRecord
       end
 
       private
-        def create_column_definition(name, type, options)
-          ColumnDefinition.new(name, type, options)
-        end
+      def create_column_definition(name, type, options)
+        ColumnDefinition.new(name, type, options)
+      end
 
-        def aliased_types(name, fallback)
-          "timestamp" == name ? :datetime : fallback
-        end
+      def aliased_types(name, fallback)
+        "timestamp" == name ? :datetime : fallback
+      end
 
-        def integer_like_primary_key?(type, options)
-          options[:primary_key] && [:integer, :bigint].include?(type) && !options.key?(:default)
-        end
+      def integer_like_primary_key?(type, options)
+        options[:primary_key] && [:integer, :bigint].include?(type) && !options.key?(:default)
+      end
 
-        def integer_like_primary_key_type(type, options)
-          type
-        end
+      def integer_like_primary_key_type(type, options)
+        type
+      end
     end
 
     class AlterTable # :nodoc:
@@ -533,7 +533,7 @@ module ActiveRecord
       attr_reader :check_constraint_adds, :check_constraint_drops
 
       def initialize(td)
-        @td   = td
+        @td = td
         @adds = []
         @foreign_key_adds = []
         @foreign_key_drops = []
@@ -541,7 +541,9 @@ module ActiveRecord
         @check_constraint_drops = []
       end
 
-      def name; @td.name; end
+      def name
+        @td.name
+      end
 
       def add_foreign_key(to_table, options)
         @foreign_key_adds << @td.new_foreign_key_definition(to_table, options)

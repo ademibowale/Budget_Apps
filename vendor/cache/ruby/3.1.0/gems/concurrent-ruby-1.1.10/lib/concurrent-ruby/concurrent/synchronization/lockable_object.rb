@@ -15,7 +15,7 @@ module Concurrent
                                    else
                                      warn 'Possibly unsupported Ruby implementation'
                                      MonitorLockableObject
-                                   end
+    end
     private_constant :LockableObjectImplementation
 
     #   Safe synchronization under any Ruby implementation.

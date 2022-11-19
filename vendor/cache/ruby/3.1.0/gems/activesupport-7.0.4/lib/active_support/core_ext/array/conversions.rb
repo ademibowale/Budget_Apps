@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/string/inflections"
 require "active_support/core_ext/object/to_param"
@@ -185,9 +183,9 @@ class Array
     require "active_support/builder" unless defined?(Builder::XmlMarkup)
 
     options = options.dup
-    options[:indent]  ||= 2
+    options[:indent] ||= 2
     options[:builder] ||= Builder::XmlMarkup.new(indent: options[:indent])
-    options[:root]    ||= \
+    options[:root] ||= \
       if first.class != Hash && all?(first.class)
         underscored = ActiveSupport::Inflector.underscore(first.class.name)
         ActiveSupport::Inflector.pluralize(underscored).tr("/", "_")

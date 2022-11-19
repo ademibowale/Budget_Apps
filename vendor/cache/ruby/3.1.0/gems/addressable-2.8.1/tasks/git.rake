@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 namespace :git do
   namespace :tag do
     desc "List tags from the Git repository"
     task :list do
       tags = `git tag -l`
       tags.gsub!("\r", "")
-      tags = tags.split("\n").sort {|a, b| b <=> a }
+      tags = tags.split("\n").sort { |a, b| b <=> a }
       puts tags.join("\n")
     end
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_support/core_ext/array/extract_options"
 
 module ActiveModel
@@ -42,7 +40,7 @@ module ActiveModel
       extend ActiveModel::Callbacks
       extend ActiveModel::Translation
 
-      extend  HelperMethods
+      extend HelperMethods
       include HelperMethods
 
       attr_accessor :validation_context

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "global_id/railtie"
 require "active_job"
 
@@ -32,7 +30,7 @@ module ActiveJob
           :custom_serializers
         )
 
-        options.each do  |k, v|
+        options.each do |k, v|
           k = "#{k}="
           send(k, v) if respond_to? k
         end

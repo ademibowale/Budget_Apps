@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveStorage
   class Attached::Changes::DetachMany # :nodoc:
     attr_reader :name, :record, :attachments

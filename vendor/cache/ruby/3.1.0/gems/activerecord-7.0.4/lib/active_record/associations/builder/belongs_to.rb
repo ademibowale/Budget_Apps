@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord::Associations::Builder # :nodoc:
   class BelongsTo < SingularAssociation # :nodoc:
     def self.macro
@@ -20,8 +18,8 @@ module ActiveRecord::Associations::Builder # :nodoc:
     def self.define_callbacks(model, reflection)
       super
       add_counter_cache_callbacks(model, reflection) if reflection.options[:counter_cache]
-      add_touch_callbacks(model, reflection)         if reflection.options[:touch]
-      add_default_callbacks(model, reflection)       if reflection.options[:default]
+      add_touch_callbacks(model, reflection) if reflection.options[:touch]
+      add_default_callbacks(model, reflection) if reflection.options[:default]
     end
 
     def self.add_counter_cache_callbacks(model, reflection)
@@ -77,8 +75,8 @@ module ActiveRecord::Associations::Builder # :nodoc:
 
     def self.add_touch_callbacks(model, reflection)
       foreign_key = reflection.foreign_key
-      name        = reflection.name
-      touch       = reflection.options[:touch]
+      name = reflection.name
+      touch = reflection.options[:touch]
 
       callback = lambda { |changes_method| lambda { |record|
         BelongsTo.touch_record(record, record.send(changes_method), foreign_key, name, touch, belongs_to_touch_method)

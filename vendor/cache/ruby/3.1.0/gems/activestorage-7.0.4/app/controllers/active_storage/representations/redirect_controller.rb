@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Take a signed permanent reference for a blob representation and turn it into an expiring service URL for download.
 #
 # WARNING: All Active Storage controllers are publicly accessible by default. The

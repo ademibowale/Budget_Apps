@@ -19,7 +19,7 @@ module Concurrent
       attr_writer :value
 
       def initialize(value, next_node)
-        @value     = value
+        @value = value
         @next_node = next_node
       end
 

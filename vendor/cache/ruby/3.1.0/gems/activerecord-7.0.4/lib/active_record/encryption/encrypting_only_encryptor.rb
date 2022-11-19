@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Encryption
     # An encryptor that can encrypt data but can't decrypt it.

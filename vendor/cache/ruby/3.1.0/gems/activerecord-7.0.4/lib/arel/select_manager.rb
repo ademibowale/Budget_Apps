@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Arel # :nodoc: all
   class SelectManager < Arel::TreeManager
     include Arel::Crud
@@ -255,22 +253,22 @@ module Arel # :nodoc: all
     end
 
     private
-      def collapse(exprs)
-        exprs = exprs.compact
-        exprs.map! { |expr|
-          if String === expr
-            # FIXME: Don't do this automatically
-            Arel.sql(expr)
-          else
-            expr
-          end
-        }
-
-        if exprs.length == 1
-          exprs.first
+    def collapse(exprs)
+      exprs = exprs.compact
+      exprs.map! { |expr|
+        if String === expr
+          # FIXME: Don't do this automatically
+          Arel.sql(expr)
         else
-          create_and exprs
+          expr
         end
+      }
+
+      if exprs.length == 1
+        exprs.first
+      else
+        create_and exprs
       end
+    end
   end
 end
