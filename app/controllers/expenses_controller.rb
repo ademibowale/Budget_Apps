@@ -23,7 +23,7 @@ class ExpensesController < ApplicationController
     respond_to do |format|
       if @expense.save
         format.html do
-          redirect_to user_group_expenses_path(curreent_user, params[:group_id]), 
+          redirect_to user_group_expenses_path(current_user, params[:group_id]), 
           notice: 'Transaction was successfully created.'
         end
       else

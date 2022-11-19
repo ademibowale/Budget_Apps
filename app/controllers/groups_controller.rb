@@ -18,6 +18,7 @@ class GroupsController < ApplicationController
   def create
     puts group_params
     @user = User.find(params[:user_id])
+    # @group = @user.groups.build(group_params)
     @group = Group.new(group_params)
     @group.user_id = @user.id
     if @group.valid?
