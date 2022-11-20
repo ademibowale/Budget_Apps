@@ -6,9 +6,9 @@ class Group < ApplicationRecord
   validates :name, presence: true, length: { maximum: 25 }
   validates :icon, presence: true
 
-  # def recent_transactions
-  #   expenses.order('created_at Desc')
-  # end
+  def recent_transactions
+     expenses.order('created_at Desc')
+   end
 
   def total_expenses
     expenses.sum(:amount)

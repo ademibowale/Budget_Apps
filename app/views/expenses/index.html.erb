@@ -1,33 +1,10 @@
-<div class="container">
-  <div class="expense-head">
-     <h1> <%= link_to user_groups_path do %>
-        <i class="fa fa-arrow-left" aria-hidden="true" style="color: #3778c2; padding-left: 22px"> </i>
-        <% end %>
-     </h1>
-  </div>
-  <h2 class="d-flex justify-content-center align-items-center expense-title">Transactions</h1>
-  <% if @expenses.count > 0 %>
-  <div class="card p-4">
-    <div class="expense-total">
-      <h3>Total Amount Budget:</h3>
-      <h3> <%= number_to_currency(@expenses.sum(&:amount)) %> </h3>
-    </div>
-    <div class="card-body">
-      <div class="d-flex ms-5 mb-3 gap-5 align-items-center icon-card">
-        <img src="<%= @group.icon %>", alt="group_icon" class="card-img">
-        <h2> <%= @group.name %> </h2>
-      </div>
-<% @expenses.each do |expense| %>
-        <%= render expense %>
-      <% end %>
-    </div>
-  <% else %>
-    <span class="d-flex justify-content-center align-items-center shadow p-3 mb-5 bg-body rounded p-5" >You have no Transactions click Add Transaction to continue</span>
+<p style="color: green"><%= notice %></p>
+
+<div id="entities">
+  <% @expenses.each do |expense| %>
+    <%= render expense %> 
   <% end %>
-  <div class="add-group-btn">
-    <div class="group-btn shadow p-3 mb-5 rounded">
-      <%= link_to "Add Transaction", new_user_group_expense_path(current_user), class: "btn btn-primary new-group-btn text-light" %>
-    </div>
-  </div>
-  </div>
 </div>
+<%= link_to "Back", group_path(@group) %>
+
+<%= link_to "New expense", new_group_expense_path %>
