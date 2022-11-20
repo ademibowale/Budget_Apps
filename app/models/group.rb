@@ -7,8 +7,8 @@ class Group < ApplicationRecord
   validates :icon, presence: true
 
   def recent_transactions
-     expenses.order('created_at Desc')
-   end
+    expenses.order('created_at Desc')
+  end
 
   def total_expenses
     expenses.sum(:amount)
