@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   get "/home", to: "homes#index"
   
   resources :groups do 
-    resources :entities, only: [:new, :create, :destroy]
+    resources :expenses, only: [:new, :create, :destroy]
   end
 
   devise_for :users, controllers: { registrations: 'users/registrations' }
