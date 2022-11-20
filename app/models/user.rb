@@ -4,10 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :expenses, foreign_key: 'user_id', dependent: :destroy
-  has_many :groups, foreign_key: 'user_id', dependent: :destroy
+  has_many :expenses
+  has_many :groups
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 25 }
   validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :password, presence: true
 end
