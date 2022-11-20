@@ -1,4 +1,4 @@
-<%= bootstrap_form_for expense.new, url: group_expenses_path, method: :post, local: true, scope: :post do |form| %>
+<%= bootstrap_form_for Expense.new, url: group_expenses_path, method: :post, local: true, scope: :post do |form| %>
   <% if expense.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(expense.errors.count, "error") %> prohibited this entity from being saved:</h2>
