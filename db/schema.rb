@@ -45,7 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_17_082243) do
   create_table "expenses", force: :cascade do |t|
     t.string "name"
     t.decimal "amount"
-    t.datetime "created_at", null: false
+    t.datetime "created_oat", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.bigint "group_id", null: false
@@ -53,9 +53,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_17_082243) do
     t.index ["user_id"], name: "index_expenses_on_user_id"
   end
 
-  create_table "group_expenses", force: :cascade do |t|
+  create_table "expenses_groups", id: false, force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "expense_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["group_id", "expense_id"], name: "index_expenses_groups_on_group_id_and_expense_id"
   end
 
   create_table "groups", force: :cascade do |t|

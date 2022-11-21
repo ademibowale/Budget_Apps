@@ -1,5 +1,13 @@
 ![](https://img.shields.io/badge/ademibowale-black?labelColor=green)
 
+## Table of Contents
+
+* [About the Project](#budget-app)
+* [Built With](#built-with)
+* [Getting Started](#getting-started)
+* [Contributing](#🤝-contributing)
+* [Author](#author)
+
 # Budget-App
 
 > This is a mobile web application where you can manage your budget: you have a list of transactions associated with a category, so that you can see how much money you spent and on what
@@ -9,12 +17,14 @@
 - Ruby on Rails [click here >>](https://guides.rubyonrails.org/)
 - Rubocop: [Rubocop](https://rubocop.org/)
 - UML schema diagram
-- Bootstrap
 - Ruby
+- PostgreSql
+- Bootstrap 5
 
 ### Live Demo
 🔥 [Link](https://budget-full-app.herokuapp.com/) 🔥
 
+### Presentation 
 
 [Loom video](https://www.loom.com/share/c6cce26ab1cd437abedf5d12893728a7)
 
@@ -23,6 +33,14 @@
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
+
+Go ahead and check the most recent version of each of these:
+- Ruby (ruby --version)
+- SQLite3 (sqlite3 --version)
+- Node.js (node --version)
+- Yarn (yarn --version)
+- Rails (rails --version)
+
 
 ```
   Ruby
