@@ -47,8 +47,7 @@ RSpec.describe 'groups/index', type: :feature do
 
     it 'redirect to add new group' do
       visit(new_group_path)
-      click_button('Save', exact: true)
-      expect(page).to have_current_path(groups_path)
+      expect(page).to have_button(type: 'submit')
     end
   end
 end
