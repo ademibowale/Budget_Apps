@@ -1,7 +1,12 @@
 <div class="row d-flex flex-column homepage m-0">
   <div>
     <% if current_user %>
-        
+        <header class="arrow">
+          <%= link_to groups_path do %>
+            <i class="bi bi-arrow-left fs-5 text-white"></i>
+          <% end %>
+        </header>
+      <div class="mt-5">
         <h1 class="fw-bold fs-1 text-white text-center title m-4"><%= current_user.name %></h1>
         <%= link_to 'Sign Out', destroy_user_session_path, class: 'btn btn-primary bg-blue btn-sm col-5' %>
       </div>
