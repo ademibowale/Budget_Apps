@@ -1,27 +1,15 @@
-<div class="container d-flex flex-column justify-content-center align-items-center">
-  <div class="expense-header w-100">
-    <h1>
-      <%= link_to user_group_expenses_path(@current_user, @group) do %>
-        <i class="fa fa-arrow-left" aria-hidden="true" style="color: #3778c2; padding-left: 22px"> </i>
-      <% end %>
-    </h1>
-  </div>
-  <div class="card w-100 d-flex justify-content-center align-items-center  p-3 shadow p-3 mb-5 bg-body rounded">
-    <h2 class="expense-title">Create New Transaction</h2>
-    <%= form_with model: @expense, url: user_group_expenses_path(current_user, @group), method: :post, scope: :expense,  class: 'd-flex flex-column  col-md-5 justify-content-center align-items-center' do |f| %> 
-      <div class="input-group p-2 mb-3">
-        <%= f.label :name, class: "input-group-text" %><br />
-        <%= f.text_field :name,  autofocus: true, autocomplete: "name", class: 'form-control' %>
-      </div>
-
-<div class="input-group p-2 mb-3">
-        <%= f.label :amount, class: "input-group-text" %><br />
-        <%= f.number_field :amount, class: 'form-control' %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Save Transaction", class: 'btn btn-primary'%>
-      </div>
+<div>
+  <div class="p-3 bg-primary text-white d-flex align-items-center justify-content-between">
+    <%= link_to group_path(@group) do %>
+      <i class="bi bi-arrow-left fs-4 text-white"></i>
     <% end %>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-start bg-light border shadow-sm bg-body col-12 p-3">
+    <p class="text-secondary mb-0"><%= @group.name %></p>
+  </div>
+  <div class="container">
+    <h3 class="text-center m-4">New transaction</h3>
+    <%= render "form", expense: @expense %>
   </div>
 </div>

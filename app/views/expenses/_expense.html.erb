@@ -1,9 +1,0 @@
-<div class="expense-display card mt-3 shadow p-3 mb-5 bg-body rounded w-10">
-    <div class="expense-display list-group  card d-flex  p-3 w-10 gap-10">
-      <h6 class="card-title">Name: <%= expense.name %></h6>
-      <h6 class="card-title">Amount: <%= number_to_currency(expense.amount) %></h6>
-      <div class="d-flex gap-4">
-        <%= button_to "Delete budget", user_group_expense_path(current_user, @group, expense), method: :delete, class: 'btn btn-secondary p-2' %>
-      </div>
-    </div> 
-</div>

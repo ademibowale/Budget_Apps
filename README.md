@@ -1,24 +1,108 @@
-# README
+![](https://img.shields.io/badge/ademibowale-black?labelColor=green)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Budget-App
 
-Things you may want to cover:
+> This is a mobile web application where you can manage your budget: you have a list of transactions associated with a category, so that you can see how much money you spent and on what
 
-* Ruby version
+## Built With
 
-* System dependencies
+- Ruby on Rails [click here >>](https://guides.rubyonrails.org/)
+- Rubocop: [Rubocop](https://rubocop.org/)
+- UML schema diagram
+- Bootstrap
+- Ruby
 
-* Configuration
+### Live Demo
+🔥 [Link](https://budget-full-app.herokuapp.com/) 🔥
 
-* Database creation
 
-* Database initialization
+[Loom video](https://www.loom.com/share/c6cce26ab1cd437abedf5d12893728a7)
 
-* How to run the test suite
+## Getting Started
 
-* Services (job queues, cache servers, search engines, etc.)
+To get a local copy up and running follow these simple example steps.
 
-* Deployment instructions
+### Prerequisites
 
-* ...
+```
+  Ruby
+  Ruby on Rails
+  PostgreSQL
+```
+
+### Setup
+
+Clone the repository and change the directory to blog
+
+```
+  $ git clone git@https://github.com/ademibowale/Budget_Apps.git
+
+  $ cd Budget-app
+```
+
+### Install
+
+Install all project dependencies by running the command below
+
+```
+  $ bundle install
+```
+
+### Run the application
+
+```
+  Linux
+  $ rails server
+```
+
+```
+  Windows
+  $ rails server
+```
+
+### Visit the homepage of application
+
+```
+  $ http://localhost:3000/
+```
+
+### Check linter errors
+
+```
+  $ rubocop .
+```
+
+### Run tests
+
+```
+  $ Rspec spec
+```
+
+### Author
+
+👤 **Adebowale Adegboye**
+
+- GitHub: [@ademibowale](https://github.com/ademibowale/)
+- Twitter: [@Ademibowale1](https://twitter.com/Ademibowale1)
+- LinkedIn: [Adebowale](https://www.linkedin.com/in/tech-adebowale-adegboye/)
+
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Feel free to check the [issues page](https://github.com/ademibowale/Budget_Apps/issues).
+
+## Show your support
+
+Give a ⭐️ if you like this project!
+
+## Acknowledgments
+
+- My Acknowledgements to Gregoire Vella on Behance the author of the original design, as required by the Creative Commons license of the design. [Gregoire Vella on Behance](https://www.behance.net/gregoirevella) the [author of the original design](https://www.behance.net/gallery/19759151/Snapscan-iOs-design-and-branding?tracking_source=), as required by the [Creative Commons license of the design](https://creativecommons.org/licenses/by-nc/4.0/).
+
+- Hat tip to [Microverse](https://bit.ly/MicroverseTN) for giving me this project to work on
+
+## 📝 License
+
+This project is [MIT](./MIT.md) licensed.
