@@ -10,5 +10,7 @@ class Group < ApplicationRecord
     expenses.order('created_at Desc')
   end
 
-  
+  def total_expenses
+    expenses.sum(:amount)
+  end
 end
